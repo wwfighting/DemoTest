@@ -786,8 +786,9 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
             if (iValue == 1) {  //1为登录
                 if (mDialog == null){
                     initDialog();
+
                 }
-                mDialog.dismiss();
+                //mDialog.dismiss();
                 mbtnLogin.setVisibility(View.GONE);
                 mrlStore.setVisibility(View.VISIBLE);
                 mrlAddress.setVisibility(View.VISIBLE);
