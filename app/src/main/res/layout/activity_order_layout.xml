@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:id="@+id/cdl_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:fitsSystemWindows="true"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsing_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:contentScrim="?colorPrimary"
+            app:titleEnabled="false"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            >
+            <android.support.v7.widget.Toolbar
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:minHeight="?attr/actionBarSize"
+                android:id="@+id/tb_order"
+                android:background="?attr/colorPrimary"
+                app:layout_scrollFlags="scroll|enterAlways"
+                app:layout_collapseMode="pin"
+                app:popupTheme="@style/AppTheme.PopupOverlay"
+                app:title="提交订单" />
+        </android.support.design.widget.CollapsingToolbarLayout>
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/nsv_order"
+        android:layout_marginBottom="45dp"
+        app:behavior_overlapTop="66dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:layout_margin="8dp"
+                android:id="@+id/cv_address"
+                android:layout_marginBottom="16dp"
+                app:cardBackgroundColor="#FFFFFF"
+                app:cardCornerRadius="6dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="8dp"
+                            android:text="请选择门店"
+                            android:id="@+id/tv_choose_store"
+                            android:drawableLeft="@drawable/ic_store_24dp"
+                            android:drawablePadding="8dp"
+                            android:textColor="#999999"
+                            style="?android:borderlessButtonStyle"
+                            android:gravity="center_vertical"
+                            android:textSize="16sp"/>
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:layout_marginLeft="8dp"
+                            android:text="请选择配送地址"
+                            style="?android:borderlessButtonStyle"
+                            android:drawablePadding="8dp"
+                            android:id="@+id/tv_choose_address"
+                            android:drawableLeft="@drawable/ic_sendaddress_24dp"
+                            android:textColor="#999999"
+                            android:gravity="center_vertical"
+                            android:textSize="16sp"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="52dp"
+                            android:layout_marginBottom="8dp"
+                            android:id="@+id/tv_send_address"
+                            android:text="上海路2号"
+                            android:visibility="gone"
+                            android:textColor="#999999"
+                            android:layout_below="@+id/tv_choose_address"
+                            android:gravity="center_vertical"
+                            android:textSize="16sp"/>
+
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+
+            </android.support.v7.widget.CardView>
+
+            <!--头部-->
+            <include
+                layout="@layout/order_head_layout" />
+
+            <!--门型-->
+            <include
+                layout="@layout/detail_door_layout" />
+
+            <!--颜色-->
+            <include
+                layout="@layout/detail_color_layout" />
+
+            <!--台面-->
+            <include
+                layout="@layout/detail_taimian_layout" />
+
+            <!--备注-->
+            <include
+                layout="@layout/order_tip_layout" />
+
+        </LinearLayout>
+
+
+    </android.support.v4.widget.NestedScrollView>
+
+
+    <RelativeLayout
+        android:id="@+id/rl_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="#FFFFFF"
+        android:gravity="center_vertical"
+        android:layout_gravity="bottom">
+
+        <Button
+            android:layout_width="80dp"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="8dp"
+            android:id="@+id/btn_order_commit"
+            android:textSize="14sp"
+            android:text="提交订单"
+            android:textColor="#FFFFFF"
+            android:background="#E4393C"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="￥2000"
+            android:textStyle="bold"
+            android:textColor="#E4393C"
+            android:id="@+id/tv_order_money"
+            android:textSize="16sp"
+            android:layout_marginRight="8dp"
+            android:layout_toLeftOf="@+id/btn_order_commit"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="预约金："
+            android:textStyle="bold"
+            android:textColor="#999999"
+            android:id="@+id/tv_order_money_label"
+            android:textSize="16sp"
+            android:layout_toLeftOf="@+id/tv_order_money"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text=")"
+            android:textStyle="bold"
+            android:textColor="#999999"
+            android:id="@+id/tv_order_right_bracket"
+            android:textSize="18sp"
+            android:layout_marginRight="6dp"
+            android:layout_toLeftOf="@+id/tv_order_money_label"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="￥6999"
+            android:textStyle="bold"
+            android:textColor="#999999"
+            android:id="@+id/tv_order_all_money"
+            android:textSize="14sp"
+            android:layout_marginRight="6dp"
+            android:layout_toLeftOf="@+id/tv_order_right_bracket"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="(总价："
+            android:textStyle="bold"
+            android:textColor="#999999"
+            android:id="@+id/tv_order_left_bracket"
+            android:textSize="14sp"
+            android:layout_toLeftOf="@+id/tv_order_all_money"/>
+
+
+    </RelativeLayout>
+
+</android.support.design.widget.CoordinatorLayout>

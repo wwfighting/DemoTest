@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="290dp"
+    android:layout_marginTop="8dp"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="#FFFFFF">
+
+        <View
+            android:layout_width="2dp"
+            android:layout_height="25dp"
+            android:id="@+id/vertical_line"
+            android:background="#E4393C"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="8dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_title"
+            android:text="正在进行"
+            android:layout_toRightOf="@+id/vertical_line"
+            android:layout_centerVertical="true"
+            android:textSize="16sp"
+            android:textColor="#E4393C"
+            android:layout_marginLeft="8dp"
+            android:textStyle="bold"/>
+
+    </RelativeLayout>
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="230dp"
+        android:clickable="true"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:layout_margin="8dp"
+        android:layout_marginBottom="16dp"
+        app:cardBackgroundColor="#FFFFFF"
+        app:cardElevation="8dp"
+        app:cardCornerRadius="8dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:id="@+id/iv_acty"
+                android:scaleType="fitXY"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginLeft="8dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="25dp"
+                    android:id="@+id/tv_big"
+
+                    android:text="9月活动"
+                    android:layout_marginTop="6dp"
+                    android:textSize="18sp"
+                    android:textColor="#333333"
+                    android:gravity="center_vertical"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:gravity="center_vertical"
+                    android:id="@+id/tv_small"
+                    android:layout_below="@+id/tv_big"
+                    android:layout_marginTop="3dp"
+                    android:text="9月活动"
+                    android:textColor="#999999"/>
+
+                <android.support.v7.widget.AppCompatButton
+                    android:layout_width="100dp"
+                    android:layout_height="40dp"
+                    android:id="@+id/btn_acty_go"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    android:text="进入活动"
+                    android:textSize="16sp"
+                    android:textColor="#FFFFFF"
+                    android:background="#E4393C"
+                    android:layout_marginRight="16dp"/>
+
+            </RelativeLayout>
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>

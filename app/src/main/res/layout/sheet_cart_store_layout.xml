@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:id="@+id/rl_top"
+        android:background="?attr/colorPrimary">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical"
+            android:id="@+id/tv_current_city"
+            android:text="当前所在城市："
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:layout_marginLeft="8dp"/>
+
+
+        <android.support.v7.widget.AppCompatSpinner
+            android:layout_width="100dp"
+            android:layout_height="35dp"
+            android:paddingLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:id="@+id/sp_city"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center_vertical"
+            android:spinnerMode="dropdown"
+            android:layout_toRightOf="@+id/tv_current_city"
+            android:entries="@array/city"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical"
+            android:layout_toRightOf="@+id/tv_current_city"
+            android:id="@+id/tv_current_store"
+            android:text="全屋定制兰海店"
+            android:visibility="gone"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:layout_marginLeft="8dp"/>
+
+
+
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_below="@+id/rl_top"
+        android:id="@+id/rl_sub"
+        android:background="#F7F7F7">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical"
+            android:id="@+id/tv_sub_title"
+            android:text="选择门店"
+            android:textColor="#999999"
+            android:textSize="16sp"
+            android:layout_marginLeft="8dp"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btn_sheet_back"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:layout_alignParentRight="true"
+            android:text="关闭"
+            android:layout_marginRight="8dp"
+            android:textColor="#999999"
+            style="?android:borderlessButtonStyle"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btn_sheet_back_step"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:layout_alignParentRight="true"
+            android:text="返回上一步"
+            android:visibility="gone"
+            android:layout_marginRight="8dp"
+            android:textColor="#999999"
+            style="?android:borderlessButtonStyle"/>
+
+    </RelativeLayout>
+
+    <include
+        layout="@layout/loading_layout" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:id="@+id/tv_load_again"
+        android:text="加载失败！请点击重新加载"
+        android:textSize="18sp"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:visibility="gone"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:id="@+id/tv_load_again_staff"
+        android:text="加载失败！请点击重新加载"
+        android:textSize="18sp"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:visibility="gone"/>
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:id="@+id/lv_store"
+        android:layout_below="@id/rl_sub"/>
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:id="@+id/lv_stuff"
+        android:layout_below="@id/rl_sub"/>
+
+
+</RelativeLayout>

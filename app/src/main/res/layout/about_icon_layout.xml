@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:nestedScrollingEnabled="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="330dp"
+            android:orientation="vertical"
+            android:background="#FFFFFF"
+            android:elevation="2dp">
+
+            <ImageView
+                android:id="@+id/icon"
+                android:layout_width="match_parent"
+                android:layout_height="320dp"
+                android:layout_marginTop="32dp"
+                android:padding="24dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/logo_big" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/scrollingContent"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#ffeeeeee"
+            android:paddingTop="24dp" >
+
+            <com.ww.administrator.demotest.widget.ListItem
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:text="联系电话"
+                app:leftIcon="@mipmap/ic_phone" />
+
+            <com.ww.administrator.demotest.widget.ListItem
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:text="15358106690" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#644d4d4d"
+                android:layout_margin="16dp" />
+
+            <com.ww.administrator.demotest.widget.ListItem
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:text="联系邮箱"
+                app:leftIcon="@mipmap/ic_email" />
+
+            <com.ww.administrator.demotest.widget.ListItem
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:text="15358106690@163.com" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#644d4d4d"
+                android:layout_margin="16dp" />
+
+            <com.ww.administrator.demotest.widget.ListItem
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:text="公司地址"
+                app:leftIcon="@mipmap/ic_location" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:paddingLeft="64dp"
+                android:paddingRight="16dp"
+                android:paddingTop="16dp"
+                android:textSize="18sp"
+                android:lineSpacingExtra="2dp"
+                android:text="南京市江宁经济开发区苏源大道19号九龙湖国际企业总部园B1座12层" />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</ScrollView>

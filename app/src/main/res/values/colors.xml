@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="day_colorPrimary">#F44336</color>
+    <color name="day_colorPrimaryDark">#D32F2F</color>
+    <color name="day_colorAccent">#FF4081</color>
+    <color name="day_lightPrimaryColor">#FFCDD2</color>
+    <color name="day_textColor">#FFFFFF</color>
+    <color name="day_dividerColor">#B6B6B6</color>
+    <color name="day_botomdividerColor">#d7dcdc</color>
+    <color name="day_primaryTextColor">#212121</color>
+    <color name="day_secondTextColor">#727272</color>
+    <color name="day_icons">#FFFFFF</color>
+    <color name="page_indicator_dark">#80333333</color>
+    <color name="page_indicator_dark_selected">#ff333333</color>
+    <color name="nextColor">#a9b7b7</color>
+    <color name="textLine">#B6B6B6</color>
+    <color name="selected">#64848181</color>
+
+
+    <color name="white">#FFFFFF</color>
+    <color name="lightblack">#383434</color>
+    <color name="loadblue">#5588FF</color>
+    <color name="colorNormal">#a9b7b7</color>
+
+    <color name="content_placeholder">#ffe0e0e0</color>
+
+    <color name="scrim">#99786464</color>
+
+    <color name="bg">#4d4d4d</color>
+</resources>

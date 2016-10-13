@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:id="@+id/rl_top"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_centerInParent="true"
+        android:layout_height="80dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_marginLeft="16dp"
+            android:id="@+id/tv_city_label"
+            android:text="请选择城市："
+            android:textSize="18sp"
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical"/>
+
+        <android.support.v7.widget.AppCompatSpinner
+            android:layout_width="wrap_content"
+            android:layout_toRightOf="@+id/tv_city_label"
+            android:layout_height="35dp"
+            android:paddingLeft="8dp"
+            android:id="@+id/sp_city"
+            android:layout_gravity="center_vertical"
+            android:layout_centerVertical="true"
+            android:spinnerMode="dropdown"
+            android:entries="@array/city"/>
+
+    </RelativeLayout>
+
+    <!--<RelativeLayout
+        android:layout_width="match_parent"
+        android:id="@+id/rl_locat"
+        android:layout_above="@+id/rl_top"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_centerInParent="true"
+        android:layout_height="80dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_marginLeft="16dp"
+            android:id="@+id/tv_locat_label"
+            android:text="定位城市："
+            android:drawableLeft="@drawable/ic_sendaddress_24dp"
+            android:textSize="18sp"
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_marginLeft="16dp"
+            android:id="@+id/tv_locat"
+            android:layout_toRightOf="@+id/tv_locat_label"
+            android:text="南京市"
+            android:textSize="18sp"
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical"/>
+
+    </RelativeLayout>-->
+
+    <Button
+        android:layout_width="120dp"
+        android:layout_height="50dp"
+        android:text="进入家瓦商城"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:id="@+id/btn_go"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="100dp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/loginbtn_shape"/>
+
+
+</RelativeLayout>

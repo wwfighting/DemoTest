@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="110dp"
+        android:orientation="horizontal">
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:gravity="center">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tv_goodcomment_per"
+                    android:layout_gravity="center"
+                    android:text="85%"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:textColor="#E4393C"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tv_goodcomment_label"
+                    android:text="好评度"
+                    android:textSize="20sp"
+                    android:layout_marginTop="5dp"
+                    android:textColor="#666666"/>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="7"
+            android:layout_marginRight="3dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:textColor="#666666"
+                    android:text="好评(90%)"/>
+                <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
+                    android:layout_width="0dp"
+                    android:layout_height="10dp"
+                    android:layout_weight="7"
+                    app:rcProgress="90.0"
+                    app:rcMax="100.0"
+                    app:rcRadius="3dp"
+                    app:rcReverse="false"
+                    app:rcProgressColor="#E4393C"
+                    app:rcBackgroundColor="#EFEFEF" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:textColor="#666666"
+                    android:text="中评(16%)"/>
+
+                <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
+                    android:layout_width="0dp"
+                    android:layout_height="10dp"
+                    android:layout_weight="7"
+                    app:rcProgress="16.0"
+                    app:rcMax="100.0"
+                    app:rcRadius="3dp"
+                    app:rcReverse="false"
+                    app:rcProgressColor="#E4393C"
+                    app:rcBackgroundColor="#EFEFEF" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:textColor="#666666"
+                    android:text="差评(2%)"/>
+
+                <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
+                    android:layout_width="0dp"
+                    android:layout_height="10dp"
+                    android:layout_weight="7"
+                    app:rcProgress="2.0"
+                    app:rcMax="100.0"
+                    app:rcRadius="3dp"
+                    app:rcReverse="false"
+                    app:rcProgressColor="#E4393C"
+                    app:rcBackgroundColor="#EFEFEF" />
+            </LinearLayout>
+
+
+
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_marginTop="5dp"
+    android:layout_height="35dp"
+    android:background="#FFFFFF"
+    app:elevation="3dp" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <View
+            android:layout_width="2dp"
+            android:layout_height="25dp"
+            android:id="@+id/vertical_line"
+            android:background="#E4393C"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="8dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_title"
+            android:text="新品推荐"
+            android:layout_toRightOf="@+id/vertical_line"
+            android:layout_centerVertical="true"
+            android:textSize="16sp"
+            android:textColor="#E4393C"
+            android:layout_marginLeft="8dp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_more"
+            android:drawablePadding="-8dp"
+            android:text="更多"
+            android:drawableRight="@drawable/ic_keyboard_arrow_right_24dp"
+            android:gravity="center"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:textSize="12sp"
+            android:textColor="#999999" />
+
+
+    </RelativeLayout>
+
+
+</android.support.v7.widget.CardView>

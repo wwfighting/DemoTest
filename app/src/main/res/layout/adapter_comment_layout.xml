@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+        android:orientation="vertical">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="35dp">
+
+            <android.support.v7.widget.AppCompatRatingBar
+                android:layout_width="80dp"
+                android:layout_height="20dp"
+                style="?android:attr/ratingBarStyleSmall"
+                android:layout_margin="5dp"
+                android:layout_centerVertical="true"
+                android:id="@+id/rb_comment"
+                android:isIndicator="true"
+                android:layout_alignParentLeft="true"
+                android:numStars="5"
+                android:rating="5.0" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_comment_name"
+                android:layout_centerVertical="true"
+                android:textColor="#666666"
+                android:layout_toLeftOf="@+id/tv_comment_time"
+                android:text="简单就好_012"
+                android:textSize="14sp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_comment_time"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:text="2014-7-15"
+                android:textSize="12sp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:textColor="#999999"/>
+
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="16sp"
+            android:text="真的很漂亮，很喜欢"
+            android:id="@+id/tv_comment_content"
+            android:layout_marginLeft="5dp"
+            android:textColor="#333333"/>
+
+    </LinearLayout>
+</LinearLayout>

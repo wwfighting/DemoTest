@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/ll_container"
+        android:orientation="vertical">
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/mtet_orgpwd"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:inputType="textPassword"
+            android:maxLength="12"
+            android:hint="旧密码"
+            app:met_floatingLabel="normal"
+            app:met_floatingLabelTextSize="14sp"
+            app:met_baseColor="@color/day_colorPrimary"
+            app:met_floatingLabelPadding="16dp"
+            app:met_floatingLabelText="旧密码"/>
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/mtet_newpwd"
+            android:inputType="textPassword"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:hint="新密码"
+            android:maxLength="12"
+            app:met_floatingLabel="normal"
+            app:met_floatingLabelTextSize="14sp"
+            app:met_baseColor="@color/day_colorPrimary"
+            app:met_floatingLabelPadding="16dp"
+            app:met_floatingLabelText="新密码"/>
+    </LinearLayout>
+
+    <include
+        layout="@layout/loading_layout" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:textSize="18sp"
+        android:id="@+id/tv_pwd_change_result"
+        android:gravity="center"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        android:text="修改密码成功！"/>
+
+
+</RelativeLayout>

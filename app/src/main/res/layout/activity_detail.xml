@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:wheel="http://schemas.android.com/apk/res-auto"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/cl_detail_container"
+    android:fitsSystemWindows="true">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="240dp"
+        android:id="@+id/abl_detail"
+        android:fitsSystemWindows="true"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true"
+            android:id="@+id/ctl_detail"
+            android:background="#FFCCBC"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:contentScrim="?attr/colorPrimary"
+            app:expandedTitleMarginStart="16dp">
+
+            <com.bigkoo.convenientbanner.ConvenientBanner
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:transitionName="detail"
+                android:id="@+id/cb_detail" />
+            <com.pnikosis.materialishprogress.ProgressWheel
+                android:id="@+id/pw_banner"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_gravity="center"
+                wheel:matProg_barColor="#5588FF"
+                wheel:matProg_progressIndeterminate="true" />
+            <android.support.v7.widget.Toolbar
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:id="@+id/tb_detail"
+                app:layout_collapseMode="pin" />
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:transitionGroup="true"
+        android:id="@+id/nsv_detail"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <!--现价、原价、预约金、预约数-->
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:id="@+id/cv_price"
+                android:layout_marginTop="3dp">
+                <ImageView
+                    android:layout_width="1dp"
+                    android:layout_height="1dp"
+                    android:id="@+id/iv_test"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center_vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/tv_detail_nowprice"
+                            android:layout_marginLeft="8dp"
+                            android:text="现金：￥10999-28999"
+                            android:layout_centerVertical="true"
+                            android:layout_alignParentLeft="true"
+                            android:textSize="16sp"
+                            android:textColor="#E4393C"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/tv_detail_orgprice"
+                            android:layout_marginLeft="8dp"
+                            android:layout_toRightOf="@+id/tv_detail_nowprice"
+                            android:text="原价：￥20996-74985"
+                            android:layout_centerVertical="true"
+                            android:textSize="14sp"
+                            android:textColor="#999999"/>
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/tv_detail_orderprice"
+                            android:text="预约金：￥2000"
+                            android:layout_marginLeft="8dp"
+                            android:layout_centerVertical="true"
+                            android:textSize="16sp"
+                            android:layout_alignParentLeft="true"
+                            android:textColor="#E4393C"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/tv_detail_ordercount"
+                            android:text="121人预约"
+                            android:layout_marginLeft="8dp"
+                            android:layout_centerVertical="true"
+                            android:textSize="14sp"
+                            android:layout_marginRight="8dp"
+                            android:layout_alignParentRight="true"
+                            android:textColor="#999999"/>
+
+                    </RelativeLayout>
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+            <!--规格、数量-->
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="#FFFFFF">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="35dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:text="规格："
+                            android:textSize="16sp"
+                            android:layout_marginLeft="8dp"
+                            android:textColor="#999999"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:id="@+id/tv_detail_spec"
+                            android:text="3-10米地板+3-10米台面+1-5米吊柜"
+                            android:textSize="14sp"
+                            android:layout_marginLeft="8dp"
+                            android:textColor="#999999"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="35dp"
+                        android:orientation="horizontal"
+                        android:visibility="gone"
+                        android:id="@+id/ll_count_container">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:id="@+id/tv_detail_count"
+                            android:text="数量："
+                            android:textSize="16sp"
+                            android:layout_marginLeft="8dp"
+                            android:textColor="#999999"/>
+
+                        <Button
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_marginLeft="8dp"
+                            android:id="@+id/btn_detail_minus"
+                            android:text="-"
+                            android:gravity="center"
+                            android:textSize="24sp"
+                            android:textColor="#999999"
+                            android:background="@drawable/btn_count_shape"
+                            android:layout_gravity="center_vertical"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="12dp"
+                            android:id="@+id/tv_detail_buy_num"
+                            android:text="100"
+                            android:layout_gravity="center_vertical"
+                            android:textSize="16sp"/>
+
+                        <Button
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_marginLeft="12dp"
+                            android:text="+"
+                            android:textSize="24sp"
+                            android:textColor="#999999"
+                            android:background="@drawable/btn_count_shape"
+                            android:id="@+id/btn_detail_plus"
+                            android:layout_gravity="center_vertical"/>
+
+                    </LinearLayout>
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+            <!--颜色-->
+            <include
+                layout="@layout/detail_color_layout" />
+
+            <!--台面-->
+            <include
+                layout="@layout/detail_taimian_layout" />
+
+            <android.support.design.widget.TabLayout
+                android:layout_width="match_parent"
+                android:layout_marginTop="8dp"
+                android:layout_height="?attr/actionBarSize"
+                android:id="@+id/tl_detail"
+                app:tabBackground="@drawable/tablayout_background"
+                app:tabGravity="fill"
+                app:tabIndicatorHeight="3dp"
+                app:tabMode="fixed"
+                app:tabIndicatorColor="#E4393C"
+                app:tabSelectedTextColor="#E4393C"
+                app:tabTextColor="#999999" />
+
+            <com.ww.administrator.demotest.AutoHeightViewPager
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:id="@+id/vp_detail"/>
+
+
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+
+    <com.getbase.floatingactionbutton.FloatingActionsMenu
+        android:id="@+id/fab_menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_margin="16dp"
+        fab:fab_addButtonColorNormal="@color/day_colorPrimary"
+        fab:fab_addButtonColorPressed="@color/day_colorPrimaryDark"
+        fab:fab_addButtonPlusIconColor="#FFFFFF"
+        fab:fab_labelStyle="@style/menu_labels_style"
+        android:layout_marginBottom="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginEnd="16dp">
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_detail_shopping_cart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_no_shopping_cart_24dp"
+            fab:fab_size="mini"
+            fab:fab_colorNormal="@color/day_colorPrimary"
+            fab:fab_colorPressed="@color/day_colorPrimaryDark"/>
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_detail_order"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_order_24dp"
+            fab:fab_size="mini"
+            fab:fab_colorNormal="@color/day_colorPrimary"
+            fab:fab_colorPressed="@color/day_colorPrimaryDark"/>
+
+    </com.getbase.floatingactionbutton.FloatingActionsMenu>
+
+
+</android.support.design.widget.CoordinatorLayout>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="query_suggestions">
+        <item>Android</item>
+        <item>iOS</item>
+        <item>SCALA</item>
+        <item>Ruby</item>
+        <item>JavaScript</item>
+    </string-array>
+
+    <string-array name="city">
+        <item >南京</item>
+        <item >兰州</item>
+        <item >上海</item>
+        <item >沈阳</item>
+    </string-array>
+    <string-array name="nj_zone">
+        <item >玄武区</item>
+        <item >白下区</item>
+        <item >秦淮区</item>
+        <item >建邺区</item>
+        <item >鼓楼区</item>
+        <item >下关区</item>
+        <item >浦口区</item>
+        <item >栖霞区</item>
+        <item >雨花台区</item>
+        <item >江宁区</item>
+        <item >六合区</item>
+        <item >溧水县</item>
+        <item >高淳县</item>
+    </string-array>
+
+    <string-array name="lz_zone">
+        <item >城关区</item>
+        <item >七里河区</item>
+        <item >西固区</item>
+        <item >安宁区</item>
+        <item >红古区</item>
+        <item >永登县</item>
+        <item >皋兰县</item>
+        <item >榆中县</item>
+    </string-array>
+
+    <string-array name="sy_zone">
+        <item >和平区</item>
+        <item >沈河区</item>
+        <item >大东区</item>
+        <item >皇姑区</item>
+        <item >铁西区</item>
+        <item >苏家屯区</item>
+        <item >东陵区</item>
+        <item >新城子区</item>
+        <item >于洪区</item>
+        <item >辽中县</item>
+        <item >康平县</item>
+        <item >法库县</item>
+        <item >新民市</item>
+    </string-array>
+
+    <string-array name="sh_zone">
+        <item >黄浦区</item>
+        <item >卢湾区</item>
+        <item >徐汇区</item>
+        <item >长宁区</item>
+        <item >静安区</item>
+        <item >普陀区</item>
+        <item >闸北区</item>
+        <item >虹口区</item>
+        <item >杨浦区</item>
+        <item >闵行区</item>
+        <item >宝山区</item>
+        <item >嘉定区</item>
+        <item >浦东新区</item>
+        <item >金山区</item>
+        <item >松江区</item>
+        <item >青浦区</item>
+        <item >南汇区</item>
+        <item >奉贤区</item>
+    </string-array>
+
+</resources>

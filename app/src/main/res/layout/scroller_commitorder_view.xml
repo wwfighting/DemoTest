@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_margin="8dp"
+            android:gravity="center_vertical"
+            android:textSize="14sp"
+            android:textColor="#999999"
+            android:text="配送信息"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:textColor="#666666"
+            android:id="@+id/tv_commit_receive_name"
+            android:text="收货人："
+            android:paddingLeft="8dp"
+            android:textSize="16sp"
+            android:background="#FFFFFF"
+            android:gravity="center_vertical"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#E6E5E5" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:textColor="#666666"
+            android:text="手机号："
+            android:id="@+id/tv_commit_receive_phone"
+            android:paddingLeft="8dp"
+            android:textSize="16sp"
+            android:background="#FFFFFF"
+            android:gravity="center_vertical"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#E6E5E5" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#666666"
+            android:text="收货地址："
+            android:lineSpacingMultiplier="1.5"
+            android:id="@+id/tv_commit_receive_address"
+            android:padding="8dp"
+            android:textSize="16sp"
+            android:background="#FFFFFF"
+            android:gravity="center_vertical"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#E6E5E5" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:gravity="center_vertical"
+            android:layout_margin="8dp"
+            android:textSize="14sp"
+            android:textColor="#999999"
+            android:text="预约订单信息"/>
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:textColor="#000000"
+            android:text="尚品魅厨_地平线"
+            android:id="@+id/tv_commit_goods_name"
+            android:paddingLeft="8dp"
+            android:textSize="16sp"
+            android:background="#FFFFFF"
+            android:gravity="center_vertical"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:textColor="#666666"
+            android:text="规  格："
+            android:id="@+id/tv_commit_goods_mode"
+            android:paddingLeft="8dp"
+            android:textSize="16sp"
+            android:background="#FFFFFF"
+            android:gravity="center_vertical"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#FFFFFF">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:textColor="#666666"
+                android:text="预约金："
+                android:id="@+id/tv_commit_goods_order_money_label"
+                android:paddingLeft="8dp"
+                android:textSize="16sp"
+                android:background="#FFFFFF"
+                android:gravity="center_vertical"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:textColor="#E4393C"
+                android:text="￥2000"
+                android:textStyle="bold"
+                android:id="@+id/tv_commit_goods_order_money"
+                android:layout_toRightOf="@+id/tv_commit_goods_order_money_label"
+                android:textSize="16sp"
+                android:background="#FFFFFF"
+                android:gravity="center_vertical"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:textColor="#666666"
+                android:text="预约价：￥8999 起"
+                android:id="@+id/tv_commit_goods_all_money"
+                android:layout_toRightOf="@+id/tv_commit_goods_order_money"
+                android:paddingLeft="8dp"
+                android:textSize="14sp"
+                android:background="#FFFFFF"
+                android:gravity="center_vertical"/>
+
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#666666"
+            android:text="(具体价格按当时活动计算)"
+            android:id="@+id/tv_commit_receive_money_tip"
+            android:paddingLeft="8dp"
+            android:textSize="14sp"
+            android:background="#FFFFFF"
+            android:gravity="center_vertical"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:textColor="#666666"
+            android:text="门  型："
+            android:id="@+id/tv_commit_goods_door"
+            android:paddingLeft="8dp"
+            android:textSize="16sp"
+            android:background="#FFFFFF"
+            android:gravity="center_vertical"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:textColor="#666666"
+            android:text="颜  色："
+            android:id="@+id/tv_commit_goods_color"
+            android:paddingLeft="8dp"
+            android:textSize="16sp"
+            android:background="#FFFFFF"
+            android:gravity="center_vertical"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:textColor="#666666"
+            android:text="台  面："
+            android:id="@+id/tv_commit_goods_taimian"
+            android:paddingLeft="8dp"
+            android:textSize="16sp"
+            android:background="#FFFFFF"
+            android:gravity="center_vertical"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:textColor="#666666"
+            android:text="导  购："
+            android:id="@+id/tv_commit_goods_guide"
+            android:paddingLeft="8dp"
+            android:textSize="16sp"
+            android:background="#FFFFFF"
+            android:gravity="center_vertical"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:textColor="#666666"
+            android:text="活动内容："
+            android:id="@+id/tv_commit_goods_activity"
+            android:paddingLeft="8dp"
+            android:textSize="16sp"
+            android:background="#FFFFFF"
+            android:gravity="center_vertical"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:textColor="#666666"
+            android:text="客户要求："
+            android:id="@+id/tv_commit_goods_custom_require"
+            android:paddingLeft="8dp"
+            android:textSize="16sp"
+            android:background="#FFFFFF"
+            android:gravity="center_vertical"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:textColor="#666666"
+            android:text="另计费项："
+            android:id="@+id/tv_commit_goods_other_money"
+            android:paddingLeft="8dp"
+            android:textSize="16sp"
+            android:background="#FFFFFF"
+            android:gravity="center_vertical"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:textColor="#666666"
+            android:text="备  注："
+            android:id="@+id/tv_commit_goods_tip"
+            android:paddingLeft="8dp"
+            android:layout_marginBottom="8dp"
+            android:lineSpacingMultiplier="1.5"
+            android:textSize="16sp"
+            android:background="#FFFFFF"
+            android:gravity="center_vertical"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="#FFFFFF"
+            android:layout_marginTop="8dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textColor="#E4393C"
+                android:text="￥2000"
+                android:gravity="center_vertical"
+                android:textStyle="bold"
+                android:id="@+id/tv_bottom_money"
+                android:layout_marginRight="8dp"
+                android:layout_alignParentRight="true"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:textColor="#666666"
+                android:text="实付预约金额："
+                android:layout_toLeftOf="@+id/tv_bottom_money"
+                android:paddingLeft="8dp"
+                android:textSize="14sp"
+                android:background="#FFFFFF"
+                android:gravity="center_vertical"/>
+
+        </RelativeLayout>
+
+        <!--<Button
+            android:id="@+id/btn_commit_ok"
+            android:layout_width="match_parent"
+            android:layout_height="42dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="56dp"
+            android:text="确认提交"
+            android:textSize="16sp"
+            android:background="@drawable/loginbtn_shape"
+            android:textColor="#ffffff"/>-->
+
+    </LinearLayout>
+
+</android.support.v4.widget.NestedScrollView>

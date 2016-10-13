@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="120dp"
+    android:clickable="true"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:layout_margin="3dp"
+    android:elevation="5dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:layout_weight="4"
+            android:scaleType="fitXY"
+            android:id="@+id/iv_pro_show"
+            android:layout_marginLeft="4dp"/>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:layout_weight="6"
+            android:layout_marginLeft="6dp"
+            android:layout_marginRight="4dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:id="@+id/tv_pro_title"
+                android:gravity="center_vertical"
+                android:textSize="16sp"
+                android:text="精英悦厨_丝丽卡B"
+                android:layout_alignParentTop="true"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:id="@+id/tv_pro_ordercount"
+                android:gravity="center_vertical"
+                android:textSize="12sp"
+                android:textColor="#999999"
+                android:text="已预约75次"
+                android:layout_alignParentBottom="true"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:id="@+id/tv_pro_commentcount"
+                android:gravity="center_vertical"
+                android:textSize="12sp"
+                android:text="12人评价"
+                android:textColor="#E4393C"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"/>
+
+
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+</android.support.v7.widget.CardView>

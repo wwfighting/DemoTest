@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:gravity="center"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <include
+        layout="@layout/loading_layout" />
+
+    <com.ww.administrator.demotest.AutoHeightListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:divider="#00000000"
+        android:dividerHeight="0dp"
+        android:background="#FFFFFF"
+        android:visibility="gone"
+        android:listSelector="@android:color/transparent"
+        android:id="@+id/lv_detail"/>
+
+
+</RelativeLayout>

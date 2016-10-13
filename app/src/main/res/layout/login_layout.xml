@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <include
+            layout="@layout/head_layout" />
+
+    </android.support.design.widget.AppBarLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="140dp"
+                android:layout_marginTop="?attr/actionBarSize"
+                android:id="@+id/re_top">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:orientation="vertical">
+                    <android.support.v7.widget.CardView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        app:cardCornerRadius="5dp"
+                        app:cardElevation="12dp">
+                        <ImageView
+                            android:id="@+id/iv_logo"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:src="@mipmap/logo"/>
+                    </android.support.v7.widget.CardView>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tv_appname"
+                        android:layout_marginTop="8dp"
+                        android:gravity="center"
+                        android:text="家瓦商城"
+                        android:textSize="12sp"
+                        android:textColor="@color/day_colorPrimary"
+                        />
+                </LinearLayout>
+
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_marginTop="40dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:layout_below="@id/re_top"
+                >
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/txtinput_username">
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/edit_username"
+                        android:maxLength="11"
+                        android:inputType="phone"
+                        android:hint="输入用户名"/>
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/txtinput_password">
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/edit_password"
+                        android:hint="输入密码"
+                        android:maxLength="20"
+                        android:inputType="textPassword"
+                        android:layout_marginTop="5dp"/>
+
+                </android.support.design.widget.TextInputLayout>
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/btn_login"
+                    android:layout_width="match_parent"
+                    android:layout_height="42dp"
+                    android:layout_marginTop="16dp"
+                    android:text="登  录"
+                    android:textSize="16sp"
+                    android:background="@drawable/loginbtn_shape"
+                    android:textColor="#ffffff"/>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp">
+
+                    <android.support.v7.widget.AppCompatCheckBox
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="记住用户名"
+                        android:id="@+id/chb_remname"
+                        android:layout_centerVertical="true"
+                        android:textColor="#736f6f"
+                        android:gravity="center"/>
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="忘记密码？"
+                        android:layout_alignParentRight="true"
+                        android:textSize="16sp"
+                        android:layout_marginRight="8dp"
+                        android:gravity="center"
+                        android:layout_centerVertical="true"
+                        android:id="@+id/txt_forgetpwd"
+                        android:layout_marginTop="15dp"
+                        android:textColor="#FF5252"/>
+                </RelativeLayout>
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/btn_toreg"
+                    android:layout_width="56dp"
+                    android:layout_height="32dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="8dp"
+                    android:text="注  册"
+                    android:textSize="14sp"
+                    android:background="@drawable/registerbtn_shape"
+                    android:textColor="#ff5252"/>
+
+            </LinearLayout>
+
+            <include
+                layout="@layout/loading_layout" />
+
+        </LinearLayout>
+
+    </ScrollView>
+</android.support.design.widget.CoordinatorLayout>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="32dp"
+    android:id="@+id/tv_lib_title"
+    android:padding="16dp"
+    android:text="家瓦商城APP感谢以下 Awsome Libs"
+    android:textSize="18sp">
+
+</TextView>

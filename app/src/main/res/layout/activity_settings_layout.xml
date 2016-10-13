@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        layout="@layout/head_layout" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/rl_changepwd"
+        android:clickable="true"
+        android:background="@drawable/background_selector">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:text="修改密码"
+            android:drawableLeft="@drawable/ic_lock_outline_24dp"
+            android:textSize="@dimen/txt_my_title"
+            android:paddingLeft="16dp"
+            android:textColor="@color/day_primaryTextColor"
+            android:drawablePadding="6dp"
+            android:gravity="center_vertical"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:layout_alignParentRight="true"
+            android:gravity="center_vertical"
+            android:textColor="@color/nextColor"
+            android:drawableRight="@drawable/next_small"
+            android:paddingRight="15dp"
+            android:drawablePadding="5dp"/>
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/textLine"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:clickable="true"
+        android:id="@+id/rl_clearcache"
+        android:background="@drawable/background_selector">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="清理缓存"
+                android:drawableLeft="@drawable/ic_clearcache_24dp"
+                android:drawablePadding="8dp"
+                android:layout_marginLeft="16dp"
+                android:textColor="@color/day_primaryTextColor"
+                android:layout_centerVertical="true"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_cache"
+                android:textSize="14sp"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/tv_next"
+                android:layout_marginRight="8dp"
+                android:textColor="#bcb7b7"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_alignParentRight="true"
+                android:gravity="center_vertical"
+                android:id="@+id/tv_next"
+                android:textColor="@color/nextColor"
+                android:drawableRight="@drawable/next_small"
+                android:paddingRight="15dp"
+                android:drawablePadding="5dp"/>
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/textLine"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/rl_exit"
+        android:clickable="true"
+        android:background="@drawable/background_selector">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:text="退出"
+            android:drawableLeft="@drawable/ic_exit_to_app_24dp"
+            android:textSize="@dimen/txt_my_title"
+            android:paddingLeft="16dp"
+            android:textColor="@color/day_primaryTextColor"
+            android:drawablePadding="6dp"
+            android:gravity="center_vertical"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:layout_alignParentRight="true"
+            android:gravity="center_vertical"
+            android:textColor="@color/nextColor"
+            android:drawableRight="@drawable/next_small"
+            android:paddingRight="15dp"
+            android:drawablePadding="5dp"/>
+    </RelativeLayout>
+</LinearLayout>
