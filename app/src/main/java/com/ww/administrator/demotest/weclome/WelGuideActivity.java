@@ -23,6 +23,7 @@ public class WelGuideActivity extends AppCompatActivity {
         initViews();
     }
 
+    //初始化视图
     private void initViews() {
         mvpGuide = (ViewPager) findViewById(R.id.viewpager);
         mTab = (SmartTabLayout) findViewById(R.id.viewpagertab);
