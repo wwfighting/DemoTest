@@ -5,9 +5,11 @@ package com.ww.administrator.demotest.util;
  */
 public class Constants {
 
-    public static final String BASE_URL = "http://192.168.1.54/test/jvawa/";
+    //api
+    public static final String BASE_URL = "http://192.168.1.89/test/jvawa/";
     public static final String BASE_IMG_URL= "http://www.jvawa.com/";
 
+    //file
     public static final String SD_ROOT = FileUtil.getRoot("/Jvawa/");
     public static final String SD_TMP = FileUtil.GetFolder(SD_ROOT + "/temp/");
     public static final String SD_NODE = ToolsUtil.GetFolder(SD_ROOT + "/node/");
@@ -15,6 +17,7 @@ public class Constants {
     public static final String SD_DBINTENT = SD_TMP + "/intent";
     public static final String SD_TEMPIMG = SD_TMP + "temp.png";
 
+    //refresh
     public static final String SHOPPING_CART_REFRESH = "SHOPPING_CART_REFRESH";
     public static final String MY_REFRESH = "MY_REFRESH";
     public static final String ADDRESS_REFRESH = "ADDRESS_REFRESH";

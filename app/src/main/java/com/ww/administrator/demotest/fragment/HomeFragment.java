@@ -3,6 +3,8 @@ package com.ww.administrator.demotest.fragment;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,8 +20,10 @@ import android.view.ViewGroup;
 import com.bigkoo.convenientbanner.ConvenientBanner;
 import com.bigkoo.convenientbanner.holder.CBViewHolderCreator;
 import com.bigkoo.convenientbanner.listener.OnItemClickListener;
+import com.facebook.stetho.okhttp.StethoInterceptor;
 import com.google.gson.Gson;
 import com.pnikosis.materialishprogress.ProgressWheel;
+import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
 import com.ww.administrator.demotest.AboutActivity;
 import com.ww.administrator.demotest.BannerConActivity;
@@ -33,8 +37,11 @@ import com.ww.administrator.demotest.model.GoodsInfo;
 import com.ww.administrator.demotest.util.Constants;
 import com.ww.administrator.demotest.util.HttpUtil;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.Response;
 
 
 /**
@@ -118,6 +125,7 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
      * 得到新品推荐
      */
     private void getNewGoods(){
+
         HttpUtil.postAsyn(Constants.BASE_URL + "index_goods.php", new HttpUtil.ResultCallback<String>() {
             @Override
             public void onError(Request request, Exception e) {
@@ -268,6 +276,7 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
      * 得到Banner信息
      */
     public void getBanner(){
+
         HttpUtil.postAsyn(Constants.BASE_URL + "index_banner.php", new HttpUtil.ResultCallback<String>() {
             @Override
             public void onError(Request request, Exception e) {
@@ -312,4 +321,5 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
 
         refreshLayout.setRefreshing(false);
     }
+
 }

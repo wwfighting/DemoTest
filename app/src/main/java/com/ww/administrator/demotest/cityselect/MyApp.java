@@ -22,7 +22,7 @@ public class MyApp extends Application{
     private DBManager dbHelper;
 
     User mUser;
-
+    
     @Override
     public void onCreate() {
         super.onCreate();
@@ -33,7 +33,13 @@ public class MyApp extends Application{
         dbHelper.openDatabase();
 //      dbHelper.closeDatabase();
         //初始化Stetho
-        Stetho.initializeWithDefaults(this);
+        Stetho.initialize(
+                Stetho.newInitializerBuilder(this)
+                        .enableDumpapp(
+                                Stetho.defaultDumperPluginsProvider(this))
+                        .enableWebKitInspector(
+                                Stetho.defaultInspectorModulesProvider(this))
+                        .build());
 
         //初始化二维码扫描库
         ZXingLibrary.initDisplayOpinion(this);

@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.widget.ImageView;
 
+import com.facebook.stetho.okhttp.StethoInterceptor;
 import com.google.gson.Gson;
 import com.google.gson.internal.$Gson$Types;
 import com.squareup.okhttp.Call;
@@ -47,7 +48,9 @@ public class HttpUtil {
 
     private HttpUtil()
     {
+
         mOkHttpClient = new OkHttpClient();
+        mOkHttpClient.networkInterceptors().add(new StethoInterceptor());
         //cookie enabled
         mOkHttpClient.setCookieHandler(new CookieManager(null, CookiePolicy.ACCEPT_ORIGINAL_SERVER));
         mDelivery = new Handler(Looper.getMainLooper());
