@@ -27,7 +27,7 @@ public class WelGuideActivity extends AppCompatActivity {
     private void initViews() {
         mvpGuide = (ViewPager) findViewById(R.id.viewpager);
         mTab = (SmartTabLayout) findViewById(R.id.viewpagertab);
-
+        //设置adapter
         mvpGuide.setAdapter(new GuideAdapter(this));
         mTab.setViewPager(mvpGuide);
     }
