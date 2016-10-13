@@ -47,14 +47,16 @@ public class WelStartActivity extends AppCompatActivity {
         decorView.setSystemUiVisibility(uiOptions);
     }
 
+    //使用Glide加载gif图片
     private void showGIF(){
-        //使用Glide加载gif图片
+
         Glide.with(WelStartActivity.this)
                 .load("file:///android_asset/gif/loading0.gif")
                 .crossFade()
                 .into(mivWel);
     }
 
+    //定义TimerTask
     class WelTask extends TimerTask {
         @Override
         public void run() {
