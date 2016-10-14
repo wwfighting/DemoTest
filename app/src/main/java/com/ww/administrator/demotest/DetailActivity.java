@@ -227,6 +227,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
             @Override
             public void onResponse(String response) {
+
                 mInfo = mGson.fromJson(response, GoodsDetailInfo.class);
                 if (mInfo.getCode().equals("200")) {
                     strGoodsDetailInfo = response;

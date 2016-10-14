@@ -27,6 +27,7 @@ public class ProductListActivity extends AppCompatActivity {
 
     private String mIsRecom;
     private String mKeyName;
+    private String mclassId = "";
 
     ProductListInfo mList;
 
@@ -47,13 +48,20 @@ public class ProductListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_productlist);
         initParams();
         initViews();
-        loadDatas();
+        if (mclassId.equals("")){
+            loadDatas();
+        }else {
+            loadDatas(mclassId);
+        }
+
         refreshDatas();
     }
 
     private void initParams(){
         mIsRecom = getIntent().getStringExtra("isRecom");
         mKeyName = getIntent().getStringExtra("keyName");
+        mclassId = getIntent().getStringExtra("classId");
+
         if (mKeyName == null){
             mKeyName = "";
         }
@@ -108,9 +116,7 @@ public class ProductListActivity extends AppCompatActivity {
                 mSrlProList.setVisibility(View.VISIBLE);
                 mFabPro.setVisibility(View.VISIBLE);
                 mpbPro.setVisibility(View.GONE);
-                System.out.println("=======================");
-                System.out.println(response.toString());
-                System.out.println("=======================");
+
                 mList = mGson.fromJson(response, ProductListInfo.class);
                 mAdapter = new ProductListAdapter(ProductListActivity.this, mList);
                 RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(ProductListActivity.this, LinearLayoutManager.VERTICAL, false);
@@ -123,11 +129,45 @@ public class ProductListActivity extends AppCompatActivity {
         });
     }
 
+    private void loadDatas(String classId){
+        HttpUtil.postAsyn(Constants.BASE_URL + "product_list.php", new HttpUtil.ResultCallback<String>() {
+            @Override
+            public void onError(Request request, Exception e) {
+
+            }
+
+            @Override
+            public void onResponse(String response) {
+
+                mSrlProList.setVisibility(View.VISIBLE);
+                mFabPro.setVisibility(View.VISIBLE);
+                mpbPro.setVisibility(View.GONE);
+
+
+                System.out.println("============");
+                System.out.println(response.toString());
+                System.out.println("============");
+                mList = mGson.fromJson(response, ProductListInfo.class);
+                mAdapter = new ProductListAdapter(ProductListActivity.this, mList);
+                RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(ProductListActivity.this, LinearLayoutManager.VERTICAL, false);
+                mRvProList.setLayoutManager(layoutManager);
+                mRvProList.setAdapter(mAdapter);
+            }
+        }, new HttpUtil.Param[]{
+                new HttpUtil.Param("gid", classId)
+        });
+    }
+
     public void refreshDatas(){
         mSrlProList.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                loadDatas();
+                if (mclassId.equals("")){
+                    loadDatas();
+                }else {
+                    loadDatas(mclassId);
+                }
+
                 mSrlProList.setRefreshing(false);
             }
         });

@@ -69,6 +69,7 @@ public class HomeGoodsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         //跳到物品列表页面
                         Intent intent = new Intent();
                         intent.setClass(mContext, ProductListActivity.class);
+                        intent.putExtra("classId", mGoodsInfo.getData().get(position).getClassifyid());
                         intent.putExtra("keyName", mGoodsInfo.getData().get(position).getGoodsname());
                         intent.putExtra("isRecom", "-1");
                         mContext.startActivity(intent);
