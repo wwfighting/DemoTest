@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,7 @@ import com.ww.administrator.demotest.ProductListActivity;
 import com.ww.administrator.demotest.R;
 import com.ww.administrator.demotest.model.GoodsInfo;
 import com.ww.administrator.demotest.util.TextUtil;
+import com.ww.administrator.demotest.util.ToolsUtil;
 
 /**
  * Created by Administrator on 2016/8/25.
@@ -78,10 +80,15 @@ public class HomeGoodsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         Intent intent = new Intent();
                         intent.setClass(mContext, DetailActivity.class);
                         intent.putExtra("gid", mGoodsInfo.getData().get(position).getId());
-                        View sharedView = ((GoodsContentHolder) holder).mIvGoodsPic;
-                        String transitionName = "detail";
-                        ActivityOptions transitionActivityOptions = ActivityOptions.makeSceneTransitionAnimation((Activity)mContext, sharedView, transitionName);
-                        mContext.startActivity(intent, transitionActivityOptions.toBundle());
+                        if (ToolsUtil.GetVersionSDK() < Build.VERSION_CODES.LOLLIPOP){
+                            mContext.startActivity(intent);
+                        }else {
+                            View sharedView = ((GoodsContentHolder) holder).mIvGoodsPic;
+                            String transitionName = "detail";
+                            ActivityOptions transitionActivityOptions = ActivityOptions.makeSceneTransitionAnimation((Activity)mContext, sharedView, transitionName);
+                            mContext.startActivity(intent, transitionActivityOptions.toBundle());
+                        }
+
                     }
 
                 }
