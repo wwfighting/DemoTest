@@ -20,6 +20,9 @@ import com.ww.administrator.demotest.model.ProductListInfo;
 import com.ww.administrator.demotest.util.Constants;
 import com.ww.administrator.demotest.util.HttpUtil;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Created by Administrator on 2016/8/27.
  */
@@ -62,6 +65,9 @@ public class ProductListActivity extends AppCompatActivity {
         mKeyName = getIntent().getStringExtra("keyName");
         mclassId = getIntent().getStringExtra("classId");
 
+        if (mclassId == null){
+            mclassId = "";
+        }
         if (mKeyName == null){
             mKeyName = "";
         }
@@ -117,11 +123,26 @@ public class ProductListActivity extends AppCompatActivity {
                 mFabPro.setVisibility(View.VISIBLE);
                 mpbPro.setVisibility(View.GONE);
 
-                mList = mGson.fromJson(response, ProductListInfo.class);
-                mAdapter = new ProductListAdapter(ProductListActivity.this, mList);
-                RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(ProductListActivity.this, LinearLayoutManager.VERTICAL, false);
-                mRvProList.setLayoutManager(layoutManager);
-                mRvProList.setAdapter(mAdapter);
+                try{
+                    JSONObject jsonRoot = new JSONObject(response);
+                    String strCode = jsonRoot.getString("code");
+                    if (strCode.equals("200")){
+                        mList = mGson.fromJson(response, ProductListInfo.class);
+                        mAdapter = new ProductListAdapter(ProductListActivity.this, mList);
+                        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(ProductListActivity.this, LinearLayoutManager.VERTICAL, false);
+                        mRvProList.setLayoutManager(layoutManager);
+                        mRvProList.setAdapter(mAdapter);
+                    }else {
+                        mList = new ProductListInfo();
+                        mAdapter = new ProductListAdapter(ProductListActivity.this, mList);
+                        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(ProductListActivity.this, LinearLayoutManager.VERTICAL, false);
+                        mRvProList.setLayoutManager(layoutManager);
+                        mRvProList.setAdapter(mAdapter);
+                    }
+                }catch (JSONException e){
+                    e.printStackTrace();
+                }
+
             }
         }, new HttpUtil.Param[]{
                 new HttpUtil.Param("isrecom", mIsRecom),
@@ -143,10 +164,6 @@ public class ProductListActivity extends AppCompatActivity {
                 mFabPro.setVisibility(View.VISIBLE);
                 mpbPro.setVisibility(View.GONE);
 
-
-                System.out.println("============");
-                System.out.println(response.toString());
-                System.out.println("============");
                 mList = mGson.fromJson(response, ProductListInfo.class);
                 mAdapter = new ProductListAdapter(ProductListActivity.this, mList);
                 RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(ProductListActivity.this, LinearLayoutManager.VERTICAL, false);
