@@ -11,7 +11,7 @@
         android:id="@+id/abl_commit"
         android:fitsSystemWindows="true"
         android:background="#FFFFFF"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        android:theme="@style/ThemeOverlay.AppCompat.Light">
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:layout_width="match_parent"
@@ -63,7 +63,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:clickable="true"
-        android:src="@drawable/ic_file_upload_24dp"
+        android:src="@drawable/ic_send_24dp"
         app:borderWidth="0dp"
         app:layout_anchor="@id/abl_commit"
         app:layout_anchorGravity="bottom|right|end" />
