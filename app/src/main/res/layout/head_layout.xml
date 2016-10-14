@@ -8,6 +8,6 @@
     android:background="@color/day_colorPrimary"
     android:outlineProvider="none"
     style="@android:style/ThemeOverlay.Material.Light"
-    app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+    app:theme="@style/ThemeOverlay.AppCompat.Light"
     app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
     app:layout_scrollFlags="scroll|enterAlways"/>
