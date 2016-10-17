@@ -9,7 +9,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -59,6 +58,8 @@ public class CommitOrderActivity extends AppCompatActivity implements View.OnCli
     String mDoorId = "";   //门型Id
     String mColorId = "";   //颜色Id
     String mTaimianId = "";   //台面Id
+    String mishu1 = ""; //吊柜米数
+    String mishu2 = ""; //地柜米数
 
     String[] strInfo;
 
@@ -105,6 +106,7 @@ public class CommitOrderActivity extends AppCompatActivity implements View.OnCli
         msalerNo = getIntent().getExtras().getString("salerNo").substring(2);
         mcity = getIntent().getExtras().getString("city");
 
+        //橱柜参数
         if (morderMode == 200){
             mDoorId = getIntent().getExtras().getString("doorid");
             mColorId = getIntent().getExtras().getString("colorid");
@@ -112,6 +114,8 @@ public class CommitOrderActivity extends AppCompatActivity implements View.OnCli
             strDoor = getIntent().getExtras().getString("door");
             strColor = getIntent().getExtras().getString("color");
             strTaimian = getIntent().getExtras().getString("taimian");
+            mishu1 = getIntent().getExtras().getString("mishu1");
+            mishu2 = getIntent().getExtras().getString("mishu2");
         }
 
     }
@@ -157,9 +161,10 @@ public class CommitOrderActivity extends AppCompatActivity implements View.OnCli
 
         mtvGoodName.setText(strGoodsName);
 
-        mtvMode.setText("规  格：" + "3米地柜 + 3米台面 + 1米吊柜");
+        mtvMode.setText("规  格：" + mishu2 + "米地柜 + " +  mishu2  + "米台面 + " + mishu1 + "米吊柜");
 
         mtvOrderMoney.setText(strorderMoney);
+        mtvBottomMoney.setText(strorderMoney);
         mtvAllMoney.setText("预约价：" + strallMoney + " 起");
 
         mtvDoor.setText("门  型：" + strDoor);
@@ -176,7 +181,7 @@ public class CommitOrderActivity extends AppCompatActivity implements View.OnCli
     private void initWechatPay(){
         // 如果用到微信支付，在用到微信支付的Activity的onCreate函数里调用以下函数.
         // 第二个参数需要换成你自己的微信AppID.
-       String initInfo = BCPay.initWechatPay(CommitOrderActivity.this, "wxc5f464b3efe72010");
+        String initInfo = BCPay.initWechatPay(CommitOrderActivity.this, "wxc5f464b3efe72010");
         if (initInfo != null) {
             Snackbar.make(mContainer, "微信初始化失败：" + initInfo, Snackbar.LENGTH_LONG).show();
         }
@@ -214,6 +219,10 @@ public class CommitOrderActivity extends AppCompatActivity implements View.OnCli
                     commitMainOrder();  //橱柜订单
                 }
 
+                if (morderMode == 300){
+                    commitHomeOrder();  //全屋订单
+                }
+
             }
         });
 
@@ -242,21 +251,71 @@ public class CommitOrderActivity extends AppCompatActivity implements View.OnCli
     };
 
     /**
+     * 提交全屋订单
+     */
+    private void commitHomeOrder(){
+        HttpUtil.postAsyn(Constants.BASE_URL + "generate_home_order.php", new HttpUtil.ResultCallback<String>() {
+            @Override
+            public void onError(Request request, Exception e) {
+                mpbLoad.setVisibility(View.GONE);
+                mtvLoad.setVisibility(View.VISIBLE);
+                mtvLoad.setText("下单失败！请检查您的网络");
+
+                mHandler.sendEmptyMessageDelayed(DIALOG_DISMISS, 3000);
+            }
+
+            @Override
+            public void onResponse(String response) {
+                System.out.println("================");
+                System.out.println(response.toString());
+                System.out.println("================");
+
+                OrderPartsInfo info = mGson.fromJson(response, OrderPartsInfo.class);
+                if (info.getCode().equals("200")){
+                    mpbLoad.setVisibility(View.GONE);
+                    mtvLoad.setVisibility(View.VISIBLE);
+                    mtvLoad.setText("下单成功，去付款");
+                    //Toast.makeText(CommitOrderActivity.this, ((OrderInfo.T)info.getData()).getAllSchedprice() + "", Toast.LENGTH_LONG).show();
+                    mDialog.getPositiveButton().setVisibility(View.GONE);
+                    mHandler.sendEmptyMessageDelayed(DIALOG_DISMISS, 3000);
+                    Intent intent = new Intent(CommitOrderActivity.this, PayActivity.class);
+                    intent.putExtra("title", ((OrderPartsInfo.T)info.getData()).getGoodsName());
+                    intent.putExtra("ordNum", ((OrderPartsInfo.T)info.getData()).getSuperbillid());
+                    intent.putExtra("payMoney", ((OrderPartsInfo.T)info.getData()).getAllSchedprice());
+                    startActivityForResult(intent, 100);
+                }else {
+                    mpbLoad.setVisibility(View.GONE);
+                    mtvLoad.setVisibility(View.VISIBLE);
+                    mtvLoad.setText(info.getInfo());
+                    mHandler.sendEmptyMessageDelayed(DIALOG_DISMISS, 3000);
+                }
+            }
+        }, new HttpUtil.Param[]{
+                new HttpUtil.Param("uid", uid),
+                new HttpUtil.Param("goodsid", mGid),
+                new HttpUtil.Param("goodsname", strGoodsName),
+                new HttpUtil.Param("billprice", strallMoney.substring(1)),
+                new HttpUtil.Param("schedprice", strorderMoney.substring(1)),
+                new HttpUtil.Param("storeid", mstoreId),
+                new HttpUtil.Param("receivername", strInfo[0]),
+                new HttpUtil.Param("phone", strInfo[1]),
+                new HttpUtil.Param("receiveraddress", strInfo[2]),
+                new HttpUtil.Param("salerno", msalerNo),
+                new HttpUtil.Param("picurl", mimgUrl),
+                new HttpUtil.Param("cityName", mcity),
+                new HttpUtil.Param("color", "android"),
+                new HttpUtil.Param("isperfe", "0"),
+                new HttpUtil.Param("desingerprice", "0")
+        });
+    }
+
+    /**
      * 提交橱柜订单
      * @param
      */
 
     private void commitMainOrder(){
 
-        Log.d("CommitOrder", uid);
-        Log.d("CommitOrder", mGid);
-        Log.d("CommitOrder", strallMoney.substring(1));
-        Log.d("CommitOrder", mstoreId);
-        Log.d("CommitOrder", strInfo[0]);
-        Log.d("CommitOrder", strInfo[1]);
-        Log.d("CommitOrder", strInfo[2]);
-        Log.d("CommitOrder", strGoodsName);
-        Log.d("CommitOrder", msalerNo);
 
         HttpUtil.postAsyn(Constants.BASE_URL + "generate_main_order.php", new HttpUtil.ResultCallback<String>() {
             @Override
@@ -272,10 +331,6 @@ public class CommitOrderActivity extends AppCompatActivity implements View.OnCli
 
             @Override
             public void onResponse(String response) {
-
-                System.out.println("================");
-                System.out.println(response.toString());
-                System.out.println("================");
 
                 OrderInfo info = mGson.fromJson(response, OrderInfo.class);
                 if (info.getCode().equals("200")){
@@ -317,8 +372,8 @@ public class CommitOrderActivity extends AppCompatActivity implements View.OnCli
                 new HttpUtil.Param("num", "1"),
                 new HttpUtil.Param("color", "android"),
                 new HttpUtil.Param("isperfe", "0"),
-                new HttpUtil.Param("mishu1", "1"),
-                new HttpUtil.Param("mishu2", "3"),
+                new HttpUtil.Param("mishu1", mishu1),
+                new HttpUtil.Param("mishu2", mishu2),
                 new HttpUtil.Param("huodongneirong", "无"),
                 new HttpUtil.Param("kehuyaoqiu", "无"),
                 new HttpUtil.Param("lingjifeixiang", "无"),
@@ -343,9 +398,6 @@ public class CommitOrderActivity extends AppCompatActivity implements View.OnCli
 
             @Override
             public void onResponse(String response) {
-                System.out.println("================");
-                System.out.println(response.toString());
-                System.out.println("================");
 
                 OrderPartsInfo info = mGson.fromJson(response, OrderPartsInfo.class);
                 if (info.getCode().equals("200")){
