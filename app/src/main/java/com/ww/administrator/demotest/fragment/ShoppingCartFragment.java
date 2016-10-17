@@ -5,6 +5,7 @@ import android.app.ActivityOptions;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.os.Build;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
@@ -28,6 +29,7 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.pnikosis.materialishprogress.ProgressWheel;
 import com.squareup.okhttp.Request;
+import com.ww.administrator.demotest.About4Acitivity;
 import com.ww.administrator.demotest.AboutActivity;
 import com.ww.administrator.demotest.AddAddressActivity;
 import com.ww.administrator.demotest.BaseFragment;
@@ -49,6 +51,7 @@ import com.ww.administrator.demotest.model.StaffInfo;
 import com.ww.administrator.demotest.model.StoreInfo;
 import com.ww.administrator.demotest.util.Constants;
 import com.ww.administrator.demotest.util.HttpUtil;
+import com.ww.administrator.demotest.util.ToolsUtil;
 
 import me.drakeet.materialdialog.MaterialDialog;
 
@@ -228,19 +231,29 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.menu_search:
-
                         Intent intent = new Intent(getActivity(), SearchActivity.class);
-                        View sharedView = getView().findViewById(R.id.tb_cart).findViewById(R.id.menu_search);
-                        String transitionName = "img_back";
-                        ActivityOptions transitionActivityOptions = ActivityOptions.makeSceneTransitionAnimation(getActivity(), sharedView, transitionName);
-                        getActivity().startActivity(intent, transitionActivityOptions.toBundle());
+                        if (ToolsUtil.GetVersionSDK() < Build.VERSION_CODES.LOLLIPOP) {
+                            startActivity(intent);
+                        }else {
+                            View sharedView = getView().findViewById(R.id.tb_cart).findViewById(R.id.menu_search);
+                            String transitionName = "img_back";
+                            ActivityOptions transitionActivityOptions = ActivityOptions.makeSceneTransitionAnimation(getActivity(), sharedView, transitionName);
+                            startActivity(intent, transitionActivityOptions.toBundle());
+                        }
+
                         return true;
                     /*case R.id.menu_locate:
                         //startActivity(new Intent(getActivity(), LocatCityActivity.class));
                         return true;*/
 
                     case R.id.menu_about:
-                        startActivity(new Intent(getActivity(), AboutActivity.class));
+                        if (ToolsUtil.GetVersionSDK() < Build.VERSION_CODES.LOLLIPOP){
+                            startActivity(new Intent(getActivity(), About4Acitivity.class));
+                        }else {
+
+                            startActivity(new Intent(getActivity(), AboutActivity.class));
+                        }
+
                         return true;
                 }
                 return false;
@@ -251,6 +264,11 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
         msrlCart.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                mPrice = 0.0f;
+                mCount = 0;
+                mtvAllMoney.setText("￥" + mPrice + "");
+                mtvSelCount.setText(mCount + "");
+                mcbAllSelected.setChecked(false);
                 loadDatas();
                 loadAddress();
                 msrlCart.setRefreshing(false);
@@ -503,7 +521,7 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
      */
 
     private void swipItem(){
-        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.RIGHT) {
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
                 return false;
@@ -708,6 +726,10 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
             case R.id.btn_account:
 
                 if (mtvSelCount.getText().equals("0")){
+                    return;
+                }
+                if (mCount > 1){
+                    Snackbar.make(mContainer, "抱歉，目前只能一次结账一样商品！", Snackbar.LENGTH_SHORT).show();
                     return;
                 }
                 //结账

@@ -26,6 +26,7 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.CycleInterpolator;
 import android.view.animation.TranslateAnimation;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -130,6 +131,12 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
     FloatingActionsMenu mfabMenu;
 
+    Button mbtnMinus, mbtnPlus;
+    TextView mtvNum;
+    int orderNum = 1;
+
+    int partMoney = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -168,6 +175,9 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         mcvColor = (CardView) findViewById(R.id.cv_color_container);
         mcvTaimian = (CardView) findViewById(R.id.cv_taimian_container);
         llCountContainer = (LinearLayout) findViewById(R.id.ll_count_container);
+        mbtnMinus = (Button) findViewById(R.id.btn_detail_minus);
+        mbtnPlus = (Button) findViewById(R.id.btn_detail_plus);
+        mtvNum = (TextView) findViewById(R.id.tv_detail_buy_num);
         llCountContainer.setVisibility(View.GONE);
         mCollapsingToolbarLayout.setTitle("商品详情");
         setSupportActionBar(mTbDetail);
@@ -176,6 +186,8 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
         mfabShop.setOnClickListener(this);
         mfabOrder.setOnClickListener(this);
+        mbtnMinus.setOnClickListener(this);
+        mbtnPlus.setOnClickListener(this);
 
         initDialog();
 
@@ -283,9 +295,17 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     private void initMoney(){
         mTvDetailprice.setText("现价：￥" + mInfo.getData().getDetail().getPrice() + "-" + mInfo.getData().getDetail().getPrice1());
         String orgPrice = "原价：￥" + mInfo.getData().getDetail().getPrice_old() + "-" + mInfo.getData().getDetail().getPrice_old1();
+        String orderMoney = "预约金：" + mInfo.getData().getDetail().getOrdermoney();
+        partMoney = Integer.parseInt(mInfo.getData().getDetail().getPrice());
         mTvDetailOrgMoney.setText(TextUtil.setStrSpan(orgPrice));
-        mTvDetailOrderMoney.setText("预约金：" + mInfo.getData().getDetail().getOrdermoney());
+        if (mInfo.getData().getDetail().getSubtitle().equals("配件")){
+            mTvDetailOrderMoney.setText(TextUtil.setStrSpan(orderMoney));
+        }else {
+            mTvDetailOrderMoney.setText(orderMoney);
+
+        }
         mTvDetailOrderCount.setText(mInfo.getData().getDetail().getOrdercount() + "人预约");
+
     }
 
     private void initSpecMode(){
@@ -320,10 +340,10 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
             @Override
             public void OnItemClick(View view, int position) {
                 ivColorSelected = (ImageView) view.findViewById(R.id.iv_detail_img);
-                ivColorSelected.setBackground(getDrawable(R.drawable.iv_background_shape));
+                ivColorSelected.setBackground(getResources().getDrawable(R.drawable.iv_background_shape));
                 if (mColorCurrentPos != position) {
                     if (ivColorCurrent != null) {
-                        ivColorCurrent.setBackground(getDrawable(R.drawable.iv_background_shape_normal));
+                        ivColorCurrent.setBackground(getResources().getDrawable(R.drawable.iv_background_shape_normal));
                     }
                 }
                 mColorCurrentPos = position;
@@ -348,10 +368,10 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
             @Override
             public void OnItemClick(View view, int position) {
                 ivTaimianSelected = (ImageView) view.findViewById(R.id.iv_detail_img);
-                ivTaimianSelected.setBackground(getDrawable(R.drawable.iv_background_shape));
+                ivTaimianSelected.setBackground(getResources().getDrawable(R.drawable.iv_background_shape));
                 if (mTaimianCurrentPos != position) {
                     if (ivTaimianCurrent != null) {
-                        ivTaimianCurrent.setBackground(getDrawable(R.drawable.iv_background_shape_normal));
+                        ivTaimianCurrent.setBackground(getResources().getDrawable(R.drawable.iv_background_shape_normal));
                     }
                 }
                 mTaimianCurrentPos = position;
@@ -395,6 +415,22 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                     }
                 }
 
+                break;
+
+            //数量减少
+            case R.id.btn_detail_minus:
+                if (orderNum > 1){
+                    orderNum--;
+                    mtvNum.setText(orderNum + "");
+                    mTvDetailprice.setText("现价：￥" + orderNum * partMoney);
+                }
+                break;
+
+            //数量增加
+            case R.id.btn_detail_plus:
+                orderNum++;
+                mtvNum.setText(orderNum + "");
+                mTvDetailprice.setText("现价：￥" + orderNum * partMoney);
                 break;
         }
     }

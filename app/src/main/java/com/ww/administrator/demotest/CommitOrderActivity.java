@@ -266,9 +266,6 @@ public class CommitOrderActivity extends AppCompatActivity implements View.OnCli
 
             @Override
             public void onResponse(String response) {
-                System.out.println("================");
-                System.out.println(response.toString());
-                System.out.println("================");
 
                 OrderPartsInfo info = mGson.fromJson(response, OrderPartsInfo.class);
                 if (info.getCode().equals("200")){

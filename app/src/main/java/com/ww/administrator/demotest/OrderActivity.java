@@ -2,6 +2,7 @@ package com.ww.administrator.demotest;
 
 import android.app.ActivityOptions;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.CoordinatorLayout;
@@ -20,6 +21,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -42,6 +44,7 @@ import com.ww.administrator.demotest.model.StaffInfo;
 import com.ww.administrator.demotest.model.StoreInfo;
 import com.ww.administrator.demotest.util.Constants;
 import com.ww.administrator.demotest.util.HttpUtil;
+import com.ww.administrator.demotest.util.ToolsUtil;
 
 /**
  * Created by Administrator on 2016/9/2.
@@ -122,19 +125,37 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
     String strTaimian = ""; //记录所选台面
     String strTaimianId = ""; //记录所选台面id
     String strStandard = ""; //规格
-    String strorderMoney = "";  //预约金
+    int morderMoney = 2000;  //预约金
     String strallMoney = "";  //预估价
     String strTip = ""; //备注
+    int allMoney;
 
     EditText metTip;
     Button mbtnCommit;
 
     TextView mtvBottomAllMoney, mtvOrderMoney;
 
-    RelativeLayout mrlFloorContainer, mrlHangingContainer;
+    RelativeLayout mrlFloorContainer, mrlHangingContainer, mrlOrderContainer;
     CardView mcvDoorContainer, mcvColorContainer, mcvTaimianContainer;
 
     View lineFloor, lineHanging;
+
+    TextView mtvOrderMinus, mtvOrderPlus, mtvOrderMoneyShow;
+
+    TextView mtvNumMinus, mtvNumPlus, mtvNumCount;
+    TextView mtvFloorMinus, mtvFloorPlus, mtvFloorCount;
+    TextView mtvHangMinus, mtvHangPlus, mtvHangCount;
+
+    TextView mtvLeftBracket, mtvRightBracket;
+    TextView mtvOrderMoneyLabel, mtvOrderMoneyBottom;
+
+    double mFloorMet = 3.0f;
+    double mHangMet = 1.0f;
+
+    LinearLayout mllNumContainer;
+    int orderNum = 1;
+
+    int partMoney = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -154,6 +175,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         mimgUrl = getIntent().getExtras().getString("imgurl");
         mGid = getIntent().getExtras().getString("gid");
         mDetailInfo = mGson.fromJson(getIntent().getExtras().getString("response"), GoodsDetailInfo.class);
+        partMoney = Integer.parseInt(mDetailInfo.getData().getDetail().getPrice());
         if (getIntent().getExtras().getString("storeName") != null){
             mcity = getIntent().getExtras().getString("city");
             mstoreId = getIntent().getExtras().getString("storeId");
@@ -161,13 +183,23 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
             msalerNo = getIntent().getExtras().getString("salerNo");
             mstaffName = getIntent().getExtras().getString("staffName");
         }
+        if (mDetailInfo.getData().getDetail().getSubtitle().equals("全屋定制")){
+            morderMoney = 3000;
+        }
     }
 
     private void initViews() {
         mtbOrder = (Toolbar) findViewById(R.id.tb_order);
         setSupportActionBar(mtbOrder);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        mllNumContainer = (LinearLayout) findViewById(R.id.ll_count_container);
+        mtvLeftBracket = (TextView) findViewById(R.id.tv_order_left_bracket);
+        mtvRightBracket = (TextView) findViewById(R.id.tv_order_right_bracket);
+        mtvOrderMinus = (TextView) findViewById(R.id.tv_order_money_minus);
+        mtvOrderPlus = (TextView) findViewById(R.id.tv_order_money_plus);
+        mtvOrderMoneyShow = (TextView) findViewById(R.id.tv_order_money_show);
+        mtvOrderMoneyLabel = (TextView) findViewById(R.id.tv_order_money_label);
+        mtvOrderMoneyBottom = (TextView) findViewById(R.id.tv_order_money_label_bottom);
         mContainer = (CoordinatorLayout) findViewById(R.id.cdl_container);
         mtvChooseStore = (TextView) findViewById(R.id.tv_choose_store);
         mtvChooseAdd = (TextView) findViewById(R.id.tv_choose_address);
@@ -187,12 +219,25 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         mtvOrderMoney = (TextView) findViewById(R.id.tv_order_money);
         mrlFloorContainer = (RelativeLayout) findViewById(R.id.rl_floor_container);
         mrlHangingContainer = (RelativeLayout) findViewById(R.id.rl_hanging_container);
+        mrlOrderContainer = (RelativeLayout) findViewById(R.id.rl_order_money_container);
         mcvDoorContainer = (CardView) findViewById(R.id.cv_door_container);
         mcvColorContainer = (CardView) findViewById(R.id.cv_color_container);
         mcvTaimianContainer = (CardView) findViewById(R.id.cv_taimian_container);
         mivShow = (ImageView) findViewById(R.id.iv_order_show);
         lineFloor = findViewById(R.id.line_floor);
         lineHanging = findViewById(R.id.line_hanging);
+
+        mtvNumMinus = (TextView) findViewById(R.id.tv_order_count_minus);
+        mtvNumPlus = (TextView) findViewById(R.id.tv_order_count_plus);
+        mtvNumCount = (TextView) findViewById(R.id.tv_detail_buy_num);
+
+        mtvFloorMinus = (TextView) findViewById(R.id.tv_floor_minus);
+        mtvFloorPlus = (TextView) findViewById(R.id.tv_floor_plus);
+        mtvFloorCount = (TextView) findViewById(R.id.tv_floor_count);
+        mtvHangMinus = (TextView) findViewById(R.id.tv_hanging_minus);
+        mtvHangPlus = (TextView) findViewById(R.id.tv_hanging_plus);
+        mtvHangCount = (TextView) findViewById(R.id.tv_hanging_count);
+
         Glide.with(this)
                 .load(mimgUrl)
                 .crossFade()
@@ -202,6 +247,9 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         mtvAllMoney = (TextView) findViewById(R.id.tv_all_money);
         strGoodsName = mDetailInfo.getData().getDetail().getGoodsname();
         mtvTitle.setText(mDetailInfo.getData().getDetail().getGoodsname());
+        allMoney = Integer.valueOf(mDetailInfo.getData().getDetail().getPrice());
+        mtvOrderMoneyShow.setText(mDetailInfo.getData().getDetail().getOrdermoney() + "");
+        mtvOrderMoney.setText("￥" + mDetailInfo.getData().getDetail().getOrdermoney());
         mtvAllMoney.setText("￥" + mDetailInfo.getData().getDetail().getPrice());
         mtvBottomAllMoney.setText("￥" + mDetailInfo.getData().getDetail().getPrice());
         if (!mstoreName.equals("") && !mstaffName.equals("")){
@@ -214,11 +262,23 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
     private void loadDatas(){
 
         if (mDetailInfo.getData().getDetail().getSubtitle().equals("配件")){
+            mllNumContainer.setVisibility(View.VISIBLE);
+            mtvOrderMoneyLabel.setText("支付金额：");
+            mtvOrderMoneyBottom.setText("支付金额：");
+            mtvOrderMoneyShow.setText(partMoney + "");
+            mtvOrderMoney.setText("￥" + partMoney);
+        }
+
+        if (mDetailInfo.getData().getDetail().getSubtitle().equals("配件") || mDetailInfo.getData().getDetail().getSubtitle().equals("全屋定制")){
             mrlFloorContainer.setVisibility(View.GONE);
             mrlHangingContainer.setVisibility(View.GONE);
+            mrlOrderContainer.setVisibility(View.GONE);
             mcvDoorContainer.setVisibility(View.GONE);
             mcvColorContainer.setVisibility(View.GONE);
             mcvTaimianContainer.setVisibility(View.GONE);
+            mtvLeftBracket.setVisibility(View.GONE);
+            mtvRightBracket.setVisibility(View.GONE);
+            mtvBottomAllMoney.setVisibility(View.GONE);
             lineFloor.setVisibility(View.GONE);
             lineHanging.setVisibility(View.GONE);
         }
@@ -228,9 +288,14 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
             mrlHangingContainer.setVisibility(View.VISIBLE);
             mcvDoorContainer.setVisibility(View.VISIBLE);
             mcvColorContainer.setVisibility(View.VISIBLE);
+            mrlOrderContainer.setVisibility(View.VISIBLE);
             mcvTaimianContainer.setVisibility(View.VISIBLE);
+            mtvBottomAllMoney.setVisibility(View.VISIBLE);
+            mtvLeftBracket.setVisibility(View.VISIBLE);
+            mtvRightBracket.setVisibility(View.VISIBLE);
             lineFloor.setVisibility(View.VISIBLE);
             lineHanging.setVisibility(View.VISIBLE);
+            mllNumContainer.setVisibility(View.GONE);
             initDoor();
             initColor();
             initTaimian();
@@ -243,6 +308,13 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         mtvChooseAdd.setOnClickListener(this);
         mtvSendAddress.setOnClickListener(this);
         mbtnCommit.setOnClickListener(this);
+        mtvOrderPlus.setOnClickListener(this);
+        mtvOrderMinus.setOnClickListener(this);
+        mtvFloorMinus.setOnClickListener(this);
+        mtvFloorPlus.setOnClickListener(this);
+        mtvHangMinus.setOnClickListener(this);
+        mtvHangPlus.setOnClickListener(this);
+
     }
 
     private void showBottomStore(){
@@ -430,10 +502,10 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void OnItemClick(View view, int position) {
                 ivDoorSelected = (ImageView) view.findViewById(R.id.iv_detail_img);
-                ivDoorSelected.setBackground(getDrawable(R.drawable.iv_background_shape));
+                ivDoorSelected.setBackground(getResources().getDrawable(R.drawable.iv_background_shape));
                 if (mDoorCurrentPos != position) {
                     if (ivDoorCurrent != null) {
-                        ivDoorCurrent.setBackground(getDrawable(R.drawable.iv_background_shape_normal));
+                        ivDoorCurrent.setBackground(getResources().getDrawable(R.drawable.iv_background_shape_normal));
                     }
                 }
                 mDoorCurrentPos = position;
@@ -461,10 +533,10 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void OnItemClick(View view, int position) {
                 ivColorSelected = (ImageView) view.findViewById(R.id.iv_detail_img);
-                ivColorSelected.setBackground(getDrawable(R.drawable.iv_background_shape));
+                ivColorSelected.setBackground(getResources().getDrawable(R.drawable.iv_background_shape));
                 if (mColorCurrentPos != position) {
                     if (ivColorCurrent != null) {
-                        ivColorCurrent.setBackground(getDrawable(R.drawable.iv_background_shape_normal));
+                        ivColorCurrent.setBackground(getResources().getDrawable(R.drawable.iv_background_shape_normal));
                     }
                 }
                 mColorCurrentPos = position;
@@ -491,10 +563,10 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void OnItemClick(View view, int position) {
                 ivTaimianSelected = (ImageView) view.findViewById(R.id.iv_detail_img);
-                ivTaimianSelected.setBackground(getDrawable(R.drawable.iv_background_shape));
+                ivTaimianSelected.setBackground(getResources().getDrawable(R.drawable.iv_background_shape));
                 if (mTaimianCurrentPos != position) {
                     if (ivTaimianCurrent != null) {
-                        ivTaimianCurrent.setBackground(getDrawable(R.drawable.iv_background_shape_normal));
+                        ivTaimianCurrent.setBackground(getResources().getDrawable(R.drawable.iv_background_shape_normal));
                     }
                 }
                 mTaimianCurrentPos = position;
@@ -604,6 +676,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                 showBottomAddress();
                 break;
             case R.id.btn_order_commit:
+
                 if (mDetailInfo.getData().getDetail().getSubtitle().equals("配件")){
                     submitPartsOrder();
                 }
@@ -612,8 +685,195 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                     submitMainOrder();
                 }
 
+                if (mDetailInfo.getData().getDetail().getSubtitle().equals("全屋定制")){
+                    submitHomeOrder();
+                }
+
+                break;
+            case R.id.tv_order_money_minus:
+                if (mDetailInfo.getData().getDetail().getSubtitle().equals("全屋定制")){
+                    if (morderMoney > 3000){
+                        morderMoney = morderMoney - 1000;
+                    }
+                }else {
+                    if (morderMoney > 2000){
+                        morderMoney = morderMoney - 1000;
+                    }
+                }
+                mtvOrderMoney.setText("￥" + morderMoney);
+                mtvOrderMoneyShow.setText(morderMoney + "");
+
+                break;
+            case R.id.tv_order_money_plus:
+
+                morderMoney = morderMoney + 1000;
+                mtvOrderMoney.setText("￥" + morderMoney);
+                mtvOrderMoneyShow.setText(morderMoney + "");
+                break;
+
+            case R.id.tv_floor_minus:   //地柜至少3m
+                floorMinus();
+
+                break;
+
+            case R.id.tv_floor_plus:
+                floorPlus();
+
+                break;
+
+            case R.id.tv_hanging_minus: //吊柜至少1m
+                hangMinus();
+
+                break;
+
+            case R.id.tv_hanging_plus:
+                hangPlus();
+
+                break;
+
+            case R.id.tv_order_count_minus:
+                if (orderNum > 1){
+                    orderNum--;
+                    mtvNumCount.setText(orderNum + "");
+                    mtvOrderMoneyShow.setText(partMoney * orderNum + "");
+                    mtvOrderMoney.setText("￥" + partMoney * orderNum);
+                }
+                break;
+
+            case R.id.tv_order_count_plus:
+                orderNum++;
+                mtvNumCount.setText(orderNum + "");
+                mtvOrderMoneyShow.setText(partMoney * orderNum + "");
+                mtvOrderMoney.setText("￥" + partMoney * orderNum);
                 break;
         }
+    }
+
+    private void prinrLine(){
+        System.out.println("=============");
+        System.out.println("吊柜米数：" + mtvHangCount.getText().toString() + "米");
+        System.out.println("地柜米数：" + mtvFloorCount.getText().toString() + "米");
+        System.out.println("总金额：" + mtvAllMoney.getText().toString());
+        System.out.println("=============");
+    }
+
+    /**
+     * 减少地柜米数
+     */
+    private void floorMinus(){
+
+        if (mFloorMet > 3 && mFloorMet <= 6){
+            mFloorMet = mFloorMet - 0.5;
+            allMoney = allMoney -1000;
+
+        }else if (mFloorMet > 6 && mFloorMet <= 10){
+            mFloorMet = mFloorMet - 1.0;
+            allMoney = allMoney -2000;
+        }
+
+        mtvFloorCount.setText(mFloorMet + "");
+        mtvAllMoney.setText("￥" + allMoney);
+        mtvBottomAllMoney.setText("￥" + allMoney);
+    }
+    /**
+     * 增加地柜米数
+     */
+    private void floorPlus(){
+
+        if (mFloorMet >= 3 && mFloorMet < 6){
+            mFloorMet = mFloorMet + 0.5;
+            allMoney = allMoney + 1000;
+
+        }else if (mFloorMet >= 6 && mFloorMet < 10){
+            mFloorMet = mFloorMet + 1.0;
+            allMoney = allMoney + 2000;
+        }
+        mtvFloorCount.setText(mFloorMet + "");
+        mtvAllMoney.setText("￥" + allMoney);
+        mtvBottomAllMoney.setText("￥" + allMoney);
+    }
+    /**
+     * 减少吊柜米数
+     */
+    private void hangMinus(){
+
+        if (mHangMet > 1 && mHangMet <= 3){
+            mHangMet = mHangMet - 0.5;
+            allMoney = allMoney - 500;
+
+        }else if (mHangMet > 3 && mHangMet <= 5){
+            mHangMet = mHangMet - 1.0;
+            allMoney = allMoney -1000;
+        }
+
+        mtvHangCount.setText(mHangMet + "");
+        mtvAllMoney.setText("￥" + allMoney);
+        mtvBottomAllMoney.setText("￥" + allMoney);
+    }
+    /**
+     * 增加吊柜米数
+     */
+    private void hangPlus(){
+
+        if (mHangMet >= 1 && mHangMet < 3){
+            mHangMet = mHangMet + 0.5;
+            allMoney = allMoney + 500;
+
+        }else if (mHangMet >= 3 && mHangMet < 5){
+            mHangMet = mHangMet + 1.0;
+            allMoney = allMoney + 1000;
+        }
+        mtvHangCount.setText(mHangMet + "");
+        mtvAllMoney.setText("￥" + allMoney);
+        mtvBottomAllMoney.setText("￥" + allMoney);
+    }
+
+    /**
+     * 提交全屋定制订单
+     */
+    private void submitHomeOrder(){
+
+        if (mstaffName.equals("") || mstoreName.equals("")){
+            showSnackbar("请选择门店导购！");
+            return;
+        }
+
+        if (strReceiverInfo.equals("")){
+            showSnackbar("请填写收货人信息！");
+            return;
+        }
+
+        if (!TextUtils.isEmpty(metTip.getText().toString())){
+            strTip = metTip.getText().toString();
+        }
+
+        //strorderMoney = mtvOrderMoney.getText().toString();
+        strallMoney = mtvAllMoney.getText().toString();
+
+        Intent intent = new Intent(OrderActivity.this, CommitOrderActivity.class);
+        intent.putExtra("ordermode", 300);
+        intent.putExtra("gid", mGid);
+        intent.putExtra("goodsName", strGoodsName);
+        intent.putExtra("imgurl", mimgUrl);
+        intent.putExtra("receiverInfo", strReceiverInfo);
+        intent.putExtra("staffName", mstaffName);
+        intent.putExtra("storeName", mstoreName);
+        intent.putExtra("orderMoney", mtvOrderMoney.getText().toString());
+        intent.putExtra("allMoney", strallMoney);
+        intent.putExtra("tip", strTip);
+        intent.putExtra("storeid", mstoreId);
+        intent.putExtra("salerNo", msalerNo);
+        intent.putExtra("city", mcity);
+
+        if (ToolsUtil.GetVersionSDK() < Build.VERSION_CODES.LOLLIPOP) {
+            startActivity(intent);
+        }else {
+            View sharedView = mivShow;
+            String transitionName = "transview";
+            ActivityOptions transitionActivityOptions = ActivityOptions.makeSceneTransitionAnimation(OrderActivity.this, sharedView, transitionName);
+            startActivityForResult(intent, 100, transitionActivityOptions.toBundle());
+        }
+
     }
 
     /**
@@ -634,7 +894,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
             strTip = metTip.getText().toString();
         }
 
-        strorderMoney = mtvOrderMoney.getText().toString();
+        //strorderMoney = mtvOrderMoney.getText().toString();
         strallMoney = mtvAllMoney.getText().toString();
 
         Intent intent = new Intent(OrderActivity.this, CommitOrderActivity.class);
@@ -645,17 +905,21 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         intent.putExtra("receiverInfo", strReceiverInfo);
         intent.putExtra("staffName", mstaffName);
         intent.putExtra("storeName", mstoreName);
-        intent.putExtra("orderMoney", strorderMoney);
+        intent.putExtra("orderMoney", mtvOrderMoney.getText().toString());
         intent.putExtra("allMoney", strallMoney);
         intent.putExtra("tip", strTip);
         intent.putExtra("storeid", mstoreId);
         intent.putExtra("salerNo", msalerNo);
         intent.putExtra("city", mcity);
-        View sharedView = mivShow;
-        String transitionName = "transview";
-        ActivityOptions transitionActivityOptions = ActivityOptions.makeSceneTransitionAnimation(OrderActivity.this, sharedView, transitionName);
-        startActivityForResult(intent, 100, transitionActivityOptions.toBundle());
 
+        if (ToolsUtil.GetVersionSDK() < Build.VERSION_CODES.LOLLIPOP) {
+            startActivity(intent);
+        }else {
+            View sharedView = mivShow;
+            String transitionName = "transview";
+            ActivityOptions transitionActivityOptions = ActivityOptions.makeSceneTransitionAnimation(OrderActivity.this, sharedView, transitionName);
+            startActivityForResult(intent, 100, transitionActivityOptions.toBundle());
+        }
     }
     /**
      * 提交橱柜订单
@@ -691,7 +955,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
             strTip = metTip.getText().toString();
         }
 
-        strorderMoney = mtvOrderMoney.getText().toString();
+        //strorderMoney = mtvOrderMoney.getText().toString();
         strallMoney = mtvAllMoney.getText().toString();
 
         Intent intent = new Intent(OrderActivity.this, CommitOrderActivity.class);
@@ -706,7 +970,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         intent.putExtra("door", strDoor);
         intent.putExtra("color", strColor);
         intent.putExtra("taimian", strTaimian);
-        intent.putExtra("orderMoney", strorderMoney);
+        intent.putExtra("orderMoney", mtvOrderMoney.getText().toString());
         intent.putExtra("allMoney", strallMoney);
         intent.putExtra("tip", strTip);
         intent.putExtra("storeid", mstoreId);
@@ -714,11 +978,17 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         intent.putExtra("doorid", strDoorId);
         intent.putExtra("colorid", strColorId);
         intent.putExtra("taimianid", strTaimianId);
+        intent.putExtra("mishu1", mtvHangCount.getText().toString());
+        intent.putExtra("mishu2", mtvFloorCount.getText().toString());
         intent.putExtra("city", mcity);
-        View sharedView = mivShow;
-        String transitionName = "transview";
-        ActivityOptions transitionActivityOptions = ActivityOptions.makeSceneTransitionAnimation(OrderActivity.this, sharedView, transitionName);
-        startActivityForResult(intent,100, transitionActivityOptions.toBundle());
+        if (ToolsUtil.GetVersionSDK() < Build.VERSION_CODES.LOLLIPOP) {
+            startActivity(intent);
+        }else {
+            View sharedView = mivShow;
+            String transitionName = "transview";
+            ActivityOptions transitionActivityOptions = ActivityOptions.makeSceneTransitionAnimation(OrderActivity.this, sharedView, transitionName);
+            startActivityForResult(intent,100, transitionActivityOptions.toBundle());
+        }
 
     }
 

@@ -3,7 +3,6 @@ package com.ww.administrator.demotest.cityselect;
 import android.app.Application;
 
 import com.facebook.stetho.Stetho;
-import com.uuzuche.lib_zxing.activity.ZXingLibrary;
 import com.ww.administrator.demotest.cityselect.db.DBManager;
 import com.ww.administrator.demotest.model.User;
 import com.ww.administrator.demotest.util.Constants;
@@ -42,7 +41,7 @@ public class MyApp extends Application{
                         .build());
 
         //初始化二维码扫描库
-        ZXingLibrary.initDisplayOpinion(this);
+        //ZXingLibrary.initDisplayOpinion(this);
 
         //初始化BeeCloud
         BeeCloud.setSandbox(false);

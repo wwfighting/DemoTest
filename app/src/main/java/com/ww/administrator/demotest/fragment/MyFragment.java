@@ -1,6 +1,7 @@
 package com.ww.administrator.demotest.fragment;
 
 import android.content.Intent;
+import android.os.Build;
 import android.support.design.widget.FloatingActionButton;
 import android.text.TextUtils;
 import android.view.View;
@@ -9,7 +10,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.uuzuche.lib_zxing.activity.CaptureActivity;
+import com.ww.administrator.demotest.About4Acitivity;
 import com.ww.administrator.demotest.AboutActivity;
 import com.ww.administrator.demotest.AddressManageActivity;
 import com.ww.administrator.demotest.AllOrderActivity;
@@ -23,6 +24,7 @@ import com.ww.administrator.demotest.cityselect.MyApp;
 import com.ww.administrator.demotest.model.User;
 import com.ww.administrator.demotest.util.CircleTransform;
 import com.ww.administrator.demotest.util.Constants;
+import com.ww.administrator.demotest.util.ToolsUtil;
 
 import me.drakeet.materialdialog.MaterialDialog;
 
@@ -150,9 +152,8 @@ public class MyFragment extends BaseFragment implements View.OnClickListener{
                 if (((MyApp)getActivity().getApplicationContext()).getUser() == null){
                     mTipDialog.show();
                 }else {
-                    Intent qrCode = new Intent(getActivity(), CaptureActivity.class);
-                    startActivityForResult(qrCode, 100);
-
+                    /*Intent qrCode = new Intent(getActivity(), CaptureActivity.class);
+                    startActivityForResult(qrCode, 100);*/
                 }
                 break;
 
@@ -215,8 +216,13 @@ public class MyFragment extends BaseFragment implements View.OnClickListener{
                 break;
 
             case R.id.rl_about: //关于
-                Intent about = new Intent(getActivity(), AboutActivity.class);
-                startActivity(about);
+                if (ToolsUtil.GetVersionSDK() < Build.VERSION_CODES.LOLLIPOP){
+                    startActivity(new Intent(getActivity(), About4Acitivity.class));
+                }else {
+
+                    startActivity(new Intent(getActivity(), AboutActivity.class));
+                }
+
                 break;
         }
     }

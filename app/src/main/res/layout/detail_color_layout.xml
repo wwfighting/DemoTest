@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cv_color_container"
     android:layout_width="match_parent"
-    android:layout_height="120dp"
+    android:layout_height="130dp"
     android:layout_marginTop="16dp"
     app:cardBackgroundColor="#FFFFFF">
     <LinearLayout
@@ -51,7 +51,7 @@
 
                 <android.support.v7.widget.RecyclerView
                     android:layout_width="match_parent"
-                    android:layout_height="70dp"
+                    android:layout_height="80dp"
                     android:id="@+id/rv_detail_color"
                     android:layout_marginLeft="16dp"/>
 

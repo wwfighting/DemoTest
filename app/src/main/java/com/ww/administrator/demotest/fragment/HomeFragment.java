@@ -2,9 +2,8 @@ package com.ww.administrator.demotest.fragment;
 
 import android.app.ActivityOptions;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,11 +19,10 @@ import android.view.ViewGroup;
 import com.bigkoo.convenientbanner.ConvenientBanner;
 import com.bigkoo.convenientbanner.holder.CBViewHolderCreator;
 import com.bigkoo.convenientbanner.listener.OnItemClickListener;
-import com.facebook.stetho.okhttp.StethoInterceptor;
 import com.google.gson.Gson;
 import com.pnikosis.materialishprogress.ProgressWheel;
-import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
+import com.ww.administrator.demotest.About4Acitivity;
 import com.ww.administrator.demotest.AboutActivity;
 import com.ww.administrator.demotest.BannerConActivity;
 import com.ww.administrator.demotest.BaseFragment;
@@ -36,12 +34,11 @@ import com.ww.administrator.demotest.model.BannerInfo;
 import com.ww.administrator.demotest.model.GoodsInfo;
 import com.ww.administrator.demotest.util.Constants;
 import com.ww.administrator.demotest.util.HttpUtil;
+import com.ww.administrator.demotest.util.ToolsUtil;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import okhttp3.Response;
 
 
 /**
@@ -224,19 +221,31 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.menu_search:
-
                         Intent intent = new Intent(getActivity(), SearchActivity.class);
-                        View sharedView = getView().findViewById(R.id.tb_common).findViewById(R.id.menu_search);
-                        String transitionName = "img_back";
-                        ActivityOptions transitionActivityOptions = ActivityOptions.makeSceneTransitionAnimation(getActivity(), sharedView, transitionName);
-                        getActivity().startActivity(intent, transitionActivityOptions.toBundle());
+                        if (ToolsUtil.GetVersionSDK() < Build.VERSION_CODES.LOLLIPOP) {
+                            startActivity(intent);
+                        } else {
+                            View sharedView = getView().findViewById(R.id.tb_common).findViewById(R.id.menu_search);
+                            String transitionName = "img_back";
+                            ActivityOptions transitionActivityOptions = ActivityOptions.makeSceneTransitionAnimation(getActivity(), sharedView, transitionName);
+                            startActivity(intent, transitionActivityOptions.toBundle());
+                        }
+
+
                         return true;
                    /* case R.id.menu_locate:
                         //startActivity(new Intent(getActivity(), LocatCityActivity.class));
                         return true;*/
 
                     case R.id.menu_about:
-                        startActivity(new Intent(getActivity(), AboutActivity.class));
+                       /* startActivity(new Intent(getActivity(), About4Acitivity.class));*/
+                        if (ToolsUtil.GetVersionSDK() < Build.VERSION_CODES.LOLLIPOP){
+                            startActivity(new Intent(getActivity(), About4Acitivity.class));
+                        }else {
+
+                            startActivity(new Intent(getActivity(), AboutActivity.class));
+                        }
+
                         break;
 
                 }

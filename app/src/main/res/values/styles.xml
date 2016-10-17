@@ -33,6 +33,7 @@
              Extend the material dark Action Bar overlay as this contains text styling. -->
     </style>
 
+
     <style name="Widget.Plaid.SearchView" parent="android:style/Widget.Material.SearchView">
         <item name="android:searchIcon">@null</item>
         <item name="android:searchHintIcon">@null</item>

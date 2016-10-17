@@ -62,7 +62,7 @@
 
         <activity android:name=".cityselect.CitySelecterActivity" />
         <activity android:name=".RegisterActivity" />
-        <activity android:name=".SocketTest" />
+
         <activity android:name=".ConnectActivity" />
         <activity android:name=".BannerConActivity" />
         <activity android:name=".ProductListActivity" />
@@ -101,6 +101,8 @@
             android:name=".wxapi.WXPayEntryActivity"
             android:exported="true"
             android:targetActivity="cn.beecloud.BCWechatPaymentActivity" />
+
+        <activity android:name=".About4Acitivity" />
 
     </application>
 

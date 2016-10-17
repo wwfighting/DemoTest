@@ -16,7 +16,7 @@
     <color name="textLine">#B6B6B6</color>
     <color name="selected">#64848181</color>
 
-
+    <color name="transparent">#00000000</color>
     <color name="white">#FFFFFF</color>
     <color name="lightblack">#383434</color>
     <color name="loadblue">#5588FF</color>

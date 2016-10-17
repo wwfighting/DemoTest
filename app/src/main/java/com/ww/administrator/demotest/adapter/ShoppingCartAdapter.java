@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,6 +19,7 @@ import com.ww.administrator.demotest.DetailActivity;
 import com.ww.administrator.demotest.R;
 import com.ww.administrator.demotest.model.ShoppingcartInfo;
 import com.ww.administrator.demotest.util.Constants;
+import com.ww.administrator.demotest.util.ToolsUtil;
 
 /**
  * Created by Administrator on 2016/9/21.
@@ -86,10 +88,15 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     intent.setClass(mContext, DetailActivity.class);
                     intent.putExtra("gid", mInfo.getData().get(position).getId());
                     // mContext.startActivity(intent);
-                    View sharedView = holder.itemView.findViewById(R.id.iv_cart_pro_show);
-                    String transitionName = "detail";
-                    ActivityOptions transitionActivityOptions = ActivityOptions.makeSceneTransitionAnimation((Activity)mContext, sharedView, transitionName);
-                    mContext.startActivity(intent, transitionActivityOptions.toBundle());
+                    if (ToolsUtil.GetVersionSDK() < Build.VERSION_CODES.LOLLIPOP) {
+                        mContext.startActivity(intent);
+                    }else {
+                        View sharedView = holder.itemView.findViewById(R.id.iv_cart_pro_show);
+                        String transitionName = "detail";
+                        ActivityOptions transitionActivityOptions = ActivityOptions.makeSceneTransitionAnimation((Activity)mContext, sharedView, transitionName);
+                        mContext.startActivity(intent, transitionActivityOptions.toBundle());
+                    }
+
                 }
             });
 

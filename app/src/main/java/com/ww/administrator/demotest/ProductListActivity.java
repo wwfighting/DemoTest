@@ -2,6 +2,7 @@ package com.ww.administrator.demotest;
 
 import android.app.ActivityOptions;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -19,6 +20,7 @@ import com.ww.administrator.demotest.adapter.ProductListAdapter;
 import com.ww.administrator.demotest.model.ProductListInfo;
 import com.ww.administrator.demotest.util.Constants;
 import com.ww.administrator.demotest.util.HttpUtil;
+import com.ww.administrator.demotest.util.ToolsUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -98,11 +100,15 @@ public class ProductListActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ProductListActivity.this, SearchActivity.class);
+                if (ToolsUtil.GetVersionSDK() < Build.VERSION_CODES.LOLLIPOP) {
+                    startActivity(intent);
+                }else {
+                    View sharedView = mFabPro;
+                    String transitionName = "transview";
+                    ActivityOptions transitionActivityOptions = ActivityOptions.makeSceneTransitionAnimation(ProductListActivity.this, sharedView, transitionName);
+                    startActivity(intent, transitionActivityOptions.toBundle());
+                }
 
-                View sharedView = mFabPro;
-                String transitionName = "transview";
-                ActivityOptions transitionActivityOptions = ActivityOptions.makeSceneTransitionAnimation(ProductListActivity.this, sharedView, transitionName);
-                startActivity(intent, transitionActivityOptions.toBundle());
             }
         });
 

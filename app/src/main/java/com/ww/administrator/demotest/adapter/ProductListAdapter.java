@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,6 +17,7 @@ import com.bumptech.glide.Glide;
 import com.ww.administrator.demotest.DetailActivity;
 import com.ww.administrator.demotest.R;
 import com.ww.administrator.demotest.model.ProductListInfo;
+import com.ww.administrator.demotest.util.ToolsUtil;
 
 /**
  * Created by Administrator on 2016/8/27.
@@ -64,17 +66,21 @@ public class ProductListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    System.out.println("ProductList页点击的商品ID=========================");
-                    System.out.println(mList.getData().get(position - 1).getId() + "");
-                    //将物品ID通过intent对象传值到详细页面
+
                     Intent intent = new Intent();
                     intent.setClass(mContext, DetailActivity.class);
                     intent.putExtra("gid", mList.getData().get(position - 1).getId());
-                    // mContext.startActivity(intent);
-                    View sharedView = holder.itemView.findViewById(R.id.iv_pro_show);
-                    String transitionName = "detail";
-                    ActivityOptions transitionActivityOptions = ActivityOptions.makeSceneTransitionAnimation((Activity)mContext, sharedView, transitionName);
-                    mContext.startActivity(intent, transitionActivityOptions.toBundle());
+                    //将物品ID通过intent对象传值到详细页面
+                    if (ToolsUtil.GetVersionSDK() < Build.VERSION_CODES.LOLLIPOP){
+                        mContext.startActivity(intent);
+                    }else {
+                        View sharedView = holder.itemView.findViewById(R.id.iv_pro_show);
+                        String transitionName = "detail";
+                        ActivityOptions transitionActivityOptions = ActivityOptions.makeSceneTransitionAnimation((Activity)mContext, sharedView, transitionName);
+                        mContext.startActivity(intent, transitionActivityOptions.toBundle());
+                    }
+
+
                 }
             });
         }

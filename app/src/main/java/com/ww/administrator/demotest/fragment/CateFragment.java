@@ -2,6 +2,7 @@ package com.ww.administrator.demotest.fragment;
 
 import android.app.ActivityOptions;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 
 import com.pnikosis.materialishprogress.ProgressWheel;
 import com.squareup.okhttp.Request;
+import com.ww.administrator.demotest.About4Acitivity;
 import com.ww.administrator.demotest.AboutActivity;
 import com.ww.administrator.demotest.BaseFragment;
 import com.ww.administrator.demotest.R;
@@ -26,6 +28,7 @@ import com.ww.administrator.demotest.model.CateInfo;
 import com.ww.administrator.demotest.model.ProductListInfo;
 import com.ww.administrator.demotest.util.Constants;
 import com.ww.administrator.demotest.util.HttpUtil;
+import com.ww.administrator.demotest.util.ToolsUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -82,17 +85,29 @@ public class CateFragment extends BaseFragment {
                     case R.id.menu_search:
 
                         Intent intent = new Intent(getActivity(), SearchActivity.class);
-                        View sharedView = getView().findViewById(R.id.tb_common).findViewById(R.id.menu_search);
-                        String transitionName = "img_back";
-                        ActivityOptions transitionActivityOptions = ActivityOptions.makeSceneTransitionAnimation(getActivity(), sharedView, transitionName);
-                        getActivity().startActivity(intent, transitionActivityOptions.toBundle());
+                        if (ToolsUtil.GetVersionSDK() < Build.VERSION_CODES.LOLLIPOP) {
+                            startActivity(intent);
+                        }else {
+                            View sharedView = getView().findViewById(R.id.tb_common).findViewById(R.id.menu_search);
+                            String transitionName = "img_back";
+                            ActivityOptions transitionActivityOptions = ActivityOptions.makeSceneTransitionAnimation(getActivity(), sharedView, transitionName);
+                            startActivity(intent, transitionActivityOptions.toBundle());
+                        }
+
+
                         return true;
                     /*case R.id.menu_locate:
                         //startActivity(new Intent(getActivity(), LocatCityActivity.class));
                         return true;*/
 
                     case R.id.menu_about:
-                        startActivity(new Intent(getActivity(), AboutActivity.class));
+                        if (ToolsUtil.GetVersionSDK() < Build.VERSION_CODES.LOLLIPOP){
+                            startActivity(new Intent(getActivity(), About4Acitivity.class));
+                        }else {
+
+                            startActivity(new Intent(getActivity(), AboutActivity.class));
+                        }
+
                         return true;
                 }
                 return false;
@@ -116,7 +131,6 @@ public class CateFragment extends BaseFragment {
     protected void doBusiness() {
         loadDatas();
         //ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(), R.layout.view_row, R.id.header_text, array);
-
     }
 
 
@@ -184,6 +198,7 @@ public class CateFragment extends BaseFragment {
      * @param gid
      */
     private void loadContentDatas(String gid){
+
         HttpUtil.postAsyn(Constants.BASE_URL + "product_list.php", new HttpUtil.ResultCallback<ProductListInfo>() {
             @Override
             public void onError(Request request, Exception e) {
@@ -229,13 +244,7 @@ public class CateFragment extends BaseFragment {
         }
 
         return super.onOptionsItemSelected(item);
-        /*switch (item.getItemId()){
-            case R.id.menu_search:
-                startActivity(new Intent(getActivity(), SearchActivity.class));
-                return true;
-        }
 
-        return super.onOptionsItemSelected(item);*/
     }
 
 

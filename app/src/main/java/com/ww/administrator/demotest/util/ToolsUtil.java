@@ -1,5 +1,6 @@
 package com.ww.administrator.demotest.util;
 
+import android.os.Build;
 import android.os.Environment;
 
 import java.io.File;
@@ -33,5 +34,19 @@ public class ToolsUtil {
 
         new File(strFolder).mkdir();
         return strFolder;
+    }
+
+    /**
+     * 获得手机sdk版本
+     * @return
+     */
+    public static int GetVersionSDK(){
+        int version = 0;
+        try {
+            version = Build.VERSION.SDK_INT;
+        } catch (NumberFormatException e) {
+
+        }
+        return version;
     }
 }
