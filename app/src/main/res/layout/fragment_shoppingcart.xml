@@ -166,6 +166,7 @@
             android:layout_centerVertical="true"
             android:gravity="center"
             android:text="删除"
+            android:visibility="gone"
             android:layout_toRightOf="@+id/cb_cart_selected"
             android:layout_margin="8dp"
             android:textColor="#666666"

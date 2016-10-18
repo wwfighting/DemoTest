@@ -189,6 +189,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         if (mDetailInfo.getData().getDetail().getSubtitle().equals("全屋定制")){
             morderMoney = 3000;
         }
+
     }
 
     private void initViews() {
@@ -489,6 +490,11 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
 
     }
 
+    /**
+     * 筛选出默认地址，没有就默认第一个地址为默认地址
+     * @param info
+     * @return
+     */
     private DefaultAddress hasDefault(AddressInfo info){
         DefaultAddress d = new DefaultAddress();
 
@@ -1014,6 +1020,25 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
 
     private void showSnackbar(String str){
         Snackbar.make(mContainer, str, Snackbar.LENGTH_LONG).show();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MyApp addressApp =(MyApp) getApplicationContext();
+        Object obj2 = addressApp.GetActivityIntent(Constants.ADDRESS_REFRESH);
+        if (null != obj2) {
+            int iValue = (Integer) obj2;
+
+            if (iValue == 1) {  //1为刷新地址
+
+                uid = addressApp.getUser().getId();
+                //loadDatas();
+                loadAddress();
+                //refreshDatas();
+            }
+
+        }
     }
 
     @Override

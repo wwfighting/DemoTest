@@ -237,7 +237,7 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
                         Intent intent = new Intent(getActivity(), SearchActivity.class);
                         if (ToolsUtil.GetVersionSDK() < Build.VERSION_CODES.LOLLIPOP) {
                             startActivity(intent);
-                        }else {
+                        } else {
                             View sharedView = getView().findViewById(R.id.tb_cart).findViewById(R.id.menu_search);
                             String transitionName = "img_back";
                             ActivityOptions transitionActivityOptions = ActivityOptions.makeSceneTransitionAnimation(getActivity(), sharedView, transitionName);
@@ -250,9 +250,9 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
                         return true;*/
 
                     case R.id.menu_about:
-                        if (ToolsUtil.GetVersionSDK() < Build.VERSION_CODES.LOLLIPOP){
+                        if (ToolsUtil.GetVersionSDK() < Build.VERSION_CODES.LOLLIPOP) {
                             startActivity(new Intent(getActivity(), About4Acitivity.class));
-                        }else {
+                        } else {
 
                             startActivity(new Intent(getActivity(), AboutActivity.class));
                         }
@@ -601,7 +601,12 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
                     if (mAdapter.getItemCount() == 0){
                         mrlBottom.setVisibility(View.GONE);
                     }
-
+                    loadDatas();
+                    mPrice = 0.0f;
+                    mCount = 0;
+                    mtvAllMoney.setText("￥" + mPrice + "");
+                    mtvSelCount.setText(mCount + "");
+                    mcbAllSelected.setChecked(false);
                     Snackbar.make(mContainer, "删除成功！", Snackbar.LENGTH_SHORT).show();
                 }
 
@@ -864,7 +869,7 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
                 msrlCart.setVisibility(View.VISIBLE);
                 mrvCart.setVisibility(View.VISIBLE);
                 mrlBottom.setVisibility(View.VISIBLE);
-                uid = app.getUser().getId();
+                uid = addressApp.getUser().getId();
                 //loadDatas();
                 loadAddress();
                 //refreshDatas();
@@ -885,7 +890,7 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
                 msrlCart.setVisibility(View.VISIBLE);
                 mrvCart.setVisibility(View.VISIBLE);
                 mrlBottom.setVisibility(View.VISIBLE);
-                uid = app.getUser().getId();
+                uid = addShoppingApp.getUser().getId();
                 loadDatas();
                 loadAddress();
                 refreshDatas();

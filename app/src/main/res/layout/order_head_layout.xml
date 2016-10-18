@@ -106,7 +106,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="—"
-                        android:textSize="28sp"
+                        android:textSize="26sp"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="8dp"
                         android:id="@+id/tv_order_count_minus"
@@ -119,13 +119,13 @@
                         android:id="@+id/tv_detail_buy_num"
                         android:text="1"
                         android:layout_gravity="center_vertical"
-                        android:textSize="16sp"/>
+                        android:textSize="20sp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="+"
-                        android:textSize="28sp"
+                        android:textSize="26sp"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="8dp"
                         android:id="@+id/tv_order_count_plus"

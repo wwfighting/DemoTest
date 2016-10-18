@@ -311,7 +311,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     private void initSpecMode(){
 
         if (mInfo.getData().getDetail().getSubtitle().equals("配件")){
-            llCountContainer.setVisibility(View.VISIBLE);
+            llCountContainer.setVisibility(View.GONE);
             mcvColor.setVisibility(View.GONE);
             mcvTaimian.setVisibility(View.GONE);
             mTvDetailMode.setText(mInfo.getData().getDetail().getTag());
@@ -408,7 +408,6 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                     intent.putExtra("imgurl", networkImages.get(0));
                     intent.putExtra("gid", mGid);
                     intent.putExtra("response", strGoodsDetailInfo);
-
                     startActivity(intent);
                     if (mfabMenu.isExpanded()){
                         mfabMenu.collapse();

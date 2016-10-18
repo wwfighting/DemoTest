@@ -23,7 +23,7 @@ public class Constants {
     public static final String ADDRESS_REFRESH = "ADDRESS_REFRESH";
     public static final String ADD_SHOPPING_CART_REFRESH = "ADD_SHOPPING_CART_REFRESH";
 
-
+    //params
     public static final String[] FLOW_LAYOUT_TITLE = {"小康美厨","尚品魅厨","精英悦厨","铂金丽厨",
             "名家雅厨","欧风御厨","至尊典厨"};
 }
