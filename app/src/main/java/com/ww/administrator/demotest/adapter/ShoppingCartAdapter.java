@@ -74,7 +74,19 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         if (holder instanceof ShoppingcartViewHolder){
             ((ShoppingcartViewHolder) holder).mtvTitle.setText(mInfo.getData().get(position).getGoodsname());
             ((ShoppingcartViewHolder) holder).mtvMoney.setText(mInfo.getData().get(position).getPrice());
-            ((ShoppingcartViewHolder) holder).mtvOrdMoney.setText("2000");
+
+            if (mInfo.getData().get(position).getSubtitle().equals("配件")){
+                ((ShoppingcartViewHolder) holder).mtvOrderLabel.setVisibility(View.GONE);
+                ((ShoppingcartViewHolder) holder).mtvOrdMoney.setVisibility(View.GONE);
+            }else if (mInfo.getData().get(position).getSubtitle().equals("全屋定制")){
+                ((ShoppingcartViewHolder) holder).mtvOrderLabel.setVisibility(View.VISIBLE);
+                ((ShoppingcartViewHolder) holder).mtvOrdMoney.setVisibility(View.VISIBLE);
+                ((ShoppingcartViewHolder) holder).mtvOrdMoney.setText("3000");
+            }else if (mInfo.getData().get(position).getSubtitle().equals("")){  //全屋定制
+                ((ShoppingcartViewHolder) holder).mtvOrderLabel.setVisibility(View.VISIBLE);
+                ((ShoppingcartViewHolder) holder).mtvOrdMoney.setVisibility(View.VISIBLE);
+                ((ShoppingcartViewHolder) holder).mtvOrdMoney.setText("2000");
+            }
 
             Glide.with(mContext)
                     .load(Constants.BASE_IMG_URL + mInfo.getData().get(position).getImgurl())
@@ -119,6 +131,7 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         AppCompatCheckBox mcbSelected;
         ImageView mivShow;
         TextView mtvTitle, mtvOrdMoney, mtvMoney;
+        TextView mtvOrderLabel;
 
         public ShoppingcartViewHolder(View itemView) {
             super(itemView);
@@ -127,6 +140,7 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             mtvTitle = (TextView) itemView.findViewById(R.id.tv_cart_pro_title);
             mtvOrdMoney = (TextView) itemView.findViewById(R.id.tv_cart_pro_order_money);
             mtvMoney = (TextView) itemView.findViewById(R.id.tv_cart_pro_money);
+            mtvOrderLabel = (TextView) itemView.findViewById(R.id.tv_pro_order_money_label);
         }
     }
 

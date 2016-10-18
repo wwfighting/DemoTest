@@ -101,7 +101,7 @@ public class OrderFragment extends BaseFragment {
                             Intent intent = new Intent(getActivity(), PayActivity.class);
                             intent.putExtra("title", info.getGoodsname());
                             intent.putExtra("ordNum", Integer.parseInt(info.getSuperbillid()));
-                            intent.putExtra("payMoney", info.getSchedprice());
+                            intent.putExtra("payMoney", Integer.parseInt(info.getSchedprice()) * 100);
                             startActivityForResult(intent, 100);
                         }
                     });

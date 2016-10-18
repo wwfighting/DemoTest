@@ -256,6 +256,11 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
             mtvChooseStore.setText(mstoreName + "  " + mstaffName + "(" + msalerNo + ")");
         }
 
+        if (mDetailInfo.getData().getDetail().getSubtitle().equals("配件")){
+            mtvOrderMinus.setVisibility(View.GONE);
+            mtvOrderPlus.setVisibility(View.GONE);
+        }
+
     }
 
 
@@ -314,6 +319,8 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         mtvFloorPlus.setOnClickListener(this);
         mtvHangMinus.setOnClickListener(this);
         mtvHangPlus.setOnClickListener(this);
+        mtvNumMinus.setOnClickListener(this);
+        mtvNumPlus.setOnClickListener(this);
 
     }
 
@@ -877,7 +884,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
     }
 
     /**
-     * 提交配件订单
+     * 提交配件订单 配件的总价就是预约价
      */
     private void submitPartsOrder(){
         if (mstaffName.equals("") || mstoreName.equals("")){
@@ -895,7 +902,8 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         }
 
         //strorderMoney = mtvOrderMoney.getText().toString();
-        strallMoney = mtvAllMoney.getText().toString();
+        //strallMoney = mtvAllMoney.getText().toString();
+        strallMoney = mtvOrderMoney.getText().toString();
 
         Intent intent = new Intent(OrderActivity.this, CommitOrderActivity.class);
         intent.putExtra("ordermode", 100);
@@ -911,6 +919,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         intent.putExtra("storeid", mstoreId);
         intent.putExtra("salerNo", msalerNo);
         intent.putExtra("city", mcity);
+        intent.putExtra("num", orderNum);
 
         if (ToolsUtil.GetVersionSDK() < Build.VERSION_CODES.LOLLIPOP) {
             startActivity(intent);

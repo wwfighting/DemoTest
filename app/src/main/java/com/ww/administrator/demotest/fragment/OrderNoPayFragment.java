@@ -1,5 +1,6 @@
 package com.ww.administrator.demotest.fragment;
 
+import android.content.Intent;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +15,7 @@ import com.ww.administrator.demotest.R;
 import com.ww.administrator.demotest.adapter.OrderFragmentAdapter;
 import com.ww.administrator.demotest.cityselect.MyApp;
 import com.ww.administrator.demotest.model.OrderResultInfo;
+import com.ww.administrator.demotest.pay.PayActivity;
 import com.ww.administrator.demotest.util.Constants;
 import com.ww.administrator.demotest.util.HttpUtil;
 
@@ -93,6 +95,16 @@ public class OrderNoPayFragment extends BaseFragment {
                     mrvOrder.setVisibility(View.VISIBLE);
                     mAdapter = new OrderFragmentAdapter(getActivity(), info);
                     mrvOrder.setAdapter(mAdapter);
+                    mAdapter.setOnPayClickListener(new OrderFragmentAdapter.OnPayClickListener() {
+                        @Override
+                        public void getItem(OrderResultInfo.Databean info) {
+                            Intent intent = new Intent(getActivity(), PayActivity.class);
+                            intent.putExtra("title", info.getGoodsname());
+                            intent.putExtra("ordNum", Integer.parseInt(info.getSuperbillid()));
+                            intent.putExtra("payMoney", Integer.parseInt(info.getSchedprice()) * 100);
+                            startActivityForResult(intent, 100);
+                        }
+                    });
                 } else {
                     mrvOrder.setVisibility(View.GONE);
                     mtvOrderNo.setVisibility(View.VISIBLE);

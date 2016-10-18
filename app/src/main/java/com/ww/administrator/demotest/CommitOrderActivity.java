@@ -38,7 +38,9 @@ public class CommitOrderActivity extends AppCompatActivity implements View.OnCli
 
     private String uid = "-1";
 
-    int morderMode = -1; //订单类型 100：配件订单 200：橱柜订单
+    //根据传来的morderMode参数区分订单类型
+    int morderMode = -1; //订单类型 100：配件订单 200：橱柜订单 300：全屋订单
+
     String mGid = "";
     String mimgUrl = "";
     String mcity = "";
@@ -61,6 +63,8 @@ public class CommitOrderActivity extends AppCompatActivity implements View.OnCli
     String mishu1 = ""; //吊柜米数
     String mishu2 = ""; //地柜米数
 
+    int orderNum = 1;
+
     String[] strInfo;
 
     Toolbar mtbCommit;
@@ -81,6 +85,9 @@ public class CommitOrderActivity extends AppCompatActivity implements View.OnCli
 
     Gson mGson = new Gson();
 
+    TextView mtvOrderMoneyLabel;
+    TextView mtvMoneyBottom;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,6 +98,7 @@ public class CommitOrderActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void initParams() {
+
         uid = ((MyApp) getApplicationContext()).getUser().getId();
         morderMode = getIntent().getExtras().getInt("ordermode");
         mGid = getIntent().getExtras().getString("gid");
@@ -99,6 +107,8 @@ public class CommitOrderActivity extends AppCompatActivity implements View.OnCli
         strReceiverInfo = getIntent().getExtras().getString("receiverInfo");
         mstaffName = getIntent().getExtras().getString("staffName");
         mstoreName = getIntent().getExtras().getString("storeName");
+
+        //配件订单 strorderMoney和strallMoney是一样的，即付款总价，没有预约价
         strorderMoney = getIntent().getExtras().getString("orderMoney");
         strallMoney = getIntent().getExtras().getString("allMoney");
         strTip = getIntent().getExtras().getString("tip");
@@ -106,7 +116,7 @@ public class CommitOrderActivity extends AppCompatActivity implements View.OnCli
         msalerNo = getIntent().getExtras().getString("salerNo").substring(2);
         mcity = getIntent().getExtras().getString("city");
 
-        //橱柜参数
+        //橱柜参数 多了台面地柜以及颜色和米数
         if (morderMode == 200){
             mDoorId = getIntent().getExtras().getString("doorid");
             mColorId = getIntent().getExtras().getString("colorid");
@@ -118,6 +128,11 @@ public class CommitOrderActivity extends AppCompatActivity implements View.OnCli
             mishu2 = getIntent().getExtras().getString("mishu2");
         }
 
+        //配件参数 多了订购数量
+        if (morderMode == 100){
+            orderNum = getIntent().getExtras().getInt("num");
+        }
+
     }
 
     private void initViews(){
@@ -125,7 +140,8 @@ public class CommitOrderActivity extends AppCompatActivity implements View.OnCli
         mtbCommit.setTitle("确认订单");
         setSupportActionBar(mtbCommit);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        mtvOrderMoneyLabel = (TextView) findViewById(R.id.tv_commit_goods_order_money_label);
+        mtvMoneyBottom = (TextView) findViewById(R.id.tv_commit_bottom_money_label);
         mContainer = (CoordinatorLayout) findViewById(R.id.cdl_container);
         mivShow = (ImageView) findViewById(R.id.iv_commit_goods_show);
         mtvReName = (TextView) findViewById(R.id.tv_commit_receive_name);
@@ -161,8 +177,27 @@ public class CommitOrderActivity extends AppCompatActivity implements View.OnCli
 
         mtvGoodName.setText(strGoodsName);
 
-        mtvMode.setText("规  格：" + mishu2 + "米地柜 + " +  mishu2  + "米台面 + " + mishu1 + "米吊柜");
+        if (morderMode == 100){ //配件
+            mtvMode.setText("数  量：" + orderNum + " 个");
+            mtvOrderMoneyLabel.setText("支付金额：");
+            mtvMoneyBottom.setText("实付金额：");
+            mtvAllMoney.setVisibility(View.GONE);
+            mtvDoor.setVisibility(View.GONE);
+            mtvColor.setVisibility(View.GONE);
+            mtvTaimian.setVisibility(View.GONE);
+        }
 
+        if (morderMode == 200){ //橱柜
+            mtvMode.setText("规  格：" + mishu2 + "米地柜 + " +  mishu2  + "米台面 + " + mishu1 + "米吊柜");
+        }
+
+        if (morderMode == 300){ //全屋
+            mtvMode.setVisibility(View.GONE);
+            mtvAllMoney.setVisibility(View.GONE);
+            mtvDoor.setVisibility(View.GONE);
+            mtvColor.setVisibility(View.GONE);
+            mtvTaimian.setVisibility(View.GONE);
+        }
         mtvOrderMoney.setText(strorderMoney);
         mtvBottomMoney.setText(strorderMoney);
         mtvAllMoney.setText("预约价：" + strallMoney + " 起");
@@ -312,8 +347,6 @@ public class CommitOrderActivity extends AppCompatActivity implements View.OnCli
      */
 
     private void commitMainOrder(){
-
-
         HttpUtil.postAsyn(Constants.BASE_URL + "generate_main_order.php", new HttpUtil.ResultCallback<String>() {
             @Override
             public void onError(Request request, Exception e) {
@@ -431,7 +464,7 @@ public class CommitOrderActivity extends AppCompatActivity implements View.OnCli
                 new HttpUtil.Param("cityName", mcity),
                 new HttpUtil.Param("color", "android"),
                 new HttpUtil.Param("isperfe", "0"),
-                new HttpUtil.Param("num", "1"),
+                new HttpUtil.Param("num", orderNum + ""),
                 new HttpUtil.Param("desingerprice", "0")
         });
     }

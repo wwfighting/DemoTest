@@ -198,7 +198,7 @@
             android:id="@+id/tv_order_right_bracket"
             android:textSize="18sp"
             android:layout_marginRight="6dp"
-            android:layout_toLeftOf="@+id/tv_order_money_label"/>
+            android:layout_toLeftOf="@+id/tv_order_money_label_bottom"/>
 
         <TextView
             android:layout_width="wrap_content"
