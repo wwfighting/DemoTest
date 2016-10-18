@@ -46,6 +46,9 @@ import com.ww.administrator.demotest.util.Constants;
 import com.ww.administrator.demotest.util.HttpUtil;
 import com.ww.administrator.demotest.util.ToolsUtil;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Created by Administrator on 2016/9/2.
  */
@@ -450,27 +453,35 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
      */
     private void loadAddress(){
 
-        HttpUtil.postAsyn(Constants.BASE_URL + "get_address.php", new HttpUtil.ResultCallback<AddressInfo>() {
+        HttpUtil.postAsyn(Constants.BASE_URL + "get_address.php", new HttpUtil.ResultCallback<String>() {
             @Override
             public void onError(Request request, Exception e) {
                 Snackbar.make(mContainer, "请先检查您的网络！", Snackbar.LENGTH_SHORT).show();
             }
 
             @Override
-            public void onResponse(AddressInfo info) {
+            public void onResponse(String response) {
 
-                if (info.getCode().equals("200")) {
-                    if (info.getData() != null) {
-                        mInfo = info;
-                        mtvSendAddress.setVisibility(View.VISIBLE);
-                        DefaultAddress d = hasDefault(info);
-                        mtvChooseAdd.setText(info.getData().get(d.getPos()).getReceivername() + "    " + info.getData().get(d.getPos()).getPhone());
-                        mtvSendAddress.setText(info.getData().get(d.getPos()).getAddress());
-
-                        strReceiverInfo = info.getData().get(d.getPos()).getReceivername() + ";" + info.getData().get(d.getPos()).getPhone() + ";"
-                                + info.getData().get(d.getPos()).getAddress();
+                try{
+                    JSONObject jsonRoot = new JSONObject(response);
+                    String strCode = jsonRoot.getString("code");
+                    if (strCode.equals("200")){
+                        AddressInfo info = mGson.fromJson(response, AddressInfo.class);
+                        if (info.getData() != null) {
+                            mInfo = info;
+                            mtvSendAddress.setVisibility(View.VISIBLE);
+                            DefaultAddress d = hasDefault(info);
+                            mtvChooseAdd.setText(info.getData().get(d.getPos()).getReceivername() + "    " + info.getData().get(d.getPos()).getPhone());
+                            mtvSendAddress.setText(info.getData().get(d.getPos()).getAddress());
+                            strReceiverInfo = info.getData().get(d.getPos()).getReceivername() + ";" + info.getData().get(d.getPos()).getPhone() + ";"
+                                    + info.getData().get(d.getPos()).getAddress();
+                        }
                     }
+                }catch (JSONException e){
+                    e.printStackTrace();
+
                 }
+
             }
         }, new HttpUtil.Param[]{
                 new HttpUtil.Param("uid", uid)
