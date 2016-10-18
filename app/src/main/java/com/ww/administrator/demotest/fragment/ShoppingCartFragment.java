@@ -474,7 +474,6 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
         });
     }
 
-
     /**
      * 载入配送地址
      */
@@ -513,6 +512,11 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
         });
     }
 
+    /**
+     * 筛选出默认地址，没有就默认第一个地址为默认地址
+     * @param info
+     * @return
+     */
     private DefaultAddress hasDefault(AddressInfo info){
         DefaultAddress d = new DefaultAddress();
 
