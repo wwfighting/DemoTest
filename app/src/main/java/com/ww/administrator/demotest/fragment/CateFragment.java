@@ -178,8 +178,8 @@ public class CateFragment extends BaseFragment {
                             mtvNoLabel.setVisibility(View.GONE);
                             mrvContent.setVisibility(View.GONE);
                             mpbContent.setVisibility(View.VISIBLE);
-                            String gid = mAdapter.getChild(groupPosition, childPosition).getId();
-                            loadContentDatas(gid);
+                            String cid = mAdapter.getChild(groupPosition, childPosition).getId();
+                            loadContentDatas(cid);
                             return false;
                         }
                     });
@@ -195,9 +195,9 @@ public class CateFragment extends BaseFragment {
 
     /**
      * 点击分类id载入分类商品列表
-     * @param gid
+     * @param cid
      */
-    private void loadContentDatas(String gid){
+    private void loadContentDatas(String cid){
 
         HttpUtil.postAsyn(Constants.BASE_URL + "product_list.php", new HttpUtil.ResultCallback<ProductListInfo>() {
             @Override
@@ -222,7 +222,7 @@ public class CateFragment extends BaseFragment {
 
             }
         }, new HttpUtil.Param[]{
-                new HttpUtil.Param("gid", gid)
+                new HttpUtil.Param("cid", cid)
         });
     }
 
