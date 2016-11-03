@@ -2,6 +2,7 @@
 <android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cdl_container"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -91,21 +92,23 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         app:behavior_overlapTop="68dp"
+        android:clickable="true"
         android:visibility="gone"
         android:id="@+id/rv_address"/>
-
-    <android.support.design.widget.FloatingActionButton
+    <com.melnykov.fab.FloatingActionButton
         android:id="@+id/fab_address"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:visibility="gone"
+        android:layout_gravity="bottom|right"
         android:layout_margin="@dimen/fab_margin"
         android:src="@drawable/ic_add_24dp"
         android:clickable="true"
-        app:borderWidth="0dp"
-        app:rippleColor="#daf91408"
-        app:backgroundTint="#e96e10"/>
+        fab:fab_type="normal"
+        fab:fab_shadow="true"
+        fab:fab_colorNormal="#e96e10"
+        fab:fab_colorPressed="#daf91408"
+        fab:fab_colorRipple="#daf91408"
+        />
 
 
 </android.support.design.widget.CoordinatorLayout>

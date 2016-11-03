@@ -254,8 +254,6 @@ public class MyFragment extends BaseFragment implements View.OnClickListener{
                             .into(mivHead);
                 }
 
-
-
                 break;
 
             case 400:   //用户退出

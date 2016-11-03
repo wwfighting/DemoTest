@@ -15,6 +15,16 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.ScaleAnimation;
+import android.widget.AbsListView;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 
 import com.bigkoo.convenientbanner.ConvenientBanner;
 import com.bigkoo.convenientbanner.holder.CBViewHolderCreator;
@@ -26,19 +36,27 @@ import com.ww.administrator.demotest.About4Acitivity;
 import com.ww.administrator.demotest.AboutActivity;
 import com.ww.administrator.demotest.BannerConActivity;
 import com.ww.administrator.demotest.BaseFragment;
+import com.ww.administrator.demotest.DetailActivity;
 import com.ww.administrator.demotest.NetworkImageHolderView;
 import com.ww.administrator.demotest.R;
 import com.ww.administrator.demotest.SearchActivity;
+import com.ww.administrator.demotest.SelectCityActivity;
 import com.ww.administrator.demotest.adapter.RecyclerViewHFAdapter;
+import com.ww.administrator.demotest.cityselect.MyApp;
+import com.ww.administrator.demotest.cityselect.utils.SharedPreUtil;
+import com.ww.administrator.demotest.event.OneBuyEventActivity;
+import com.ww.administrator.demotest.event.SignInEventActivity;
 import com.ww.administrator.demotest.model.BannerInfo;
 import com.ww.administrator.demotest.model.GoodsInfo;
 import com.ww.administrator.demotest.util.Constants;
+import com.ww.administrator.demotest.util.DisplayUtil;
 import com.ww.administrator.demotest.util.HttpUtil;
 import com.ww.administrator.demotest.util.ToolsUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import me.drakeet.materialdialog.MaterialDialog;
 
 
 /**
@@ -46,24 +64,33 @@ import java.util.List;
  */
 public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener{
 
-    public static final int NEW_GOODS = 1;
-    public static final int HOT_GOODS = 2;
+    public static final int NEW_GOODS = 1;  //1：新品推荐
+    public static final int HOT_GOODS = 2;  //2：热门商品
+    public static final int HOME_GOODS = 3; //3：全屋热卖
 
     Toolbar mtbHome;
     BannerInfo mBannerInfo;
     private Gson mGson = new Gson();
     private SwipeRefreshLayout refreshLayout;
     private RecyclerView listView;
-    private ArrayList<String> mDatas = new ArrayList<String>();
     private RecyclerViewHFAdapter adapter;
     private ConvenientBanner convenientBanner;
 
     private List<String> networkImages = new ArrayList<>();
     private GoodsInfo mNewList = new GoodsInfo();
     private GoodsInfo mHotList = new GoodsInfo();
+    private GoodsInfo mHomeList = new GoodsInfo();
 
+    String gid = "";
 
     ProgressWheel mpbHome;
+    String cityName = "";
+
+    MaterialDialog cityDialog;
+    ListView mlvCity;
+
+    private ImageView ivEvent;
+
 
     @Override
     protected void getArgs() {
@@ -80,6 +107,7 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
     @Override
     protected void initViews(View view) {
         mtbHome = (Toolbar) view.findViewById(R.id.tb_common);
+        ivEvent = (ImageView) view.findViewById(R.id.iv_event);
         refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refreshLayout);
         listView = (RecyclerView) view.findViewById(R.id.recyclerView);
         convenientBanner = (ConvenientBanner)LayoutInflater.from(getActivity()).inflate(R.layout.adapter_header_cb, null);
@@ -95,10 +123,12 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
 
     @Override
     protected void doBusiness() {
+        initCity();
 
         //得到banner的相关信息
         loadDatas();
-       /* Glide.with(this)
+        initDialog();
+        /*Glide.with(this)
                 .load("http://www.jvawa.com/uploads/1446193540.jpg")
                 .asBitmap()
                 .into(new SimpleTarget<Bitmap>(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL) {
@@ -113,6 +143,29 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
 
                 });*/
 
+    }
+
+    private void initCity(){
+        cityName = (String) SharedPreUtil.getData(getActivity(), "locatCity", "南京");
+    }
+
+    private void initDialog(){
+        cityDialog = new MaterialDialog(getActivity());
+        cityDialog.setTitle("选择城市");
+
+        LinearLayout linearLayout = new LinearLayout(getActivity());
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DisplayUtil.dip2px(getActivity(), 200));
+        lp.setMargins(10, 10, 10, 0);
+        linearLayout.setLayoutParams(lp);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        mlvCity = new ListView(getActivity());
+        AbsListView.LayoutParams ablp = new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DisplayUtil.dip2px(getActivity(), 200));
+        mlvCity.setLayoutParams(ablp);
+        mlvCity.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, Constants.CITY_ARRAY));
+
+        linearLayout.addView(mlvCity);
+        cityDialog.setContentView(linearLayout);
+        cityDialog.setCanceledOnTouchOutside(true);
     }
     private void initEvents() {
         refreshLayout.setOnRefreshListener(this);
@@ -133,7 +186,6 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
             public void onResponse(String response) {
 
                 mNewList = mGson.fromJson(response, GoodsInfo.class);
-                System.out.println(mNewList.getData().get(0).getPicurl().toString());
                 getHotGoods();
             }
         }, new HttpUtil.Param[]{
@@ -156,20 +208,90 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
             public void onResponse(String response) {
 
                 mHotList = mGson.fromJson(response, GoodsInfo.class);
-                init(mBannerInfo, mNewList, mHotList);
-                initEvents();
+                if (!cityName.equals("南京")){
+                    getHomeGoods();
+
+                }else {
+                    init(mBannerInfo, mNewList, mHotList);
+                    initEvents();
+
+                }
+
+                if (!ToolsUtil.isEventExpire()){ //判断活动是否过期
+                    ivEvent.setVisibility(View.VISIBLE);
+                    new Thread(){
+                        public void run() {
+                            while (true){
+                                try {
+                                    //增大900mm，减小1000mm，所以这里设置2000mm左右即可
+                                    Thread.sleep(2000);
+                                } catch (InterruptedException e) {
+                                    // TODO Auto-generated catch block
+                                    e.printStackTrace();
+                                }
+                                getActivity().runOnUiThread(new Runnable() {
+                                    public void run() {
+                                        playHeartbeatAnimation(ivEvent);
+                                    }
+                                });
+                            }
+                        }
+                    }.start();
+
+                    Intent i = new Intent(getActivity(), OneBuyEventActivity.class);
+                    startActivity(i);
+
+                    ivEvent.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent i = new Intent(getActivity(), OneBuyEventActivity.class);
+                            startActivity(i);
+                            /*if (ToolsUtil.GetVersionSDK() < Build.VERSION_CODES.LOLLIPOP) {
+                                startActivity(i);
+                            } else {
+                                String transitionName = "event_share";
+                                ActivityOptions transitionActivityOptions = ActivityOptions.makeSceneTransitionAnimation(getActivity(), ivEvent, transitionName);
+                                startActivity(i, transitionActivityOptions.toBundle());
+                            }*/
+
+                        }
+                    });
+                }
+
             }
         }, new HttpUtil.Param[]{
                 new HttpUtil.Param("isrecom", HOT_GOODS + "")
         });
     }
 
-    private void init(BannerInfo bannerInfo, GoodsInfo newList, GoodsInfo hotList){
+    /**
+     * 得到全屋商品
+     */
+    private void getHomeGoods(){
+        HttpUtil.postAsyn(Constants.BASE_URL + "index_goods.php", new HttpUtil.ResultCallback<String>() {
+            @Override
+            public void onError(Request request, Exception e) {
+
+            }
+
+            @Override
+            public void onResponse(String response) {
+                mHomeList = mGson.fromJson(response, GoodsInfo.class);
+                init(mBannerInfo, mNewList, mHotList, mHomeList);
+                initEvents();
+            }
+        }, new HttpUtil.Param[]{
+                new HttpUtil.Param("isrecom", HOME_GOODS + "")
+        });
+    }
+
+    private void init(BannerInfo bannerInfo, GoodsInfo newList, GoodsInfo hotList, GoodsInfo homeList){
         listView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         listView.setLayoutManager(layoutManager);
-        adapter = new RecyclerViewHFAdapter(getActivity(), newList, hotList);
+        adapter = new RecyclerViewHFAdapter(getActivity(), newList, hotList, homeList, cityName);
         listView.setAdapter(adapter);
+        networkImages.clear();
         for (int i = 0; i < bannerInfo.getData().size(); i++){
             networkImages.add(bannerInfo.getData().get(i).getImgurl());
         }
@@ -180,22 +302,42 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
                 return new NetworkImageHolderView();
             }
         },networkImages)
-                .setPageIndicator(new int[]{R.drawable.ic_page_indicator, R.drawable.ic_page_indicator_focused});
+                .setPageIndicator(new int[]{R.drawable.page_indicator_normal, R.drawable.page_indicator_focused});
 
         convenientBanner.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
                 String url = mBannerInfo.getData().get(position).getHref();
-                if (!url.contains("http")) {
-                    url = "http://www.jvawa.com/app/" + url;
-                } else if (url.equals("#")) {
+                if (url.equals("#")){
+
                     return;
                 }
 
-                Intent intent = new Intent();
-                intent.setClass(getActivity(), BannerConActivity.class);
-                intent.putExtra("bannerUrl", url);
-                startActivity(intent);
+                if (url.equals("qdyl.php")){
+                    Intent intent = new Intent(getActivity(), SignInEventActivity.class);
+                    startActivity(intent);
+
+                }else {
+                    String[] urlArr = mBannerInfo.getData().get(position).getHref().split("[?]");
+
+                    if (urlArr.length == 1){ //证明不是商品购买
+                        url = "http://www.jvawa.com/app/" + url;
+                        Intent banner = new Intent();
+                        banner.setClass(getActivity(), BannerConActivity.class);
+                        banner.putExtra("bannerUrl", url);
+                        startActivity(banner);
+                    }else {
+                        gid = urlArr[1].substring(3);
+                        //Log.d("ww", "gid:" + gid + "=======");
+                        if (gid != ""){
+                            Intent detail = new Intent();
+                            detail.setClass(getActivity(), DetailActivity.class);
+                            detail.putExtra("gid", gid);
+                            startActivity(detail);
+                        }
+                    }
+                }
+
             }
         });
 
@@ -203,12 +345,105 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
         //loadTestDatas();
     }
 
-    /* //加入测试Views
-    private void loadTestDatas() {
+    /**
+     * 红包跳动动画
+     */
+    private void playHeartbeatAnimation(final ImageView iv) {
+        AnimationSet animationSet = new AnimationSet(true);
+        animationSet.addAnimation(new ScaleAnimation(1.0f, 1.3f, 1.0f, 1.3f,
+                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,
+                0.5f));
+        animationSet.addAnimation(new AlphaAnimation(0.5f, 1.0f));
+        animationSet.setDuration(900);
+        animationSet.setInterpolator(new LinearInterpolator());
+        animationSet.setFillAfter(true);
+        animationSet.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
 
-        mDatas.add("test＝＝＝＝＝＝＝＝＝＝＝");
-        adapter.notifyDataSetChanged();
-    }*/
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                AnimationSet animationSet = new AnimationSet(true);
+                animationSet.addAnimation(new ScaleAnimation(1.3f, 1.0f, 1.3f,
+                        1.0f, Animation.RELATIVE_TO_SELF, 0.5f,
+                        Animation.RELATIVE_TO_SELF, 0.5f));
+                animationSet.addAnimation(new AlphaAnimation(1.0f, 0.5f));
+                animationSet.setDuration(1000);
+                animationSet.setInterpolator(new LinearInterpolator());
+                animationSet.setFillAfter(true);
+                // 实现跳动的View
+                iv.startAnimation(animationSet);
+            }
+        });
+        // 实现跳动的View
+        iv.startAnimation(animationSet);
+    }
+
+    private void init(BannerInfo bannerInfo, GoodsInfo newList, GoodsInfo hotList){
+        listView.setHasFixedSize(true);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        listView.setLayoutManager(layoutManager);
+        adapter = new RecyclerViewHFAdapter(getActivity(), newList, hotList, cityName);
+        listView.setAdapter(adapter);
+        networkImages.clear();
+        for (int i = 0; i < bannerInfo.getData().size(); i++){
+            networkImages.add(bannerInfo.getData().get(i).getImgurl());
+        }
+
+        convenientBanner.setPages(new CBViewHolderCreator<NetworkImageHolderView>() {
+            @Override
+            public NetworkImageHolderView createHolder() {
+                return new NetworkImageHolderView();
+            }
+        },networkImages)
+                .setPageIndicator(new int[]{R.drawable.page_indicator_normal, R.drawable.page_indicator_focused});
+
+        convenientBanner.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                String url = mBannerInfo.getData().get(position).getHref();
+
+                if (url.equals("#")){
+
+                    return;
+                }
+
+                if (url.equals("qdyl.php")){
+                    Intent intent = new Intent(getActivity(), SignInEventActivity.class);
+                    startActivity(intent);
+
+                }else {
+                    String[] urlArr = mBannerInfo.getData().get(position).getHref().split("[?]");
+
+                    if (urlArr.length == 1){ //证明不是商品购买
+                        url = "http://www.jvawa.com/app/" + url;
+                        Intent banner = new Intent();
+                        banner.setClass(getActivity(), BannerConActivity.class);
+                        banner.putExtra("bannerUrl", url);
+                        startActivity(banner);
+                    }else {
+                        gid = urlArr[1].substring(3);
+                        //Log.d("ww", "gid:" + gid + "=======");
+                        if (gid != ""){
+                            Intent detail = new Intent();
+                            detail.setClass(getActivity(), DetailActivity.class);
+                            detail.putExtra("gid", gid);
+                            startActivity(detail);
+                        }
+                    }
+                }
+            }
+        });
+
+        adapter.addHeader(convenientBanner);
+        //loadTestDatas();
+    }
+
 
     private void setToolbar(View view){
         mtbHome = (Toolbar) view.findViewById(R.id.tb_common);
@@ -216,6 +451,7 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
         //((MainActivity)getActivity()).setSupportActionBar(mtbHome);
         mtbHome.inflateMenu(R.menu.main);
         mtbHome.setNavigationIcon(R.mipmap.ic_launcher);
+
         mtbHome.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
@@ -233,15 +469,48 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
 
 
                         return true;
-                   /* case R.id.menu_locate:
+                    case R.id.menu_locate:
+
+                        startActivityForResult(new Intent(getActivity(), SelectCityActivity.class), 100);
+                        /*cityDialog.show();
+                        mlvCity.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                switch (position) {
+                                    case 0: //南京
+                                        cityName = "南京";
+                                        cityDialog.dismiss();
+
+                                        break;
+                                    case 1: //上海
+                                        cityName = "上海";
+                                        cityDialog.dismiss();
+
+                                        break;
+                                    case 2: //兰州
+                                        cityName = "兰州";
+                                        cityDialog.dismiss();
+
+                                        break;
+                                    case 3: //沈阳
+                                        cityName = "沈阳";
+                                        cityDialog.dismiss();
+
+                                        break;
+                                }
+                                SharedPreUtil.saveData(getActivity(), "locatCity", cityName);
+                                loadDatas();
+                            }
+                        });*/
+
                         //startActivity(new Intent(getActivity(), LocatCityActivity.class));
-                        return true;*/
+                        return true;
 
                     case R.id.menu_about:
                        /* startActivity(new Intent(getActivity(), About4Acitivity.class));*/
-                        if (ToolsUtil.GetVersionSDK() < Build.VERSION_CODES.LOLLIPOP){
+                        if (ToolsUtil.GetVersionSDK() < Build.VERSION_CODES.LOLLIPOP) {
                             startActivity(new Intent(getActivity(), About4Acitivity.class));
-                        }else {
+                        } else {
 
                             startActivity(new Intent(getActivity(), AboutActivity.class));
                         }
@@ -272,8 +541,6 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
 
     }
 
-
-
     /**
      * 载入信息
      */
@@ -294,17 +561,19 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
 
             @Override
             public void onResponse(String response) {
-                System.out.println(response.toString());
+
                 mpbHome.setVisibility(View.GONE);
                 refreshLayout.setVisibility(View.VISIBLE);
                 mBannerInfo = mGson.fromJson(response, BannerInfo.class);
                 getNewGoods();
+
+
             }
         }, new HttpUtil.Param[]{
-                new HttpUtil.Param("status", "1")
+                new HttpUtil.Param("status", "1"),
+                new HttpUtil.Param("city", cityName)
         });
     }
-
 
 
     // 开始自动翻页
@@ -313,6 +582,16 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
         super.onResume();
         //开始自动翻页
         convenientBanner.startTurning(5000);
+
+        MyApp app =(MyApp) getActivity().getApplicationContext();
+        Object obj = app.GetActivityIntent(Constants.HOME_REFRESH);
+        if (null != obj) {
+            int iValue = (Integer) obj;
+            if (iValue == 1) {  //1为刷新
+                cityName = (String) SharedPreUtil.getData(getActivity(), "locatCity", "南京");
+                loadDatas();
+            }
+        }
     }
 
     // 停止自动翻页
@@ -327,8 +606,16 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
     public void onRefresh() {
 
         adapter.notifyDataSetChanged();
-
         refreshLayout.setRefreshing(false);
     }
 
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == 600){
+
+        }
+    }
 }

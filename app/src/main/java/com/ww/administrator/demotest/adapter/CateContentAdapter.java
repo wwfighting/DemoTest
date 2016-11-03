@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import com.ww.administrator.demotest.DetailActivity;
 import com.ww.administrator.demotest.R;
 import com.ww.administrator.demotest.model.ProductListInfo;
 import com.ww.administrator.demotest.util.DisplayUtil;
+import com.ww.administrator.demotest.util.ToolsUtil;
 
 /**
  * Created by Administrator on 2016/9/26.
@@ -54,24 +56,39 @@ public class CateContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         if (holder instanceof CateContentViewHolder){
             ((CateContentViewHolder) holder).mTvGoodsTitle.setText(mInfo.getData().get(position).getGoodsname());
-            String nowPrice = "现价：￥" + mInfo.getData().get(position).getPrice() + "-" + mInfo.getData().get(position).getPrice1();
-            ((CateContentViewHolder) holder).mTvGoodsNowPrice.setText(nowPrice);
 
-            Glide.with(mContext).load(mInfo.getData().get(position).getPicurl()).into(((CateContentViewHolder) holder).mIvGoodsPic);
+            if (mInfo.getData().get(position).getPrice().equals("3000")){
+                String nowPrice  = "预约金：￥" + mInfo.getData().get(position).getPrice();
+                ((CateContentViewHolder) holder).mTvGoodsNowPrice.setText(nowPrice);
+            }else {
+                String nowPrice = "现价：￥" + mInfo.getData().get(position).getPrice();
+                ((CateContentViewHolder) holder).mTvGoodsNowPrice.setText(nowPrice);
+            }
+
+
+
+            Glide.with(mContext)
+                    .load(mInfo.getData().get(position).getPicurl())
+                    .crossFade()
+                    .placeholder(R.drawable.loading)
+                    .error(R.drawable.loading)
+                    .into(((CateContentViewHolder) holder).mIvGoodsPic);
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    System.out.println("分类页点击的商品ID=========================");
-                    System.out.println(mInfo.getData().get(position).getId() + "");
                     //将物品ID通过intent对象传值到详细页面
                     Intent intent = new Intent();
                     intent.setClass(mContext, DetailActivity.class);
                     intent.putExtra("gid", mInfo.getData().get(position).getId());
-                    // mContext.startActivity(intent);
-                    View sharedView = ((CateContentViewHolder) holder).mIvGoodsPic;
-                    String transitionName = "detail";
-                    ActivityOptions transitionActivityOptions = ActivityOptions.makeSceneTransitionAnimation((Activity) mContext, sharedView, transitionName);
-                    mContext.startActivity(intent, transitionActivityOptions.toBundle());
+                    if (ToolsUtil.GetVersionSDK() < Build.VERSION_CODES.LOLLIPOP) {
+                        mContext.startActivity(intent);
+                    } else {
+                        // mContext.startActivity(intent);
+                        View sharedView = ((CateContentViewHolder) holder).mIvGoodsPic;
+                        String transitionName = "detail";
+                        ActivityOptions transitionActivityOptions = ActivityOptions.makeSceneTransitionAnimation((Activity) mContext, sharedView, transitionName);
+                        mContext.startActivity(intent, transitionActivityOptions.toBundle());
+                    }
                 }
             });
         }
@@ -91,7 +108,6 @@ public class CateContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             mTvGoodsTitle = (TextView) itemView.findViewById(R.id.tv_goods_title);
             mTvGoodsNowPrice = (TextView) itemView.findViewById(R.id.tv_goods_nowprice);
             mTvGoodsOrgPrice = (TextView) itemView.findViewById(R.id.tv_goods_orgprice);
-
             mcvContainer.setRadius(DisplayUtil.dip2px(mContext, 3.0f));
             mTvGoodsTip.setVisibility(View.GONE);
             mTvGoodsOrgPrice.setVisibility(View.GONE);

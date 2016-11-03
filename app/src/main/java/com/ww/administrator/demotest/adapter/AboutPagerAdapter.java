@@ -2,6 +2,7 @@ package com.ww.administrator.demotest.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.support.v4.view.PagerAdapter;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 
 import com.ww.administrator.demotest.IntroduceJvawa;
 import com.ww.administrator.demotest.R;
+import com.ww.administrator.demotest.util.ToolsUtil;
 
 import java.security.InvalidParameterException;
 
@@ -55,7 +57,12 @@ public class AboutPagerAdapter extends PagerAdapter {
         switch (position) {
             case 0:
                 if (abouJvawa == null){
-                    abouJvawa = layoutInflater.inflate(R.layout.about_jvawa_layout, parent, false);
+                    if (ToolsUtil.GetVersionSDK() < Build.VERSION_CODES.LOLLIPOP) {
+                        abouJvawa = layoutInflater.inflate(R.layout.about4_jvawa_layout, parent, false);
+                    } else {
+
+                        abouJvawa = layoutInflater.inflate(R.layout.about_jvawa_layout, parent, false);
+                    }
 
                     View.OnClickListener listener = new View.OnClickListener() {
                         @Override

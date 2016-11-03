@@ -54,7 +54,7 @@
             android:text="现价：￥6999-24999"
             android:textColor="#E4393C"
             android:layout_marginLeft="16dp"
-            android:textSize="14sp"/>
+            android:textSize="13sp"/>
 
         <TextView
             android:layout_width="match_parent"
@@ -66,7 +66,7 @@
             android:text="原价：￥13996-49996"
             android:textColor="#999999"
             android:layout_marginLeft="16dp"
-            android:textSize="14sp"/>
+            android:textSize="12sp"/>
 
     </RelativeLayout>
 

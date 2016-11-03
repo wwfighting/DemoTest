@@ -27,4 +27,14 @@
     <color name="scrim">#99786464</color>
 
     <color name="bg">#4d4d4d</color>
+
+    <!-- designer news -->
+    <color name="designer_news">#03a9f4</color> <!--light blue 500 -->-->
+    <color name="designer_news_dark">#039be5</color> <!-- light blue 600 -->
+    <color name="designer_news_link_highlight">#b303a9f4</color>
+
+    <color name="designer_news_super_dark">#000133</color>
+    <color name="designer_news_quote_line">#ffeceef1</color>
+    <color name="designer_news_quote">#73000000</color>
+
 </resources>

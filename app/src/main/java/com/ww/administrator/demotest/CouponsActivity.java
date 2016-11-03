@@ -9,7 +9,9 @@ import android.view.MenuItem;
 
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 import com.ww.administrator.demotest.adapter.TabVPAdapter;
-import com.ww.administrator.demotest.catefragment.LightFra;
+import com.ww.administrator.demotest.fragment.CouponsHasFragment;
+import com.ww.administrator.demotest.fragment.CouponsNoFragment;
+import com.ww.administrator.demotest.fragment.CouponsOverFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +26,7 @@ public class CouponsActivity extends AppCompatActivity {
     Toolbar mTb;
     private ViewPager mvp;
     private List<Fragment> mFralist = new ArrayList<>();
+    //mode：1：未使用 2：已使用 3：已过期
     private String[] mTitle = {"未使用", "已使用", "已过期"};
     private TabVPAdapter mAdapter;
     @Override
@@ -37,14 +40,14 @@ public class CouponsActivity extends AppCompatActivity {
 
     private void initTab() {
 
-        mFralist.add(new LightFra());
-        mFralist.add(new LightFra());
-        mFralist.add(new LightFra());
+        mFralist.add(new CouponsNoFragment());
+        mFralist.add(new CouponsHasFragment());
+        mFralist.add(new CouponsOverFragment());
 
         mAdapter = new TabVPAdapter(getSupportFragmentManager(), mTitle, mFralist);
         mvp.setAdapter(mAdapter);
         mTab.setViewPager(mvp);
-       /* mtabLayout.addTab(mtabLayout.newTab().setText(mTitle[0]));
+        /*mtabLayout.addTab(mtabLayout.newTab().setText(mTitle[0]));
         mtabLayout.addTab(mtabLayout.newTab().setText(mTitle[1]));
         mtabLayout.addTab(mtabLayout.newTab().setText(mTitle[2]));
         mtabLayout.setupWithViewPager(mvp);*/

@@ -19,6 +19,9 @@ import com.ww.administrator.demotest.pay.PayActivity;
 import com.ww.administrator.demotest.util.Constants;
 import com.ww.administrator.demotest.util.HttpUtil;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Created by Administrator on 2016/9/30.
  */
@@ -89,26 +92,40 @@ public class OrderNoPayFragment extends BaseFragment {
             @Override
             public void onResponse(String response) {
                 mpbOrder.setVisibility(View.GONE);
-                OrderResultInfo info = mGson.fromJson(response, OrderResultInfo.class);
-                if (info.getCode().equals("200")) {
-                    mtvOrderNo.setVisibility(View.GONE);
-                    mrvOrder.setVisibility(View.VISIBLE);
-                    mAdapter = new OrderFragmentAdapter(getActivity(), info);
-                    mrvOrder.setAdapter(mAdapter);
-                    mAdapter.setOnPayClickListener(new OrderFragmentAdapter.OnPayClickListener() {
-                        @Override
-                        public void getItem(OrderResultInfo.Databean info) {
-                            Intent intent = new Intent(getActivity(), PayActivity.class);
-                            intent.putExtra("title", info.getGoodsname());
-                            intent.putExtra("ordNum", Integer.parseInt(info.getSuperbillid()));
-                            intent.putExtra("payMoney", Integer.parseInt(info.getSchedprice()) * 100);
-                            startActivityForResult(intent, 100);
+
+                try{
+                    JSONObject jsonRoot = new JSONObject(response);
+                    String strCode = jsonRoot.getString("code");
+                    if (strCode.equals("200")){
+                        OrderResultInfo info = mGson.fromJson(response, OrderResultInfo.class);
+                        if (info.getCode().equals("200")){
+                            mtvOrderNo.setVisibility(View.GONE);
+                            mrvOrder.setVisibility(View.VISIBLE);
+                            mAdapter = new OrderFragmentAdapter(getActivity(),info);
+                            mrvOrder.setAdapter(mAdapter);
+                            mAdapter.setOnPayClickListener(new OrderFragmentAdapter.OnPayClickListener() {
+                                @Override
+                                public void getItem(OrderResultInfo.Databean info) {
+                                    Intent intent = new Intent(getActivity(), PayActivity.class);
+                                    intent.putExtra("title", info.getGoodsname());
+                                    intent.putExtra("ordNum", Integer.parseInt(info.getSuperbillid()));
+                                    intent.putExtra("payMoney", (int)(Float.parseFloat(info.getSchedprice()) * 100));
+                                    startActivityForResult(intent, 100);
+                                }
+                            });
+                        }else {
+                            mrvOrder.setVisibility(View.GONE);
+                            mtvOrderNo.setVisibility(View.VISIBLE);
+                            mtvOrderNo.setText(info.getInfo());
                         }
-                    });
-                } else {
-                    mrvOrder.setVisibility(View.GONE);
-                    mtvOrderNo.setVisibility(View.VISIBLE);
-                    mtvOrderNo.setText(info.getInfo());
+                    }else {
+                        //有误或者无数据
+                        mrvOrder.setVisibility(View.GONE);
+                        mtvOrderNo.setVisibility(View.VISIBLE);
+                        mtvOrderNo.setText(jsonRoot.getString("info"));
+                    }
+                }catch (JSONException e){
+                    e.printStackTrace();
                 }
             }
         }, new HttpUtil.Param[]{

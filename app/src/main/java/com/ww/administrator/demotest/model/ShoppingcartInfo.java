@@ -58,6 +58,8 @@ public class ShoppingcartInfo {
         private String price;
         private String subtitle;
         private String buycount;
+        private boolean isSelected;
+        private int orderMoney;
 
         public String getId() {
             return id;
@@ -67,7 +69,16 @@ public class ShoppingcartInfo {
             this.id = id;
         }
 
+        public int getOrderMoney() {
+            return orderMoney;
+        }
+
+        public void setOrderMoney(int orderMoney) {
+            this.orderMoney = orderMoney;
+        }
+
         public String getGoodsname() {
+
             return goodsname;
         }
 
@@ -77,6 +88,14 @@ public class ShoppingcartInfo {
 
         public String getImgurl() {
             return imgurl;
+        }
+
+        public boolean getisSelected() {
+            return isSelected;
+        }
+
+        public void setIsSelected(boolean isSelected) {
+            this.isSelected = isSelected;
         }
 
         public void setImgurl(String imgurl) {

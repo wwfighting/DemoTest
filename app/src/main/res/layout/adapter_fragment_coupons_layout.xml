@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:background="#e73333">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="2016双十一活动礼券"
+                android:id="@+id/tv_coupons_title"
+                android:textSize="16sp"
+                android:textColor="#FFFFFF"
+                android:gravity="center_vertical"/>
+
+            <ImageView
+                android:layout_width="54dp"
+                android:layout_height="54dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginLeft="16dp"
+                android:id="@+id/iv_coupons_show"
+                android:src="@mipmap/ic_launcher"/>
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="26dp"
+                android:text="礼券编号"
+                android:layout_centerHorizontal="true"
+                android:id="@+id/tv_coupons_no_lable"
+                android:layout_marginTop="16dp"
+                android:textSize="14sp"
+                android:textColor="#FFFFFF"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:text="JJ110251212121221"
+                android:layout_centerHorizontal="true"
+                android:id="@+id/tv_coupons_no"
+                android:layout_below="@+id/tv_coupons_no_lable"
+                android:textSize="12sp"
+                android:textColor="#FFFFFF"/>
+
+            <View
+                android:layout_width="100dp"
+                android:layout_height="1dp"
+                android:background="#FFFFFF"
+                android:layout_centerHorizontal="true"
+                android:id="@+id/tc_coupons_line"
+                android:layout_below="@+id/tv_coupons_no" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:text="定制产品可用"
+                android:layout_centerHorizontal="true"
+                android:id="@+id/tv_coupons_des"
+                android:layout_below="@+id/tc_coupons_line"
+                android:textSize="14sp"
+                android:layout_marginTop="8dp"
+                android:textColor="#FFFFFF"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:background="@drawable/dashed_shape"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_marginTop="8dp"
+        android:padding="8dp"
+        android:layout_height="35dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:textColor="#FFFFFF"
+            android:layout_alignParentLeft="true"
+            android:textSize="13sp"
+            android:text="礼券使用规则："/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:textColor="#FFFFFF"
+            android:id="@+id/tv_coupons_usetime"
+            android:layout_alignParentRight="true"
+            android:textSize="13sp"
+            android:text="有效期至：2016-11-11"/>
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:textColor="#FFFFFF"
+        android:id="@+id/tv_coupons_use_rule"
+        android:padding="8dp"
+        android:layout_alignParentRight="true"
+        android:textSize="12sp"
+        android:lineSpacingExtra="3dp"
+        android:text="在11.1-11.11期间，登陆家瓦商城并注册成功的客户，即可领取价值1000元超级无敌券。合同金额满3000方可扣减100元，最高抵扣1000元，在签订合同时使用，不找现，不找零。需要客户在11.11之前完成网上产品订购后方可生效。"/>
+
+</LinearLayout>

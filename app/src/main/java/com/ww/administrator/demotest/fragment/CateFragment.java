@@ -12,7 +12,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.ArrayAdapter;
 import android.widget.ExpandableListView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.pnikosis.materialishprogress.ProgressWheel;
@@ -22,17 +27,23 @@ import com.ww.administrator.demotest.AboutActivity;
 import com.ww.administrator.demotest.BaseFragment;
 import com.ww.administrator.demotest.R;
 import com.ww.administrator.demotest.SearchActivity;
+import com.ww.administrator.demotest.SelectCityActivity;
 import com.ww.administrator.demotest.adapter.CateContentAdapter;
 import com.ww.administrator.demotest.adapter.CateExpandableListAdapter;
+import com.ww.administrator.demotest.cityselect.MyApp;
+import com.ww.administrator.demotest.cityselect.utils.SharedPreUtil;
 import com.ww.administrator.demotest.model.CateInfo;
 import com.ww.administrator.demotest.model.ProductListInfo;
 import com.ww.administrator.demotest.util.Constants;
+import com.ww.administrator.demotest.util.DisplayUtil;
 import com.ww.administrator.demotest.util.HttpUtil;
 import com.ww.administrator.demotest.util.ToolsUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import me.drakeet.materialdialog.MaterialDialog;
 
 /**
  * Created by Administrator on 2016/7/19.
@@ -50,6 +61,11 @@ public class CateFragment extends BaseFragment {
     RecyclerView mrvContent;
     CateContentAdapter mContentAdapter;
     TextView mtvNoLabel;
+    MaterialDialog cityDialog;
+    ListView mlvCity;
+    String cityName = "";   //记录当前的城市
+    int mCurExpandPos = 0;   //记录点击的GroupPosition
+
 
     RecyclerView.LayoutManager mlayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
 
@@ -62,7 +78,6 @@ public class CateFragment extends BaseFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);//在fragment中设置toolbar上的menuitem可见
-
     }
 
     @Override
@@ -94,11 +109,40 @@ public class CateFragment extends BaseFragment {
                             startActivity(intent, transitionActivityOptions.toBundle());
                         }
 
-
                         return true;
-                    /*case R.id.menu_locate:
-                        //startActivity(new Intent(getActivity(), LocatCityActivity.class));
-                        return true;*/
+                    case R.id.menu_locate:
+                        startActivityForResult(new Intent(getActivity(), SelectCityActivity.class), 100);
+                        /*cityDialog.show();
+                        mlvCity.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                switch (position) {
+                                    case 0: //南京
+                                        cityName = "南京";
+                                        cityDialog.dismiss();
+
+                                        break;
+                                    case 1: //上海
+                                        cityName = "上海";
+                                        cityDialog.dismiss();
+
+                                        break;
+                                    case 2: //兰州
+                                        cityName = "兰州";
+                                        cityDialog.dismiss();
+
+                                        break;
+                                    case 3: //沈阳
+                                        cityName = "沈阳";
+                                        cityDialog.dismiss();
+
+                                        break;
+                                }
+                                SharedPreUtil.saveData(getActivity(), "locatCity", cityName);
+                                loadDatas();
+                            }
+                        });*/
+                        return true;
 
                     case R.id.menu_about:
                         if (ToolsUtil.GetVersionSDK() < Build.VERSION_CODES.LOLLIPOP){
@@ -129,11 +173,32 @@ public class CateFragment extends BaseFragment {
 
     @Override
     protected void doBusiness() {
+        initCity();
         loadDatas();
+        initDialog();
         //ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(), R.layout.view_row, R.id.header_text, array);
     }
+    private void initCity(){
+        cityName = (String) SharedPreUtil.getData(getActivity(), "locatCity", "南京");
+    }
+    private void initDialog(){
+        cityDialog = new MaterialDialog(getActivity());
+        cityDialog.setTitle("选择城市");
 
+        LinearLayout linearLayout = new LinearLayout(getActivity());
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DisplayUtil.dip2px(getActivity(), 200));
+        lp.setMargins(10, 10, 10, 0);
+        linearLayout.setLayoutParams(lp);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        mlvCity = new ListView(getActivity());
+        AbsListView.LayoutParams ablp = new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DisplayUtil.dip2px(getActivity(), 200));
+        mlvCity.setLayoutParams(ablp);
+        mlvCity.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, Constants.CITY_ARRAY));
 
+        linearLayout.addView(mlvCity);
+        cityDialog.setContentView(linearLayout);
+        cityDialog.setCanceledOnTouchOutside(true);
+    }
     private void loadDatas(){
         HttpUtil.postAsyn(Constants.BASE_URL + "get_class.php", new HttpUtil.ResultCallback<CateInfo>() {
             @Override
@@ -145,6 +210,8 @@ public class CateFragment extends BaseFragment {
             public void onResponse(CateInfo info) {
                 mpbLoad.setVisibility(View.GONE);
                 mlvCate.setVisibility(View.VISIBLE);
+                mListTitle.clear();
+                mListContent.clear();
                 if (info.getCode().toString().equals("200")) {
                     for (int i = 0; i < info.getData().size(); i++) {
                         if (info.getData().get(i).getParentid().equals("0")) {   //得到种类标题
@@ -169,8 +236,27 @@ public class CateFragment extends BaseFragment {
 
                     mAdapter = new CateExpandableListAdapter(getActivity(), mListTitle, map);
                     mlvCate.setAdapter(mAdapter);
-                    mlvCate.expandGroup(0);
-                    loadContentDatas(mAdapter.getChild(0, 0).getId());
+                    mlvCate.expandGroup(mCurExpandPos);
+
+                    loadContentDatas(mAdapter.getChild(mCurExpandPos, 0).getId());
+
+                    //点击左栏分类标题
+                    mlvCate.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+                        @Override
+                        public void onGroupExpand(int groupPosition) {
+                            if (mCurExpandPos != groupPosition) {
+                                mtvNoLabel.setVisibility(View.GONE);
+                                mrvContent.setVisibility(View.GONE);
+                                mpbContent.setVisibility(View.VISIBLE);
+                                mlvCate.collapseGroup(mCurExpandPos);
+                                loadContentDatas(mAdapter.getChild(groupPosition, 0).getId());
+                                mCurExpandPos = groupPosition;
+
+                            }
+                        }
+                    });
+
+                    //点击左栏分类子标题
                     mlvCate.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
                         @Override
                         public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
@@ -189,7 +275,8 @@ public class CateFragment extends BaseFragment {
 
             }
         }, new HttpUtil.Param[]{
-                new HttpUtil.Param("action", "class")
+                new HttpUtil.Param("action", "class"),
+                new HttpUtil.Param("city", cityName)
         });
     }
 
@@ -213,7 +300,6 @@ public class CateFragment extends BaseFragment {
                     if (info.getData().size() != 0){
                         mrvContent.setVisibility(View.VISIBLE);
                         mContentAdapter = new CateContentAdapter(getActivity(), info);
-
                         mrvContent.setAdapter(mContentAdapter);
                     }else {
                         mtvNoLabel.setVisibility(View.VISIBLE);
@@ -224,6 +310,21 @@ public class CateFragment extends BaseFragment {
         }, new HttpUtil.Param[]{
                 new HttpUtil.Param("cid", cid)
         });
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        MyApp app =(MyApp) getActivity().getApplicationContext();
+        Object obj = app.GetActivityIntent(Constants.CATE_REFRESH);
+        if (null != obj) {
+            int iValue = (Integer) obj;
+            if (iValue == 10) {  //1为刷新
+                cityName = (String) SharedPreUtil.getData(getActivity(), "locatCity", "南京");
+                loadDatas();
+            }
+        }
     }
 
     @Override

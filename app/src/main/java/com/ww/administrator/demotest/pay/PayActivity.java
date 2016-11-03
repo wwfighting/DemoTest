@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.pnikosis.materialishprogress.ProgressWheel;
 import com.squareup.okhttp.Request;
 import com.unionpay.UPPayAssistEx;
@@ -71,6 +72,7 @@ public class PayActivity extends AppCompatActivity {
     String billChannel = "";
     String tradeNum = "";
     String price = "";
+    Gson mGson = new Gson();
 
     TextView mtvTitle, mtvMoney, mtvOrderNum;
     //支付结果返回入口
@@ -124,7 +126,7 @@ public class PayActivity extends AppCompatActivity {
                          * 以下是正常流程，请按需处理失败信息
                          */
 
-                        Toast.makeText(PayActivity.this, toastMsg, Toast.LENGTH_LONG).show();
+                        //Toast.makeText(PayActivity.this, toastMsg, Toast.LENGTH_LONG).show();
                         Log.e(TAG, toastMsg);
 
                         if (bcPayResult.getErrMsg().equals(BCPayResult.FAIL_PLUGIN_NOT_INSTALLED)) {
@@ -197,13 +199,7 @@ public class PayActivity extends AppCompatActivity {
 
     // 通过Handler.Callback()可消除内存泄漏警告
     private Handler mHandler = new Handler(new Handler.Callback() {
-        /**
-         * Callback interface you can use when instantiating a Handler to avoid
-         * having to implement your own subclass of Handler.
-         *
-         * handleMessage() defines the operations to perform when
-         * the Handler receives a new Message to process.
-         */
+
         @Override
         public boolean handleMessage(Message msg) {
             if (msg.what == 1) {
@@ -262,7 +258,13 @@ public class PayActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mtvTitle.setText(payTitle);
-        mtvMoney.setText("￥" + payMoney / 100);
+        int moneyShow = payMoney / 100;
+        if (moneyShow == 0){
+            mtvMoney.setText("￥0.01");
+        }else {
+            mtvMoney.setText("￥" + payMoney / 100);
+        }
+
         mtvOrderNum.setText(ordNum + "");
 
         manager = new LinearLayoutManager(PayActivity.this, LinearLayoutManager.VERTICAL, false);
@@ -288,9 +290,11 @@ public class PayActivity extends AppCompatActivity {
                         mOtherDialog.show();
                         break;
 
-                    case 2: //百度钱包支付
-                        mOtherDialog.setMessage("抱歉尚未开通百度钱包！");
-                        mOtherDialog.show();
+                    case 2: //银联
+                        /*mOtherDialog.setMessage("抱歉尚未开通银联支付！");
+                        mOtherDialog.show();*/
+                        mDialog.show();
+                        useUnionPay();
                         break;
                 }
             }
@@ -310,6 +314,9 @@ public class PayActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * 使用微信支付
+     */
     private void useWechatPay(){
         //对于微信支付, 手机内存太小会有OutOfResourcesException造成的卡顿, 以致无法完成支付
         //这个是微信自身存在的问题
@@ -318,14 +325,14 @@ public class PayActivity extends AppCompatActivity {
         mapOptional.put("客户端", "android");
         mapOptional.put("商品订单", ordNum + "");
         mapOptional.put("erpNum", erpNum);
-        mapOptional.put("预约金", 1 + "");
+        mapOptional.put("预约金", payMoney + "");
 
         if (BCPay.isWXAppInstalledAndSupported() &&
                 BCPay.isWXPaySupported()) {
 
             BCPay.getInstance(PayActivity.this).reqWXPaymentAsync(
-                    payTitle,               //订单标题
-                    1,                           //订单金额(分)
+                    "家瓦商城:" + ordNum,               //订单标题
+                    payMoney,                           //订单金额(分)
                     ordNum + "",  //订单流水号
                     mapOptional,            //扩展参数(可以null)
                     bcCallback);            //支付完成后回调入口
@@ -339,16 +346,41 @@ public class PayActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * 使用银联支付
+     */
+
+    private void useUnionPay(){
+        BCPay.PayParams payParam = new BCPay.PayParams();
+
+        payParam.channelType = BCReqParams.BCChannelTypes.UN_APP;
+
+        //商品描述, 32个字节内, 汉字以2个字节计
+        payParam.billTitle = "家瓦商城:" + ordNum;
+
+        //支付金额，以分为单位，必须是正整数
+        payParam.billTotalFee = payMoney;
+
+        //商户自定义订单号
+        payParam.billNum = ordNum +"";
+
+        BCPay.getInstance(PayActivity.this).reqPaymentAsync(payParam,
+                bcCallback);
+    }
+
     //保存支付单
     private void paySuccess(){
-        HttpUtil.postAsyn(Constants.BASE_URL + "save_bill.php", new HttpUtil.ResultCallback<ResultInfo>() {
+
+        HttpUtil.postAsyn(Constants.BASE_URL + "save_bill.php", new HttpUtil.ResultCallback<String>() {
             @Override
             public void onError(Request request, Exception e) {
 
             }
 
             @Override
-            public void onResponse(ResultInfo info) {
+            public void onResponse(String response) {
+
+                ResultInfo info = mGson.fromJson(response, ResultInfo.class);
                 if (info.getCode().equals("200")){
                     Toast.makeText(PayActivity.this, "支付成功！去 '我的订单' 查询订单", Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(PayActivity.this, CommitOrderActivity.class);

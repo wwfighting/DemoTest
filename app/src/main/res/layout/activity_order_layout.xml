@@ -65,7 +65,8 @@
 
                     <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="50dp">
+                        android:layout_height="50dp"
+                        android:id="@+id/rl_order_store">
 
                         <TextView
                             android:layout_width="match_parent"

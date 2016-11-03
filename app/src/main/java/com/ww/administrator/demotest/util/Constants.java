@@ -6,7 +6,8 @@ package com.ww.administrator.demotest.util;
 public class Constants {
 
     //api
-    public static final String BASE_URL = "http://192.168.1.89/test/jvawa/";
+    //public static final String BASE_URL = "http://192.168.1.25/test/jvawa/";
+    public static final String BASE_URL = "http://www.jvawa.com/new/jvawaApi/";
     public static final String BASE_IMG_URL= "http://www.jvawa.com/";
 
     //file
@@ -22,8 +23,12 @@ public class Constants {
     public static final String MY_REFRESH = "MY_REFRESH";
     public static final String ADDRESS_REFRESH = "ADDRESS_REFRESH";
     public static final String ADD_SHOPPING_CART_REFRESH = "ADD_SHOPPING_CART_REFRESH";
+    public static final String HOME_REFRESH = "HOME_REFRESH";
+    public static final String CATE_REFRESH = "CATE_REFRESH";
 
     //params
     public static final String[] FLOW_LAYOUT_TITLE = {"小康美厨","尚品魅厨","精英悦厨","铂金丽厨",
             "名家雅厨","欧风御厨","至尊典厨"};
+
+    public static final String[] CITY_ARRAY = new String[]{"南京","上海","兰州","沈阳"};
 }

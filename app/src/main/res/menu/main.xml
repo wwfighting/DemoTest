@@ -28,12 +28,12 @@
         android:icon="@drawable/ic_search_24dp"
         app:showAsAction="always" />
 
-    <!--<item
+    <item
         android:id="@+id/menu_locate"
         android:title="Locate"
         android:orderInCategory="80"
         android:icon="@drawable/ic_room_24dp"
-        app:showAsAction="always" />-->
+        app:showAsAction="always" />
 
 
     <item

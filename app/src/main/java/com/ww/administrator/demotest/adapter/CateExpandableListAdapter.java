@@ -87,6 +87,7 @@ public class CateExpandableListAdapter implements ExpandableListAdapter  {
 
         if (convertView == null){
             convertView = LayoutInflater.from(mContext).inflate(R.layout.cate_header_view, null);
+
         }
 
         ((TextView) convertView.findViewById(R.id.tv_cate_header)).setText(getGroup(groupPosition).getName());

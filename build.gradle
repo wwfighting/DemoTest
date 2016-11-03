@@ -17,7 +17,12 @@ allprojects {
         jcenter()
     }
 }
-
+allprojects {
+    repositories {
+        jcenter()
+        maven { url "https://raw.githubusercontent.com/Pgyer/mvn_repo_pgyer/master" }
+    }
+}
 task clean(type: Delete) {
     delete rootProject.buildDir
 }

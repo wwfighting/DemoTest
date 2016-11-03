@@ -37,6 +37,7 @@ import com.ww.administrator.demotest.adapter.ShoppingCartAddressAdapter;
 import com.ww.administrator.demotest.adapter.StaffAdapter;
 import com.ww.administrator.demotest.adapter.StoreAdapter;
 import com.ww.administrator.demotest.cityselect.MyApp;
+import com.ww.administrator.demotest.cityselect.utils.SharedPreUtil;
 import com.ww.administrator.demotest.model.AddressInfo;
 import com.ww.administrator.demotest.model.DefaultAddress;
 import com.ww.administrator.demotest.model.GoodsDetailInfo;
@@ -131,7 +132,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
     int morderMoney = 2000;  //预约金
     String strallMoney = "";  //预估价
     String strTip = ""; //备注
-    int allMoney;
+    float allMoney;
 
     EditText metTip;
     Button mbtnCommit;
@@ -158,7 +159,12 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
     LinearLayout mllNumContainer;
     int orderNum = 1;
 
-    int partMoney = 0;
+    float partMoney = 0;
+
+    int orderMode = -1; //代表订单类型
+
+    RelativeLayout mrlStoreChoose;
+    CardView mcvTipContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -177,8 +183,10 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         uid = ((MyApp) getApplicationContext()).getUser().getId();
         mimgUrl = getIntent().getExtras().getString("imgurl");
         mGid = getIntent().getExtras().getString("gid");
+        orderMode = getIntent().getExtras().getInt("orderMode", -1);
         mDetailInfo = mGson.fromJson(getIntent().getExtras().getString("response"), GoodsDetailInfo.class);
-        partMoney = Integer.parseInt(mDetailInfo.getData().getDetail().getPrice());
+        partMoney = Float.parseFloat(mDetailInfo.getData().getDetail().getPrice());
+
         if (getIntent().getExtras().getString("storeName") != null){
             mcity = getIntent().getExtras().getString("city");
             mstoreId = getIntent().getExtras().getString("storeId");
@@ -230,6 +238,8 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         mivShow = (ImageView) findViewById(R.id.iv_order_show);
         lineFloor = findViewById(R.id.line_floor);
         lineHanging = findViewById(R.id.line_hanging);
+        mrlStoreChoose = (RelativeLayout) findViewById(R.id.rl_order_store);
+        mcvTipContainer = (CardView) findViewById(R.id.cv_tip_container);
 
         mtvNumMinus = (TextView) findViewById(R.id.tv_order_count_minus);
         mtvNumPlus = (TextView) findViewById(R.id.tv_order_count_plus);
@@ -251,7 +261,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         mtvAllMoney = (TextView) findViewById(R.id.tv_all_money);
         strGoodsName = mDetailInfo.getData().getDetail().getGoodsname();
         mtvTitle.setText(mDetailInfo.getData().getDetail().getGoodsname());
-        allMoney = Integer.valueOf(mDetailInfo.getData().getDetail().getPrice());
+        allMoney = Float.valueOf(mDetailInfo.getData().getDetail().getPrice());
         mtvOrderMoneyShow.setText(mDetailInfo.getData().getDetail().getOrdermoney() + "");
         mtvOrderMoney.setText("￥" + mDetailInfo.getData().getDetail().getOrdermoney());
         mtvAllMoney.setText("￥" + mDetailInfo.getData().getDetail().getPrice());
@@ -263,6 +273,13 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         if (mDetailInfo.getData().getDetail().getSubtitle().equals("配件")){
             mtvOrderMinus.setVisibility(View.GONE);
             mtvOrderPlus.setVisibility(View.GONE);
+
+            if (orderMode == 500){
+                mtvNumMinus.setVisibility(View.GONE);
+                mtvNumPlus.setVisibility(View.GONE);
+                mcvTipContainer.setVisibility(View.GONE);
+                mrlStoreChoose.setVisibility(View.GONE);
+            }
         }
 
     }
@@ -416,6 +433,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                 if (botAddDialog.isShowing()) {
                     botAddDialog.dismiss();
                 }
+                startActivity(new Intent(OrderActivity.this, AddAddressActivity.class));
             }
         });
         mtvAddNew.setOnClickListener(new View.OnClickListener() {
@@ -463,10 +481,10 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void onResponse(String response) {
 
-                try{
+                try {
                     JSONObject jsonRoot = new JSONObject(response);
                     String strCode = jsonRoot.getString("code");
-                    if (strCode.equals("200")){
+                    if (strCode.equals("200")) {
                         AddressInfo info = mGson.fromJson(response, AddressInfo.class);
                         if (info.getData() != null) {
                             mInfo = info;
@@ -478,7 +496,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                                     + info.getData().get(d.getPos()).getAddress();
                         }
                     }
-                }catch (JSONException e){
+                } catch (JSONException e) {
                     e.printStackTrace();
 
                 }
@@ -705,12 +723,16 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                     submitPartsOrder();
                 }
 
-                if (mDetailInfo.getData().getDetail().getSubtitle().equals("")){
+                if (mDetailInfo.getData().getDetail().getSubtitle().equals("") && orderMode != 500){
                     submitMainOrder();
                 }
 
                 if (mDetailInfo.getData().getDetail().getSubtitle().equals("全屋定制")){
                     submitHomeOrder();
+                }
+
+                if (orderMode == 500){
+                    submitEventOrder();
                 }
 
                 break;
@@ -947,6 +969,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
             startActivityForResult(intent, 100, transitionActivityOptions.toBundle());
         }
     }
+
     /**
      * 提交橱柜订单
      */
@@ -1016,6 +1039,57 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
             startActivityForResult(intent,100, transitionActivityOptions.toBundle());
         }
 
+    }
+
+    /**
+     * 提交活动订单
+     */
+    private void submitEventOrder(){
+
+        mstoreName = "无";
+        mstaffName = "无";
+        if (mstaffName.equals("") || mstoreName.equals("")){
+            showSnackbar("请选择门店导购！");
+            return;
+        }
+
+        if (strReceiverInfo.equals("")){
+            showSnackbar("请填写收货人信息！");
+            return;
+        }
+
+        if (!TextUtils.isEmpty(metTip.getText().toString())){
+            strTip = metTip.getText().toString();
+        }
+
+        //strorderMoney = mtvOrderMoney.getText().toString();
+        //strallMoney = mtvAllMoney.getText().toString();
+        strallMoney = mtvOrderMoney.getText().toString();
+
+        Intent intent = new Intent(OrderActivity.this, CommitOrderActivity.class);
+        intent.putExtra("ordermode", 500);
+        intent.putExtra("gid", mGid);
+        intent.putExtra("goodsName", strGoodsName);
+        intent.putExtra("imgurl", mimgUrl);
+        intent.putExtra("receiverInfo", strReceiverInfo);
+        intent.putExtra("staffName", mstaffName);
+        intent.putExtra("storeName", mstoreName);
+        intent.putExtra("orderMoney", mtvOrderMoney.getText().toString());
+        intent.putExtra("allMoney", strallMoney);
+        intent.putExtra("tip", strTip);
+        intent.putExtra("storeid", "0");
+        intent.putExtra("salerNo", "001");
+        intent.putExtra("city", (String)SharedPreUtil.getData(OrderActivity.this, "localCity", "南京"));
+        intent.putExtra("num", 1);
+
+        if (ToolsUtil.GetVersionSDK() < Build.VERSION_CODES.LOLLIPOP) {
+            startActivity(intent);
+        }else {
+            View sharedView = mivShow;
+            String transitionName = "transview";
+            ActivityOptions transitionActivityOptions = ActivityOptions.makeSceneTransitionAnimation(OrderActivity.this, sharedView, transitionName);
+            startActivityForResult(intent, 100, transitionActivityOptions.toBundle());
+        }
     }
 
     private void showSnackbar(String str){

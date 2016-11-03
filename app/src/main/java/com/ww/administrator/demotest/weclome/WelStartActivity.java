@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.ww.administrator.demotest.MainActivity;
 import com.ww.administrator.demotest.R;
-import com.ww.administrator.demotest.cityselect.utils.SharedPreUtil;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -60,7 +59,9 @@ public class WelStartActivity extends AppCompatActivity {
     class WelTask extends TimerTask {
         @Override
         public void run() {
-           if ((Boolean) SharedPreUtil.getData(WelStartActivity.this, "isFirst", false)){
+            startActivity(new Intent(WelStartActivity.this, MainActivity.class));
+            finish();
+           /* if ((Boolean) SharedPreUtil.getData(WelStartActivity.this, "isFirst", false)){
                 startActivity(new Intent(WelStartActivity.this, MainActivity.class));
                 finish();
             }else {
@@ -68,7 +69,7 @@ public class WelStartActivity extends AppCompatActivity {
                 startActivity(new Intent(WelStartActivity.this, WelGuideActivity.class));
                 finish();
 
-            }
+            }*/
 
         }
     }

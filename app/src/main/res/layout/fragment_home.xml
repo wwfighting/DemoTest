@@ -31,5 +31,15 @@
             android:layout_height="match_parent"/>
     </com.ww.administrator.demotest.CustomSwipeToRefresh>
 
+    <ImageView
+        android:id="@+id/iv_event"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="8dp"
+        android:visibility="gone"
+        android:src="@drawable/ic_activity_fab"
+        android:clickable="true" />
+
 
 </android.support.design.widget.CoordinatorLayout>

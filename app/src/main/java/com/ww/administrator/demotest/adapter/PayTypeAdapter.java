@@ -21,7 +21,7 @@ public class PayTypeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     PayType[] payTypes = {
             new PayType(R.mipmap.wechat, "微信支付", "使用微信支付，以人民币CNY计算"),
             new PayType(R.mipmap.alipay, "支付宝支付", "使用支付宝支付，以人民币CNY计算"),
-            new PayType(R.mipmap.baidupay, "百度钱包", "使用百度钱包支付，以人民币CNY计算")
+            new PayType(R.mipmap.unionpay, "银联支付", "使用银联支付，以人民币CNY计算")
     };
 
     public interface TypeClickListener{

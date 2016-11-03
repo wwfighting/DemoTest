@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.ww.administrator.demotest.BannerConActivity;
 import com.ww.administrator.demotest.R;
+import com.ww.administrator.demotest.event.SignInEventActivity;
 import com.ww.administrator.demotest.model.ActyInfo;
 import com.ww.administrator.demotest.util.Constants;
 
@@ -62,9 +63,14 @@ public class HotActyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 ((ActyViewHolder) holder).mbtnGo.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(mContext, BannerConActivity.class);
-                        intent.putExtra("bannerUrl", mInfo.getData().get(position).getHref());
-                        mContext.startActivity(intent);
+                        if (mInfo.getData().get(position).getHref().equals("qdyl.php")){
+                            Intent intent = new Intent(mContext, SignInEventActivity.class);
+                            mContext.startActivity(intent);
+                        }else {
+                            Intent intent = new Intent(mContext, BannerConActivity.class);
+                            intent.putExtra("bannerUrl", "http://www.jvawa.com/app/" + mInfo.getData().get(position).getHref());
+                            mContext.startActivity(intent);
+                        }
 
                     }
                 });

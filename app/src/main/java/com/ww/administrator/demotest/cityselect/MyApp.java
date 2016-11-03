@@ -3,6 +3,7 @@ package com.ww.administrator.demotest.cityselect;
 import android.app.Application;
 
 import com.facebook.stetho.Stetho;
+import com.pgyersdk.crash.PgyCrashManager;
 import com.ww.administrator.demotest.cityselect.db.DBManager;
 import com.ww.administrator.demotest.model.User;
 import com.ww.administrator.demotest.util.Constants;
@@ -47,6 +48,9 @@ public class MyApp extends Application{
         BeeCloud.setSandbox(false);
         BeeCloud.setAppIdAndSecret("2cf805f4-3842-4ab2-871d-421251da961d",
                 "5b813c99-80f3-4ca5-b725-78cc3c0773e8");
+
+        //注册蒲公英crash收集
+        PgyCrashManager.register(this);
     }
 
     /**

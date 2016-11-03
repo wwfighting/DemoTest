@@ -20,8 +20,7 @@ public class FileUtil {
         if (sdCardExist) {
             sdDir = Environment.getExternalStorageDirectory();// 获取跟目录
         }
-        else
-        {
+        else {
             sdDir = Environment.getRootDirectory();
         }
 
@@ -62,9 +61,7 @@ public class FileUtil {
     public static boolean WriteObject(String strFile, Object oc) {
         try {
             FileOutputStream outStream = new FileOutputStream(strFile);
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(
-                    outStream);
-
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(outStream);
             objectOutputStream.writeObject(oc);
             objectOutputStream.flush();
             outStream.close();

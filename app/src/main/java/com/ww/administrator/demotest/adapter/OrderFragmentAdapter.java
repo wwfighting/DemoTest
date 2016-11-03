@@ -102,8 +102,8 @@ public class OrderFragmentAdapter extends RecyclerView.Adapter<RecyclerView.View
 
             ((OrderFraViewHolder) holder).mtvTitle.setText(mList.get(position).getGoodsname() + "(" + mList.get(position).getColor() + ")");
 
-            ((OrderFraViewHolder) holder).mtvOrderMoney.setText("预约金：￥" + mList.get(position).getSchedprice());
-            ((OrderFraViewHolder) holder).mtvAllMoney.setText("金额：￥" + mList.get(position).getBillprice());
+            ((OrderFraViewHolder) holder).mtvOrderMoney.setText("支付金额：￥" + mList.get(position).getSchedprice());
+            //((OrderFraViewHolder) holder).mtvAllMoney.setText("金额：￥" + mList.get(position).getBillprice());
 
             ((OrderFraViewHolder) holder).mbtnToPay.setOnClickListener(new View.OnClickListener() {
                 @Override

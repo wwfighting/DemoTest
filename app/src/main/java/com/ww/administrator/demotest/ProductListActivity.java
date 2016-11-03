@@ -177,7 +177,7 @@ public class ProductListActivity extends AppCompatActivity {
                 mRvProList.setAdapter(mAdapter);
             }
         }, new HttpUtil.Param[]{
-                new HttpUtil.Param("gid", classId)
+                new HttpUtil.Param("cid", classId)
         });
     }
 

@@ -43,6 +43,7 @@ public class UpdateAddressActivity extends AppCompatActivity implements View.OnC
     AddressInfo.DataBean mDatas;
     boolean isExpand = true;
     String uid = "-1";
+    int current = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +76,7 @@ public class UpdateAddressActivity extends AppCompatActivity implements View.OnC
         metName.setText(mDatas.getReceivername());
         metPhone.setText(mDatas.getPhone());
         metAddress.setText(mDatas.getAddress());
-        mcbSetDefault.setChecked(mDatas.getIsdefault().equals("1")?true:false);
+        mcbSetDefault.setChecked(mDatas.getIsdefault().equals("1") ? true : false);
 
         mbtnUpdate.setText("确认修改");
         if (isExpand){
@@ -87,23 +88,26 @@ public class UpdateAddressActivity extends AppCompatActivity implements View.OnC
         mspCity.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                metAddress.setText(mspCity.getSelectedItem() + mspZone.getSelectedItem().toString());
+                if (current > 1){
+                    metAddress.setText(mspCity.getSelectedItem() + mspZone.getSelectedItem().toString());
+                }
+
                 switch (position){
                     case 0:
-                        zoneArr  = getResources().getStringArray(R.array.nj_zone);
-
+                        zoneArr = getResources().getStringArray(R.array.nj_zone);
+                        current ++;
                         break;
                     case 1:
                         zoneArr  = getResources().getStringArray(R.array.lz_zone);
-
+                        current ++;
                         break;
                     case 2:
                         zoneArr  = getResources().getStringArray(R.array.sh_zone);
-
+                        current ++;
                         break;
                     case 3:
                         zoneArr  = getResources().getStringArray(R.array.sy_zone);
-
+                        current ++;
                         break;
                 }
                 ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(UpdateAddressActivity.this, android.R.layout.simple_spinner_dropdown_item, zoneArr);
@@ -118,7 +122,11 @@ public class UpdateAddressActivity extends AppCompatActivity implements View.OnC
         mspZone.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                metAddress.setText(mspCity.getSelectedItem() + mspZone.getSelectedItem().toString());
+                current ++ ;
+                if (current > 2){
+                    metAddress.setText(mspCity.getSelectedItem() + mspZone.getSelectedItem().toString());
+                }
+
             }
 
             @Override

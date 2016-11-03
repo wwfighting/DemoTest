@@ -7,6 +7,7 @@ import android.animation.TypeEvaluator;
 import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.PointF;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -135,7 +136,10 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     TextView mtvNum;
     int orderNum = 1;
 
-    int partMoney = 0;
+    float partMoney = 0;
+    String mode = "";   //记录商品的类别
+    int num = 1;    //记录商品的数量
+    LinearLayout llMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,6 +157,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     private void initViews() {
         mTbDetail = (Toolbar) findViewById(R.id.tb_detail);
         mTlDetail = (TabLayout) findViewById(R.id.tl_detail);
+        llMode = (LinearLayout) findViewById(R.id.ll_mode);
         mVpDetail = (AutoHeightViewPager) findViewById(R.id.vp_detail);
         mBanner = (ConvenientBanner) findViewById(R.id.cb_detail);
         mNsvDetail = (NestedScrollView) findViewById(R.id.nsv_detail);
@@ -242,6 +247,28 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
                 mInfo = mGson.fromJson(response, GoodsDetailInfo.class);
                 if (mInfo.getCode().equals("200")) {
+
+                    if (mInfo.getData().getDetail().getSubtitle().equals("全屋定制")) {
+                        mode = "0";
+                        mTvDetailprice.setVisibility(View.GONE);
+                        mTvDetailOrgMoney.setVisibility(View.GONE);
+                        mcvColor.setVisibility(View.GONE);
+                        mcvTaimian.setVisibility(View.GONE);
+                        llMode.setVisibility(View.GONE);
+                    }
+                    if (mInfo.getData().getDetail().getSubtitle().equals("全屋定制") || mInfo.getData().getDetail().getSubtitle().equals("")) {
+                        mode = "0";
+                        mfabOrder.setTitle("一键预约");
+
+                    } else if (mInfo.getData().getDetail().getSubtitle().equals("配件")) {
+                        mode = "1";
+                        mTvDetailOrderMoney.setVisibility(View.GONE);
+                        llMode.setVisibility(View.GONE);
+                        mTvDetailOrgMoney.setVisibility(View.GONE);
+                        mfabOrder.setTitle("立即购买");
+                        mTvDetailOrderCount.setVisibility(View.GONE);
+
+                    }
                     strGoodsDetailInfo = response;
                     initBanner();
                     initMoney();
@@ -274,7 +301,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                 return new NetworkImageHolderView();
             }
         },networkImages)
-                .setPageIndicator(new int[]{R.drawable.ic_page_indicator, R.drawable.ic_page_indicator_focused});
+                .setPageIndicator(new int[]{R.drawable.page_indicator_normal, R.drawable.page_indicator_focused});
 
         Glide.with(this)
                 .load(networkImages.get(0))
@@ -293,18 +320,25 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
      */
 
     private void initMoney(){
-        mTvDetailprice.setText("现价：￥" + mInfo.getData().getDetail().getPrice() + "-" + mInfo.getData().getDetail().getPrice1());
-        String orgPrice = "原价：￥" + mInfo.getData().getDetail().getPrice_old() + "-" + mInfo.getData().getDetail().getPrice_old1();
+        mTvDetailprice.setText("现价：￥" + mInfo.getData().getDetail().getPrice());
+        String orgPrice = "原价：￥" + mInfo.getData().getDetail().getPrice_old();
         String orderMoney = "预约金：" + mInfo.getData().getDetail().getOrdermoney();
-        partMoney = Integer.parseInt(mInfo.getData().getDetail().getPrice());
+        partMoney = Float.parseFloat(mInfo.getData().getDetail().getPrice());
         mTvDetailOrgMoney.setText(TextUtil.setStrSpan(orgPrice));
         if (mInfo.getData().getDetail().getSubtitle().equals("配件")){
-            mTvDetailOrderMoney.setText(TextUtil.setStrSpan(orderMoney));
-        }else {
-            mTvDetailOrderMoney.setText(orderMoney);
-
+            mTvDetailOrderMoney.setVisibility(View.VISIBLE);
+            mTvDetailOrderMoney.setTextColor(Color.parseColor("#999999"));
+            mTvDetailOrderMoney.setText(mInfo.getData().getDetail().getOrdercount() + "人预约");
         }
-        mTvDetailOrderCount.setText(mInfo.getData().getDetail().getOrdercount() + "人预约");
+
+        if (mInfo.getData().getDetail().getSubtitle().equals("全屋定制")){
+            mTvDetailOrderMoney.setTextColor(Color.parseColor("#999999"));
+            mTvDetailOrderMoney.setText(mInfo.getData().getDetail().getOrdercount() + "人预约");
+            mTvDetailprice.setVisibility(View.VISIBLE);
+            mTvDetailOrderCount.setVisibility(View.GONE);
+
+            mTvDetailprice.setText(orderMoney);
+        }
 
     }
 
@@ -321,7 +355,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
             llCountContainer.setVisibility(View.GONE);
             mcvColor.setVisibility(View.VISIBLE);
             mcvTaimian.setVisibility(View.VISIBLE);
-            mTvDetailMode.setText("3-10米地板+3-10米台面+1-5米吊柜");
+            mTvDetailMode.setText("3米地板 + 3米台面 + 1米吊柜");
         }
     }
     /**
@@ -454,7 +488,9 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         }, new HttpUtil.Param[]{
                 new HttpUtil.Param("uid", uid),
                 new HttpUtil.Param("gid", mGid),
-                new HttpUtil.Param("action", "add")
+                new HttpUtil.Param("action", "add"),
+                new HttpUtil.Param("mode", mode),
+                new HttpUtil.Param("num", num + "")
         });
     }
 
@@ -600,7 +636,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
      *
      * @return
      */
-    public Animation setShakeAnimation(int counts) {
+    private Animation setShakeAnimation(int counts) {
         Animation translateAnimation = new TranslateAnimation(0, 10, 0, 0);
         translateAnimation.setInterpolator(new CycleInterpolator(counts));
         translateAnimation.setDuration(500);

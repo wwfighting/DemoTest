@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_event_sign_bg"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="240dp"
+        android:layout_marginTop="200dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
+        android:textColor="#e41d1d"
+        android:padding="32dp"
+        android:textSize="14sp"
+        android:id="@+id/tv_sign_label"
+        android:background="@drawable/ic_event_border_bg"
+        android:text="        在11.1-11.11期间，使用家瓦商城App并注册登录的客户，即可签到领取价值1000元超级无敌券。合同金额3000方可扣减100元，最高抵扣1000元，在签订正式合同时使用，不找现，不找零。需要客户在11.11之前完成网上产品订购后方可生效！"
+        android:lineSpacingExtra="8dp"/>
+
+    <Button
+        android:layout_width="220dp"
+        android:layout_height="40dp"
+        android:id="@+id/btn_event_sign"
+        android:textColor="#7e6f6f"
+        android:layout_below="@+id/tv_sign_label"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/ic_event_sign_btn_bg"/>
+
+
+</RelativeLayout>

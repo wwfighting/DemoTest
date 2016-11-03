@@ -7,13 +7,19 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
+import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import com.pgyersdk.javabean.AppBean;
+import com.pgyersdk.update.PgyUpdateManager;
+import com.pgyersdk.update.UpdateManagerListener;
 import com.ww.administrator.demotest.fragment.CateFragment;
 import com.ww.administrator.demotest.fragment.HomeFragment;
 import com.ww.administrator.demotest.fragment.MyFragment;
 import com.ww.administrator.demotest.fragment.ShoppingCartFragment;
+
+import me.drakeet.materialdialog.MaterialDialog;
 
 public class MainActivity extends AppCompatActivity implements RadioGroup.OnCheckedChangeListener{
 
@@ -52,8 +58,69 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
         changefragment(mHomeFragment);
         mRadioGroup.setOnCheckedChangeListener(this);
         setmIsLogin(false);
+
+        checkUpdate();
     }
 
+    private void checkUpdate(){
+        PgyUpdateManager.register(MainActivity.this,
+                new UpdateManagerListener() {
+
+                    @Override
+                    public void onUpdateAvailable(final String result) {
+
+                        // 将新版本信息封装到AppBean中
+                        final AppBean appBean = getAppBeanFromString(result);
+                        final MaterialDialog updateDialog = new MaterialDialog(MainActivity.this);
+                        updateDialog.setTitle("更新提示");
+                        updateDialog.setMessage("发现新版本！");
+                        updateDialog.setPositiveButton("马上升级", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {   //进行更新
+                                startDownloadTask(
+                                        MainActivity.this,
+                                        appBean.getDownloadURL());
+                            }
+                        });
+
+                        updateDialog.setNegativeButton("以后再说", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {   //取消更新
+                                updateDialog.dismiss();
+                            }
+                        });
+
+                        updateDialog.show();
+                        /*new AlertDialog.Builder(MainActivity.this)
+                                .setTitle("更新提示")
+                                .setMessage("发现新版本")
+                                .setPositiveButton(
+                                        "马上升级",
+                                        new DialogInterface.OnClickListener() {
+
+                                            @Override
+                                            public void onClick(
+                                                    DialogInterface dialog,
+                                                    int which) {
+                                                startDownloadTask(
+                                                        MainActivity.this,
+                                                        appBean.getDownloadURL());
+                                            }
+                                        })
+                                .setNegativeButton("以后再说", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.cancel();
+                                    }
+                                })
+                                .show();*/
+                    }
+
+                    @Override
+                    public void onNoUpdateAvailable() {
+
+                    }
+                });
+    }
 
 
     private void initViews(){

@@ -156,6 +156,7 @@
             android:layout_centerVertical="true"
             android:id="@+id/cb_cart_selected"
             android:layout_marginLeft="8dp"
+            android:visibility="gone"
             android:text="全选"
             android:textColor="#666666"/>
 

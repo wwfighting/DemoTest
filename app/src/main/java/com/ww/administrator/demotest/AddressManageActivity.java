@@ -3,7 +3,6 @@ package com.ww.administrator.demotest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -12,11 +11,13 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.melnykov.fab.FloatingActionButton;
 import com.pnikosis.materialishprogress.ProgressWheel;
 import com.squareup.okhttp.Request;
 import com.ww.administrator.demotest.adapter.AddressAdapter;
@@ -52,6 +53,12 @@ public class AddressManageActivity extends AppCompatActivity implements View.OnC
     TextView mtvDialogName ;
     ProgressWheel mpgDialog;
 
+    //手指按下的点为(x1, y1)手指离开屏幕的点为(x2, y2)
+    float x1 = 0;
+    float x2 = 0;
+    float y1 = 0;
+    float y2 = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,7 +83,7 @@ public class AddressManageActivity extends AppCompatActivity implements View.OnC
         mpbShow.setVisibility(View.VISIBLE);
         mcvAddress.setVisibility(View.GONE);
         mrvShow.setVisibility(View.GONE);
-        mfabAdd.setVisibility(View.GONE);
+        //mfabAdd.attachToRecyclerView(mrvShow);
     }
 
     private void setToolbar() {
@@ -92,6 +99,30 @@ public class AddressManageActivity extends AppCompatActivity implements View.OnC
         mfabAdd.setOnClickListener(this);
     }
 
+    /**
+     * 用来捕捉手指上滑与下滑，隐藏fab
+     * @param ev
+     * @return
+     */
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if(ev.getAction() == MotionEvent.ACTION_DOWN) {
+            //当手指按下的时候
+            x1 = ev.getX();
+            y1 = ev.getY();
+        }
+        if(ev.getAction() == MotionEvent.ACTION_UP) {
+            //当手指离开的时候
+            x2 = ev.getX();
+            y2 = ev.getY();
+            if(y1 - y2 > 50) {
+                mfabAdd.hide();
+            } else if(y2 - y1 > 50) {
+                mfabAdd.show();
+            }
+        }
+        return super.dispatchTouchEvent(ev);
+    }
 
     private void loadDatas() {
         HttpUtil.postAsyn(Constants.BASE_URL + "get_address.php", new HttpUtil.ResultCallback<String>() {
@@ -112,7 +143,6 @@ public class AddressManageActivity extends AppCompatActivity implements View.OnC
                         mpbShow.setVisibility(View.GONE);
                         mcvAddress.setVisibility(View.GONE);
                         mrvShow.setVisibility(View.VISIBLE);
-                        mfabAdd.setVisibility(View.VISIBLE);
                         mAdapter = new AddressAdapter(AddressManageActivity.this, info);
                         mManager = new LinearLayoutManager(AddressManageActivity.this, LinearLayoutManager.VERTICAL, false);
                         mrvShow.setLayoutManager(mManager);
@@ -123,7 +153,6 @@ public class AddressManageActivity extends AppCompatActivity implements View.OnC
                         mpbShow.setVisibility(View.GONE);
                         mcvAddress.setVisibility(View.VISIBLE);
                         mrvShow.setVisibility(View.GONE);
-                        mfabAdd.setVisibility(View.GONE);
                     }
 
                 }catch (JSONException e){
@@ -135,7 +164,6 @@ public class AddressManageActivity extends AppCompatActivity implements View.OnC
                 new HttpUtil.Param("uid", uid)
         });
     }
-
 
     private void editAddress(){
 
@@ -264,7 +292,6 @@ public class AddressManageActivity extends AppCompatActivity implements View.OnC
                         mpbShow.setVisibility(View.GONE);
                         mcvAddress.setVisibility(View.VISIBLE);
                         mrvShow.setVisibility(View.GONE);
-                        mfabAdd.setVisibility(View.GONE);
                     }
                 }else {
                     Snackbar.make(mContainer, resultInfo.getInfo(), Snackbar.LENGTH_LONG).show();
@@ -277,4 +304,24 @@ public class AddressManageActivity extends AppCompatActivity implements View.OnC
 
         });
     }
+    /*class MyScrollListener extends RecyclerView.OnScrollListener{
+
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            if (dy > 0) {
+
+                mfabAdd.hide();
+            } else {
+
+                mfabAdd.show();
+            }
+        }
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+
+        }
+    }*/
+
 }

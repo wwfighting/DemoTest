@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.ww.administrator.demotest.ProductListActivity;
 import com.ww.administrator.demotest.R;
 import com.ww.administrator.demotest.model.GoodsInfo;
+import com.ww.administrator.demotest.util.DisplayUtil;
 
 import java.util.List;
 
@@ -30,7 +31,11 @@ public class RecyclerViewHFAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     private static final int TYPE_HOTGOODS_TITLE = 4; //热门商品标题
 
-    private static final int TYPE_HOTGOODS_CONTENT = 5; //热门商品标题
+    private static final int TYPE_HOTGOODS_CONTENT = 5; //热门商品内容
+
+    private static final int TYPE_HOMEGOODS_TITLE = 6; //全屋定制标题
+
+    private static final int TYPE_HOMEGOODS_CONTENT = 7; //全屋定制内容
 
     private View mHeaderView;
 
@@ -40,15 +45,25 @@ public class RecyclerViewHFAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     HomeGoodsAdapter mAdapter;
 
-    GoodsInfo mNewList, mHotList;
+    GoodsInfo mNewList, mHotList, mHomeList;
     Context mContext;
+    String mCity = "";
 
     private List<String> items;
 
-    public RecyclerViewHFAdapter(Context context,GoodsInfo newInfo, GoodsInfo hotInfo) {
+    public RecyclerViewHFAdapter(Context context,GoodsInfo newInfo, GoodsInfo hotInfo, String city) {
         mNewList = newInfo;
         mHotList = hotInfo;
         mContext = context;
+        mCity = city;
+    }
+
+    public RecyclerViewHFAdapter(Context context,GoodsInfo newInfo, GoodsInfo hotInfo, GoodsInfo homeInfo, String city) {
+        mNewList = newInfo;
+        mHotList = hotInfo;
+        mHomeList = homeInfo;
+        mContext = context;
+        mCity = city;
     }
 
     @Override
@@ -76,7 +91,17 @@ public class RecyclerViewHFAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                     .inflate(R.layout.recyclerview_layout, parent, false);
             return new HotGoodsContentHolder(v);
 
-        } else if (viewType == TYPE_FOOTER) {
+        }else if (viewType == TYPE_HOMEGOODS_TITLE){
+            View v = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.adapter_title, parent, false);
+            return new HomeGoodsTitleHolder(v);
+        }else if (viewType == TYPE_HOMEGOODS_CONTENT){
+            View v = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.recyclerview_layout, parent, false);
+            return new HomeGoodsContentHolder(v);
+
+        }
+        else if (viewType == TYPE_FOOTER) {
             View v = mFooterView;
             return new FooterHolder(v);
         } else if (viewType == TYPE_NEWGOODS_CONTENT) {
@@ -129,8 +154,39 @@ public class RecyclerViewHFAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             if (((HotGoodsContentHolder) holder).mHotRecyclerView.getAdapter() == null){
                 mAdapter = new HomeGoodsAdapter(mContext, mHotList);
                 ((HotGoodsContentHolder) holder).mHotRecyclerView.setAdapter(mAdapter);
+                if (getItemCount() == 5){
+                    RecyclerView.LayoutParams lp = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    lp.setMargins(0, 0, 0, DisplayUtil.dip2px(mContext, 50));
+                    ((HotGoodsContentHolder) holder).mHotRecyclerView.setLayoutParams(lp);
+                }
             }else {
                 ((HotGoodsContentHolder) holder).mHotRecyclerView.getAdapter().notifyDataSetChanged();
+            }
+
+        } else if (holder instanceof HomeGoodsTitleHolder) {
+            ((HomeGoodsTitleHolder) holder).mHomeTvTitle.setText("全屋热卖");
+            ((HomeGoodsTitleHolder) holder).mHomeTvMore.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //全屋定制更多的点击跳转 isRecom = 3
+                    Intent intent = new Intent();
+                    intent.setClass(mContext, ProductListActivity.class);
+                    intent.putExtra("isRecom","3");
+                    mContext.startActivity(intent);
+
+                }
+            });
+        } else if (holder instanceof HomeGoodsContentHolder) {
+            if (((HomeGoodsContentHolder) holder).mHomeRecyclerView.getAdapter() == null){
+                if (getItemCount() == 7){
+                    RecyclerView.LayoutParams lp = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    lp.setMargins(0, 0, 0, DisplayUtil.dip2px(mContext, 50));
+                    ((HomeGoodsContentHolder) holder).mHomeRecyclerView.setLayoutParams(lp);
+                }
+                mAdapter = new HomeGoodsAdapter(mContext, mHomeList);
+                ((HomeGoodsContentHolder) holder).mHomeRecyclerView.setAdapter(mAdapter);
+            }else {
+                ((HomeGoodsContentHolder) holder).mHomeRecyclerView.getAdapter().notifyDataSetChanged();
             }
 
         } else if (holder instanceof FooterHolder) {
@@ -142,22 +198,47 @@ public class RecyclerViewHFAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     @Override
     public int getItemCount() {
-        return 5;
+        if (!mCity.equals("南京")){
+            return 7;
+        }else {
+            return 5;
+        }
+
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (position == 0){
-            return TYPE_HEADER;
-        }else if (position == 1){
-            return TYPE_NEWGOODS_TITLE;
-        }else if (position == 2){
-            return TYPE_NEWGOODS_CONTENT;
-        }else if (position == 3){
-            return TYPE_HOTGOODS_TITLE;
+        if (!mCity.equals("南京")){
+            if (position == 0){
+                return TYPE_HEADER;
+            }else if (position == 1){
+                return TYPE_NEWGOODS_TITLE;
+            }else if (position == 2){
+                return TYPE_NEWGOODS_CONTENT;
+            }else if (position == 3){
+                return TYPE_HOTGOODS_TITLE;
+            }else if (position == 4){
+                return TYPE_HOTGOODS_CONTENT;
+            }else if (position == 5){
+                return TYPE_HOMEGOODS_TITLE;
+            }else {
+                return TYPE_HOMEGOODS_CONTENT;
+            }
+
         }else {
-            return TYPE_HOTGOODS_CONTENT;
+            if (position == 0){
+                return TYPE_HEADER;
+            }else if (position == 1){
+                return TYPE_NEWGOODS_TITLE;
+            }else if (position == 2){
+                return TYPE_NEWGOODS_CONTENT;
+            }else if (position == 3){
+                return TYPE_HOTGOODS_TITLE;
+            }else {
+                return TYPE_HOTGOODS_CONTENT;
+            }
         }
+
     }
 
     private int getHeadViewSize() {
@@ -273,6 +354,30 @@ public class RecyclerViewHFAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             RecyclerView.LayoutManager layoutManager = new GridLayoutManager(mContext, 2);
             layoutManager.setAutoMeasureEnabled(true);
             mHotRecyclerView.setLayoutManager(layoutManager);
+        }
+    }
+
+    //全屋定制标题ViewHolder
+    class HomeGoodsTitleHolder extends RecyclerView.ViewHolder {
+        TextView mHomeTvTitle, mHomeTvMore;
+
+        public HomeGoodsTitleHolder(View itemView) {
+            super(itemView);
+            mHomeTvTitle = (TextView) itemView.findViewById(R.id.tv_title);
+            mHomeTvMore = (TextView) itemView.findViewById(R.id.tv_more);
+        }
+    }
+    //全屋定制内容ViewHolder
+    class HomeGoodsContentHolder extends RecyclerView.ViewHolder {
+        RecyclerView mHomeRecyclerView;
+
+        public HomeGoodsContentHolder(View itemView) {
+            super(itemView);
+            mHomeRecyclerView = (RecyclerView) itemView.findViewById(R.id.rv_common);
+            mHomeRecyclerView = (RecyclerView) itemView.findViewById(R.id.rv_common);
+            RecyclerView.LayoutManager layoutManager = new GridLayoutManager(mContext, 2);
+            layoutManager.setAutoMeasureEnabled(true);
+            mHomeRecyclerView.setLayoutManager(layoutManager);
         }
     }
 

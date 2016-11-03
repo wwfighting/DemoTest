@@ -31,7 +31,7 @@
 
         <RelativeLayout
             android:layout_width="0dp"
-            android:layout_height="100dp"
+            android:layout_height="120dp"
             android:layout_weight="6"
             android:layout_marginLeft="6dp"
             android:layout_marginRight="4dp">
@@ -69,6 +69,57 @@
                 android:layout_toRightOf="@+id/tv_pro_money_label"
                 android:layout_below="@id/tv_cart_pro_title"/>
 
+            <!--配件数量 start-->
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:id="@+id/tv_pro_order_num_label"
+                android:gravity="center_vertical"
+                android:textSize="12sp"
+                android:text="数量："
+
+                android:textColor="#999999"
+                android:layout_below="@+id/tv_cart_pro_money"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="—"
+                android:textSize="28sp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="8dp"
+                android:id="@+id/tv_cart_num_minus"
+                android:layout_below="@+id/tv_cart_pro_money"
+                android:layout_toRightOf="@id/tv_pro_order_num_label"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:id="@+id/tv_cart_pro_num"
+                android:gravity="center_vertical"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:text="1"
+                android:layout_marginLeft="8dp"
+                android:textColor="#E4393C"
+                android:layout_toRightOf="@+id/tv_cart_num_minus"
+                android:layout_below="@+id/tv_cart_pro_money"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="+"
+                android:textSize="28sp"
+                android:id="@+id/tv_cart_num_plus"
+                android:layout_toRightOf="@id/tv_cart_pro_num"
+                android:layout_below="@+id/tv_cart_pro_money"
+                android:layout_marginLeft="6dp"
+                android:layout_centerVertical="true"/>
+
+
+            <!--配件数量 end-->
+
+            <!--橱柜，全屋定制 start-->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
@@ -76,8 +127,22 @@
                 android:gravity="center_vertical"
                 android:textSize="12sp"
                 android:text="预约金："
+                android:visibility="gone"
                 android:textColor="#999999"
                 android:layout_below="@+id/tv_cart_pro_money"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="—"
+                android:visibility="gone"
+                android:textSize="28sp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="8dp"
+                android:id="@+id/tv_cart_money_minus"
+                android:layout_below="@+id/tv_cart_pro_money"
+                android:layout_toRightOf="@id/tv_pro_order_money_label"/>
+
 
             <TextView
                 android:layout_width="wrap_content"
@@ -87,11 +152,25 @@
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:text="￥2000"
+                android:visibility="gone"
+                android:layout_marginLeft="8dp"
                 android:textColor="#E4393C"
-                android:layout_toRightOf="@+id/tv_pro_order_money_label"
+                android:layout_toRightOf="@+id/tv_cart_money_minus"
                 android:layout_below="@+id/tv_cart_pro_money"/>
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="+"
+                android:textSize="28sp"
+                android:id="@+id/tv_cart_money_plus"
+                android:layout_toRightOf="@id/tv_cart_pro_order_money"
+                android:layout_below="@+id/tv_cart_pro_money"
+                android:layout_marginLeft="6dp"
+                android:visibility="gone"
+                android:layout_centerVertical="true"/>
 
+            <!--橱柜，全屋定制 end-->
 
         </RelativeLayout>
 

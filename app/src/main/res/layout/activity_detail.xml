@@ -147,6 +147,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="35dp"
+                        android:id="@+id/ll_mode"
                         android:orientation="horizontal">
 
                         <TextView
@@ -163,10 +164,10 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:id="@+id/tv_detail_spec"
-                            android:text="3-10米地板+3-10米台面+1-5米吊柜"
+                            android:text="3米地板 + 3米台面 + 1米吊柜"
                             android:textSize="14sp"
                             android:layout_marginLeft="8dp"
-                            android:textColor="#999999"/>
+                            android:textColor="#666666"/>
 
                     </LinearLayout>
 
@@ -272,6 +273,8 @@
             android:layout_height="wrap_content"
             android:src="@drawable/ic_no_shopping_cart_24dp"
             fab:fab_size="mini"
+            fab:fab_title="加入购物车"
+
             fab:fab_colorNormal="@color/day_colorPrimary"
             fab:fab_colorPressed="@color/day_colorPrimaryDark"/>
 
@@ -281,6 +284,7 @@
             android:layout_height="wrap_content"
             android:src="@drawable/ic_order_24dp"
             fab:fab_size="mini"
+            fab:fab_title="一键预约"
             fab:fab_colorNormal="@color/day_colorPrimary"
             fab:fab_colorPressed="@color/day_colorPrimaryDark"/>
 

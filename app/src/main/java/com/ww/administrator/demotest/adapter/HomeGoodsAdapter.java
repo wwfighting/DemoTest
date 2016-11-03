@@ -44,30 +44,50 @@ public class HomeGoodsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         return viewType == TYPE_VIEW ? new GoodsContentHolder(LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.adapter_home_goods, parent, false)) : null ;
+                .inflate(R.layout.adapter_home_goods, parent, false)) : null;
     }
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
-        //isrecom 1：新品推荐 2：热门商品
+        //isrecom 1：新品推荐 2：热门商品 3：全屋定制
         if (holder instanceof GoodsContentHolder){
 
-            Glide.with(mContext).load(mGoodsInfo.getData().get(position).getPicurl()).into(((GoodsContentHolder) holder).mIvGoodsPic);
-            ((GoodsContentHolder) holder).mTvGoodsTip.setText(
-                    mGoodsInfo.getData().get(position).getIsrecom().equals("1") ? "新品" : "热门");
+            Glide.with(mContext)
+                    .load(mGoodsInfo.getData().get(position).getPicurl())
+                    .placeholder(R.drawable.loading)
+                    .error(R.drawable.loading)
+                    .into(((GoodsContentHolder) holder).mIvGoodsPic);
+            if (mGoodsInfo.getData().get(position).getIsrecom().equals("1")){
+                ((GoodsContentHolder) holder).mTvGoodsOrgPrice.setVisibility(View.VISIBLE);
+                ((GoodsContentHolder) holder).mTvGoodsTip.setText("新品");
+            }else if (mGoodsInfo.getData().get(position).getIsrecom().equals("2")){
+                ((GoodsContentHolder) holder).mTvGoodsOrgPrice.setVisibility(View.VISIBLE);
+                ((GoodsContentHolder) holder).mTvGoodsTip.setText("热门");
+            }else if (mGoodsInfo.getData().get(position).getIsrecom().equals("3")){
+                ((GoodsContentHolder) holder).mTvGoodsOrgPrice.setVisibility(View.GONE);
+                ((GoodsContentHolder) holder).mTvGoodsTip.setText("热卖");
+            }
+
 
             ((GoodsContentHolder) holder).mTvGoodsTitle.setText(mGoodsInfo.getData().get(position).getGoodsname());
 
-            String nowPrice = "现价：￥" + mGoodsInfo.getData().get(position).getPrice() + "-" + mGoodsInfo.getData().get(position).getPrice1();
-            ((GoodsContentHolder) holder).mTvGoodsNowPrice.setText(nowPrice);
-            String orgPrice = "原价：￥" + mGoodsInfo.getData().get(position).getPrice_old() + "-" + mGoodsInfo.getData().get(position).getPrice_old1();
-            ((GoodsContentHolder) holder).mTvGoodsOrgPrice.setText(TextUtil.setStrSpan(orgPrice));
+            if (mGoodsInfo.getData().get(position).getIsrecom().equals("3")){
+                String nowPrice = "预约金：￥" + mGoodsInfo.getData().get(position).getPrice();
+                ((GoodsContentHolder) holder).mTvGoodsNowPrice.setText(nowPrice);
+            }else {
+
+                String nowPrice = "现价：￥" + mGoodsInfo.getData().get(position).getPrice();
+                ((GoodsContentHolder) holder).mTvGoodsNowPrice.setText(nowPrice);
+                String orgPrice = "原价：￥" + mGoodsInfo.getData().get(position).getPrice_old();
+                ((GoodsContentHolder) holder).mTvGoodsOrgPrice.setText(TextUtil.setStrSpan(orgPrice));
+            }
+
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
-                    if ( mGoodsInfo.getData().get(position).getSubtitle().equals("分类")){
+                    if (mGoodsInfo.getData().get(position).getSubtitle().equals("分类")) {
                         //跳到物品列表页面
                         Intent intent = new Intent();
                         intent.setClass(mContext, ProductListActivity.class);
@@ -75,17 +95,17 @@ public class HomeGoodsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         intent.putExtra("keyName", mGoodsInfo.getData().get(position).getGoodsname());
                         intent.putExtra("isRecom", "-1");
                         mContext.startActivity(intent);
-                    }else {
+                    } else {
                         //直接跳到该物品的详细页面
                         Intent intent = new Intent();
                         intent.setClass(mContext, DetailActivity.class);
                         intent.putExtra("gid", mGoodsInfo.getData().get(position).getId());
-                        if (ToolsUtil.GetVersionSDK() < Build.VERSION_CODES.LOLLIPOP){
+                        if (ToolsUtil.GetVersionSDK() < Build.VERSION_CODES.LOLLIPOP) {
                             mContext.startActivity(intent);
-                        }else {
+                        } else {
                             View sharedView = ((GoodsContentHolder) holder).mIvGoodsPic;
                             String transitionName = "detail";
-                            ActivityOptions transitionActivityOptions = ActivityOptions.makeSceneTransitionAnimation((Activity)mContext, sharedView, transitionName);
+                            ActivityOptions transitionActivityOptions = ActivityOptions.makeSceneTransitionAnimation((Activity) mContext, sharedView, transitionName);
                             mContext.startActivity(intent, transitionActivityOptions.toBundle());
                         }
 
