@@ -1,10 +1,6 @@
 package com.ww.administrator.demotest.adapter;
 
-import android.app.Activity;
-import android.app.ActivityOptions;
 import android.content.Context;
-import android.content.Intent;
-import android.os.Build;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,11 +11,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.ww.administrator.demotest.DetailActivity;
 import com.ww.administrator.demotest.R;
 import com.ww.administrator.demotest.model.ShoppingcartInfo;
+import com.ww.administrator.demotest.util.ButtonUtil;
 import com.ww.administrator.demotest.util.Constants;
-import com.ww.administrator.demotest.util.ToolsUtil;
 
 import java.util.Map;
 
@@ -40,15 +35,9 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public ShoppingCartAdapter(Context context, ShoppingcartInfo info) {
         this.mContext = context;
         mInfo = info;
-        /*selectedMap = new HashMap<Integer, Boolean>();
-        initData();*/
+
     }
-    // 初始化isSelected的数据
-    private void initData() {
-        for (int i = 0; i < mInfo.getData().size(); i++) {
-            selectedMap.put(i,false);
-        }
-    }
+
     public void onRefresh(ShoppingcartInfo info){
         mInfo = info;
         this.notifyDataSetChanged();
@@ -84,7 +73,7 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         if (holder instanceof ShoppingcartViewHolder){
             ((ShoppingcartViewHolder) holder).mtvTitle.setText(mInfo.getData().get(position).getGoodsname());
-            ((ShoppingcartViewHolder) holder).mtvMoney.setText(mInfo.getData().get(position).getPrice());
+            ((ShoppingcartViewHolder) holder).mtvMoney.setText(Integer.parseInt(mInfo.getData().get(position).getPrice()) * Integer.parseInt(mInfo.getData().get(position).getBuycount()) + "");
 
             if (mInfo.getData().get(position).getSubtitle().equals("配件")){
                 ((ShoppingcartViewHolder) holder).mtvOrderLabel.setVisibility(View.GONE);
@@ -95,6 +84,7 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 ((ShoppingcartViewHolder) holder).mtvNumMinus.setVisibility(View.VISIBLE);
                 ((ShoppingcartViewHolder) holder).mtvNum.setVisibility(View.VISIBLE);
                 ((ShoppingcartViewHolder) holder).mtvNumPlus.setVisibility(View.VISIBLE);
+                ((ShoppingcartViewHolder) holder).mtvNum.setText(mInfo.getData().get(position).getBuycount());
 
             }else if (mInfo.getData().get(position).getSubtitle().equals("全屋定制")){  //全屋定制
                 ((ShoppingcartViewHolder) holder).mtvOrderLabel.setVisibility(View.VISIBLE);
@@ -126,7 +116,7 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent();
+                   /* Intent intent = new Intent();
                     intent.setClass(mContext, DetailActivity.class);
                     intent.putExtra("gid", mInfo.getData().get(position).getId());
                     // mContext.startActivity(intent);
@@ -137,7 +127,7 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                         String transitionName = "detail";
                         ActivityOptions transitionActivityOptions = ActivityOptions.makeSceneTransitionAnimation((Activity) mContext, sharedView, transitionName);
                         mContext.startActivity(intent, transitionActivityOptions.toBundle());
-                    }
+                    }*/
 
                 }
             });
@@ -154,6 +144,7 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
                     if (monCartChecked != null){
                         monCartChecked.isSetChecked(mInfo, isChecked, position);
+                        mInfo.getData().get(position).setIsSelected(isChecked);  //该商品是否被选中
                     }
 
                 }
@@ -163,10 +154,12 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             ((ShoppingcartViewHolder) holder).mtvNumPlus.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (monCountNum != null){
-
-                        monCountNum.numPlus(mInfo, position);
+                    if (!ButtonUtil.isFastDoubleClick()){
+                        if (monCountNum != null){
+                            monCountNum.numPlus(mInfo, position);
+                        }
                     }
+
 
                 }
             });
@@ -175,9 +168,12 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             ((ShoppingcartViewHolder) holder).mtvNumMinus.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (monCountNum != null) {
-                        monCountNum.numMinus(mInfo, position);
+                    if (!ButtonUtil.isFastDoubleClick()){
+                        if (monCountNum != null) {
+                            monCountNum.numMinus(mInfo, position);
+                        }
                     }
+
                 }
             });
 

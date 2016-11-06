@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.ww.administrator.demotest.BannerConActivity;
@@ -63,6 +64,12 @@ public class HotActyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 ((ActyViewHolder) holder).mbtnGo.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+
+                        if (mInfo.getData().get(position).getHref().equals("#")){
+                            Toast.makeText(mContext, "抱歉！该活动暂无详情页", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
                         if (mInfo.getData().get(position).getHref().equals("qdyl.php")){
                             Intent intent = new Intent(mContext, SignInEventActivity.class);
                             mContext.startActivity(intent);

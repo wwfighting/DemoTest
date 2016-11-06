@@ -22,6 +22,7 @@ import com.ww.administrator.demotest.model.ResultInfo;
 import com.ww.administrator.demotest.util.Constants;
 import com.ww.administrator.demotest.util.DataUtil;
 import com.ww.administrator.demotest.util.HttpUtil;
+import com.ww.administrator.demotest.util.ToolsUtil;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -48,7 +49,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     MyApp mApp;
 
     TextView mtvResult;
-
+    TextView mtvVersion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,10 +68,12 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         mrlClear = (RelativeLayout) findViewById(R.id.rl_clearcache);
         mrlExit = (RelativeLayout) findViewById(R.id.rl_exit);
         mtvCache = (TextView) findViewById(R.id.tv_cache);
-
+        mtvVersion = (TextView) findViewById(R.id.tv_version);
         mExitAppDialog = new MaterialDialog(this);
         mChangePwdDialog = new MaterialDialog(this);
         mClearDialog = new MaterialDialog(this);
+
+        mtvVersion.setText("Jvawa Version " + ToolsUtil.getAppVersionName(SettingsActivity.this));
     }
 
     private void setToolbar() {

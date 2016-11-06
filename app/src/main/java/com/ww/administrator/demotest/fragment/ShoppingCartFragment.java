@@ -33,7 +33,6 @@ import com.ww.administrator.demotest.AboutActivity;
 import com.ww.administrator.demotest.AddAddressActivity;
 import com.ww.administrator.demotest.BaseFragment;
 import com.ww.administrator.demotest.LoginActivity;
-import com.ww.administrator.demotest.OrderActivity;
 import com.ww.administrator.demotest.PayCarActivity;
 import com.ww.administrator.demotest.R;
 import com.ww.administrator.demotest.SearchActivity;
@@ -44,7 +43,6 @@ import com.ww.administrator.demotest.adapter.StoreAdapter;
 import com.ww.administrator.demotest.cityselect.MyApp;
 import com.ww.administrator.demotest.model.AddressInfo;
 import com.ww.administrator.demotest.model.DefaultAddress;
-import com.ww.administrator.demotest.model.GoodsDetailInfo;
 import com.ww.administrator.demotest.model.OrderInfo;
 import com.ww.administrator.demotest.model.ResultInfo;
 import com.ww.administrator.demotest.model.ShoppingcartInfo;
@@ -117,6 +115,8 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
 
     MaterialDialog mDialog;
 
+    MaterialDialog mDialogNum;
+
     MyApp mApp;
 
     RelativeLayout mrlStore, mrlAddress;
@@ -124,7 +124,7 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
 
     boolean isAllSelected = false;  //判断是否被全选
     boolean hasProduct = false; //判断一次只能选择一件（橱柜或全屋商品）
-    int hasProNum = 0; //判断选择了是否已经选择了一件（橱柜或全屋商品）
+    int hasProNum = 0; //判断选择了是否已经选择了一件（橱柜或全屋商品）hasProNum = 1时，不能再勾选全屋或者橱柜
     int schedprice;
     String payId = "";
     String phone = "";
@@ -191,6 +191,7 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
         }
 
         initEvents();
+        initNumDialog();
 
     }
 
@@ -218,6 +219,16 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
         mDialog.setCanceledOnTouchOutside(true);
 
     }
+
+    private void initNumDialog(){
+        mDialogNum = new MaterialDialog(getActivity());
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_common, null);
+        mDialogNum.setContentView(view);
+        mDialogNum.setCanceledOnTouchOutside(false);
+        ((TextView) view.findViewById(R.id.tv_dialog_name_show)).setText("修改中...");
+        view.findViewById(R.id.progress_image).setVisibility(View.VISIBLE);
+    }
+
     private void setBtnColor(){
         if (mCount > 0){
             mbtnCount.setBackgroundColor(Color.parseColor("#F5183C"));
@@ -257,9 +268,6 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
                         }
 
                         return true;
-                    /*case R.id.menu_locate:
-                        //startActivity(new Intent(getActivity(), LocatCityActivity.class));
-                        return true;*/
 
                     case R.id.menu_about:
                         if (ToolsUtil.GetVersionSDK() < Build.VERSION_CODES.LOLLIPOP) {
@@ -279,12 +287,7 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
         msrlCart.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                mPrice = 0;
-                mCount = 0;
-                schedprice = 0;
-                mtvAllMoney.setText("￥" + mPrice + "");
-                mtvSelCount.setText(mCount + "");
-                //mcbAllSelected.setChecked(false);
+
                 loadDatas();
                 loadAddress();
                 msrlCart.setRefreshing(false);
@@ -424,7 +427,7 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
 
             }
         });
-        //loadStores(mcitySpinner.getSelectedItem().toString());
+
     }
 
     @Override
@@ -441,11 +444,15 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
      * 载入购物车内容
      */
     private void loadDatas() {
-        mPrice = 0;
-        mCount = 0;
-        schedprice = 0;
-        mtvAllMoney.setText("￥" + mPrice + "");
-        mtvSelCount.setText(mCount + "");
+
+        //注：全屋和橱柜一次性只能买一个，配件随意。
+
+        hasProNum = 0;  //记录所选全屋或者橱柜个数
+        mPrice = 0; //记录总价
+        mCount = 0; //记录所选商品个数
+        schedprice = 0; //记录预约价，生成购物车订单时只需要传预约总价即可
+        mtvAllMoney.setText("￥" + mPrice + ""); //设置所有勾选商品总价
+        mtvSelCount.setText(mCount + "");   //设置所有勾选商品个数
 
         HttpUtil.postAsyn(Constants.BASE_URL + "get_shopping_cart.php", new HttpUtil.ResultCallback<String>() {
             @Override
@@ -458,11 +465,10 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
             public void onResponse(String response) {
                 mpbLoad.setVisibility(View.GONE);
 
-
-                try{
+                try {
                     JSONObject jsonRoot = new JSONObject(response);
                     String strCode = jsonRoot.getString("code");
-                    if (strCode.equals("200")){
+                    if (strCode.equals("200")) {
                         ShoppingcartInfo info = mGson.fromJson(response, ShoppingcartInfo.class);
                         if (info.getCode().equals("200")) {
                             if (info.getData().size() != 0) {
@@ -472,44 +478,57 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
                                 mAdapter = new ShoppingCartAdapter(getActivity(), info);
                                 mrvCart.setAdapter(mAdapter);
 
-                                //右滑移除Item
+                                //右滑删除购物车内容，移除Item
                                 swipItem();
+
                                 //item选中 计算选中的金额和数量 得到该商品id
                                 mAdapter.setOnCartChecked(new ShoppingCartAdapter.OnCartChecked() {
                                     @Override
                                     public void isSetChecked(ShoppingcartInfo info, boolean isChecked, int pos) {
 
-                                        if (isChecked){
-                                            mCount ++;
-                                            if (info.getData().get(pos).getSubtitle().equals("配件")){
-                                                mPrice += Integer.parseInt(info.getData().get(pos).getPrice()) * Integer.parseInt(info.getData().get(pos).getBuycount());
-                                            }else {
-                                                hasProNum ++;
-                                                mPrice += info.getData().get(pos).getOrderMoney();
-                                                schedprice += info.getData().get(pos).getOrderMoney();
+                                        if (isChecked) { //如果该商品被选中
+                                            mCount++;
+                                            if (info.getData().get(pos).getSubtitle().equals("配件")) {
+                                                TextView tvItemPrice = (TextView) manager.findViewByPosition(pos).findViewById(R.id.tv_cart_pro_money);
+                                                int itemPrice = Integer.parseInt(tvItemPrice.getText().toString());
+                                                mPrice += itemPrice;
+                                            } else {
+                                                TextView tvItemOrderMoney = (TextView) manager.findViewByPosition(pos).findViewById(R.id.tv_cart_pro_order_money);
+                                                int itemOrderMoney = Integer.parseInt(tvItemOrderMoney.getText().toString());
+                                                hasProNum++;   //次数hasProNum为1
+                                                mPrice += itemOrderMoney;
+                                                schedprice += itemOrderMoney;
                                             }
                                             mtvAllMoney.setText("￥" + mPrice);
                                             mtvSelCount.setText(mCount + "");
-                                            payId = payId + info.getData().get(pos).getId() + ",";
 
-                                        }else {
-                                            if (mCount > 0){
-                                                mCount --;
+
+                                        } else { //如果该商品未被选中
+                                            if (mCount > 0) {
+                                                mCount--;
                                             }
 
-                                            if (info.getData().get(pos).getSubtitle().equals("配件")){
-                                                mPrice -= Integer.parseInt(info.getData().get(pos).getPrice()) * Integer.parseInt(info.getData().get(pos).getBuycount());
-                                            }else {
+                                            if (info.getData().get(pos).getSubtitle().equals("配件")) {
+                                                TextView tvItemPrice = (TextView) manager.findViewByPosition(pos).findViewById(R.id.tv_cart_pro_money);
+                                                int itemPrice = Integer.parseInt(tvItemPrice.getText().toString());
+                                                mPrice -= itemPrice;
+                                            } else {
 
-                                                mPrice -= info.getData().get(pos).getOrderMoney();
-                                                schedprice -= info.getData().get(pos).getOrderMoney();
+                                                if (hasProNum > 0) {
+                                                    hasProNum--;
+                                                }
+                                                TextView tvItemOrderMoney = (TextView) manager.findViewByPosition(pos).findViewById(R.id.tv_cart_pro_order_money);
+                                                int itemOrderMoney = Integer.parseInt(tvItemOrderMoney.getText().toString());
+                                                mPrice -= itemOrderMoney;
+                                                schedprice -= itemOrderMoney;
                                             }
                                             mtvAllMoney.setText("￥" + mPrice);
                                             mtvSelCount.setText(mCount + "");
 
                                         }
 
-                                        if (hasProNum > 1){
+                                        cartInfo = info;
+                                        if (hasProNum > 1) {
                                             payId = "";
                                             hasProNum = 0;
                                             schedprice = 0;
@@ -531,13 +550,66 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
                                 //配件数量增减
                                 mAdapter.setOnCountNumListener(new ShoppingCartAdapter.OnNumCountListener() {
                                     @Override
-                                    public void numMinus(ShoppingcartInfo info, int pos) {
+                                    public void numMinus(ShoppingcartInfo info, int pos) {  //减少配件数
+
+                                        AppCompatCheckBox cb = (AppCompatCheckBox) manager.findViewByPosition(pos).findViewById(R.id.cb_cart_pro_selected);
+                                        TextView tvItemPrice = (TextView) manager.findViewByPosition(pos).findViewById(R.id.tv_cart_pro_money);
+                                        TextView tvItemNum = (TextView) manager.findViewByPosition(pos).findViewById(R.id.tv_cart_pro_num);
+                                        int unitPrice = Integer.parseInt(info.getData().get(pos).getPrice());
+                                        int itemPrice = Integer.parseInt(tvItemPrice.getText().toString());
+                                        int itemNum = Integer.parseInt(tvItemNum.getText().toString());
+                                        //判断该商品有没有被选中
+                                        if (info.getData().get(pos).getisSelected()) {
+                                            if (info.getData().get(pos).getSubtitle().equals("配件")) {
+                                                if (itemNum > 1) {
+                                                    itemNum--;
+                                                    itemPrice = unitPrice * itemNum;
+                                                    mPrice -= unitPrice;
+
+                                                }
+                                            }
+
+                                            tvItemPrice.setText(itemPrice + "");
+                                            tvItemNum.setText(itemNum + "");
+                                            mtvAllMoney.setText("￥" + mPrice);
+
+                                        } else {
+                                            cb.setChecked(true);
+                                        }
+
+                                        mDialogNum.show();
+                                        //修改该商品的购买数量
+                                        updateBuyCount(info.getData().get(pos).getId(), itemNum);
 
                                     }
 
                                     @Override
-                                    public void numPlus(ShoppingcartInfo info, int pos) {
+                                    public void numPlus(ShoppingcartInfo info, int pos) {   //增加配件数
+                                        AppCompatCheckBox cb = (AppCompatCheckBox) manager.findViewByPosition(pos).findViewById(R.id.cb_cart_pro_selected);
+                                        TextView tvItemPrice = (TextView) manager.findViewByPosition(pos).findViewById(R.id.tv_cart_pro_money);
+                                        TextView tvItemNum = (TextView) manager.findViewByPosition(pos).findViewById(R.id.tv_cart_pro_num);
+                                        int unitPrice = Integer.parseInt(info.getData().get(pos).getPrice());
+                                        int itemPrice = Integer.parseInt(tvItemPrice.getText().toString());
+                                        int itemNum = Integer.parseInt(tvItemNum.getText().toString());
+                                        //判断该商品有没有被选中
+                                        if (info.getData().get(pos).getisSelected()) {
+                                            if (info.getData().get(pos).getSubtitle().equals("配件")) {
+                                                itemNum++;
+                                                itemPrice = unitPrice * itemNum;
+                                                mPrice += unitPrice;
+                                            }
 
+                                            tvItemPrice.setText(itemPrice + "");
+                                            tvItemNum.setText(itemNum + "");
+                                            mtvAllMoney.setText("￥" + mPrice);
+
+                                        } else {
+                                            cb.setChecked(true);
+                                        }
+
+                                        mDialogNum.show();
+                                        //修改该商品的购买数量
+                                        updateBuyCount(info.getData().get(pos).getId(),itemNum);
                                     }
                                 });
 
@@ -545,26 +617,69 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
                                 mAdapter.setOnOrderMoneyListener(new ShoppingCartAdapter.OnOrderMoneyListener() {
                                     @Override
                                     public void orderMoneyMinus(ShoppingcartInfo info, int pos) {
+                                        AppCompatCheckBox cb = (AppCompatCheckBox) manager.findViewByPosition(pos).findViewById(R.id.cb_cart_pro_selected);
+                                        TextView tvItemOrderMoney = (TextView) manager.findViewByPosition(pos).findViewById(R.id.tv_cart_pro_order_money);
+                                        int itemMoney = Integer.parseInt(tvItemOrderMoney.getText().toString());
+                                        //先判断该商品有没有被选中
+                                        if (info.getData().get(pos).getisSelected()) {   //如果选中
+                                            if (info.getData().get(pos).getSubtitle().equals("全屋定制")) {
+                                                if (itemMoney > 3000) {
+                                                    itemMoney -= 1000;
+                                                    mPrice -= 1000;
+                                                    schedprice -= 1000;
+                                                }
+                                            } else if (info.getData().get(pos).getSubtitle().equals("")) {
+                                                if (itemMoney > 2000) {
+                                                    itemMoney -= 1000;
+                                                    mPrice -= 1000;
+                                                    schedprice -= 1000;
+                                                }
+                                            }
 
+                                            tvItemOrderMoney.setText(itemMoney + "");
+
+                                            mtvAllMoney.setText("￥" + mPrice);
+
+
+                                        } else { //如果未被选中
+                                            cb.setChecked(true);
+                                        }
 
                                     }
 
                                     @Override
                                     public void orderMoneyPlus(ShoppingcartInfo info, int pos) {
+                                        AppCompatCheckBox cb = (AppCompatCheckBox) manager.findViewByPosition(pos).findViewById(R.id.cb_cart_pro_selected);
+                                        TextView tvItemOrderMoney = (TextView) manager.findViewByPosition(pos).findViewById(R.id.tv_cart_pro_order_money);
+                                        int itemMoney = Integer.parseInt(tvItemOrderMoney.getText().toString());
+                                        //先判断该商品有没有被选中
+                                        if (info.getData().get(pos).getisSelected()) {   //如果选中
+                                            itemMoney += 1000;
+                                            tvItemOrderMoney.setText(itemMoney + "");
+                                            mPrice += 1000;
+                                            schedprice += 1000;
+                                            mtvAllMoney.setText("￥" + mPrice);
 
+                                        } else { //如果未被选中
+                                            cb.setChecked(true);
+                                        }
                                     }
                                 });
 
                             } else {
                                 mrlBottom.setVisibility(View.GONE);
+                                msrlCart.setVisibility(View.GONE);
+                                mrvCart.setVisibility(View.GONE);
                             }
 
                         }
 
-                    }else {
+                    } else {
                         mrlBottom.setVisibility(View.GONE);
+                        msrlCart.setVisibility(View.GONE);
+                        mrvCart.setVisibility(View.GONE);
                     }
-                }catch (JSONException e){
+                } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
@@ -577,11 +692,13 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
         HttpUtil.postAsyn(Constants.BASE_URL + "shop_buycount.php", new HttpUtil.ResultCallback<String>() {
             @Override
             public void onError(Request request, Exception e) {
+                mDialogNum.dismiss();
                 Snackbar.make(mrvCart, "请检查您的网络连接！", Snackbar.LENGTH_LONG).show();
             }
 
             @Override
             public void onResponse(String response) {
+                mDialogNum.dismiss();
                 ResultInfo info = mGson.fromJson(response, ResultInfo.class);
                 if (info.getCode().equals("200")) {
 
@@ -603,31 +720,10 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
         metChooseDialog.setPositiveButton("确定", new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              /*  payId = "";
-                hasProNum = 0;
-                mPrice = 0.0f;
-                mCount = 0;
-                mtvAllMoney.setText("￥" + mPrice + "");
-                mtvSelCount.setText(mCount + "");
-                //mcbAllSelected.setChecked(false);
-                loadDatas();*/
                 metChooseDialog.dismiss();
             }
         });
-       /* metChooseDialog.setNegativeButton("取消", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                payId = "";
-                hasProNum = 0;
-                mPrice = 0.0f;
-                mCount = 0;
-                mtvAllMoney.setText("￥" + mPrice + "");
-                mtvSelCount.setText(mCount + "");
-                //mcbAllSelected.setChecked(false);
-                loadDatas();
-                metChooseDialog.dismiss();
-            }
-        });*/
+
         metChooseDialog.show();
     }
 
@@ -757,7 +853,7 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
             public void onResponse(ResultInfo info) {
 
                 if (info.getCode().equals("200")) {
-                    if (mAdapter.getItemCount() == 0){
+                    if (mAdapter.getItemCount() == 0) {
                         mrlBottom.setVisibility(View.GONE);
                     }
                     loadDatas();
@@ -859,60 +955,6 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
         });
     }
 
-    /**
-     * 计算选中商品金额
-     */
-    private void calculateMoney(String money, boolean isSelected){
-
-        if (!isAllSelected){
-            float d = Float.parseFloat(money);
-            if (isSelected){
-                mPrice += d;
-            }else {
-                if (mPrice > 0){
-                    mPrice -= d;
-                }
-
-            }
-        }
-
-        mtvAllMoney.setText("￥" + mPrice + "");
-    }
-
-    private void calculateTotal(){
-        if (isAllSelected){ //全选
-            for (int i = 0; i < cartInfo.getData().size(); i++){
-                mPrice += Float.parseFloat(cartInfo.getData().get(i).getPrice());
-                mCount ++;
-            }
-
-        }else {
-            mPrice = 0.0f;
-            mCount = 0;
-        }
-
-        mtvAllMoney.setText("￥" + mPrice + "");
-        mtvSelCount.setText(mCount + "");
-    }
-
-
-    /**
-     * 计算选中的商品数量
-     */
-    private void calculateCount(boolean isSelected){
-        if (!isAllSelected){
-            if (isSelected){
-                mCount ++;
-            }else {
-                if (mCount > 0){
-                    mCount --;
-                }
-            }
-
-        }
-
-        mtvSelCount.setText(mCount + "");
-    }
 
 
     @Override
@@ -948,6 +990,14 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
                     return;
                 }
 
+                //根据选中的item，得到payId
+
+                for (int i = 0; i < cartInfo.getData().size(); i++){
+                    if (cartInfo.getData().get(i).getisSelected()){
+                        payId = payId + cartInfo.getData().get(i).getId() + ",";
+                    }
+                }
+
                 //结账
                 toPayCar();
                 //toPay();
@@ -960,9 +1010,10 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
     }
 
 
+    /**
+     * 生成购物车订单
+     */
     private void toPayCar(){
-
-
 
         HttpUtil.postAsyn(Constants.BASE_URL + "generate_shoppingcart_order.php", new HttpUtil.ResultCallback<String>() {
             @Override
@@ -984,7 +1035,6 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
                     mtvAllMoney.setText("￥" + schedprice);
                     mtvSelCount.setText(mCount + "");
                     //mcbAllSelected.setChecked(false);
-                    loadDatas();
                     Intent intent = new Intent(getActivity(), PayCarActivity.class);
                     intent.putExtra("title", ((OrderInfo.T) info.getData()).getGoodsName());
                     intent.putExtra("ordNum", ((OrderInfo.T) info.getData()).getSuperbillid());
@@ -1007,41 +1057,6 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
                 new HttpUtil.Param("schedprice", schedprice + ""),
                 new HttpUtil.Param("city", mcity)
         });
-    }
-
-    private void toPay(){
-        HttpUtil.postAsyn(Constants.BASE_URL + "product_detail.php", new HttpUtil.ResultCallback<String>() {
-            @Override
-            public void onError(Request request, Exception e) {
-
-            }
-
-            @Override
-            public void onResponse(String response) {
-                GoodsDetailInfo mInfo = mGson.fromJson(response, GoodsDetailInfo.class);
-                if (mInfo.getCode().equals("200")) {
-
-                    strGoodsDetailInfo = response;
-                    Intent intent = new Intent(getActivity(), OrderActivity.class);
-
-                    intent.putExtra("imgurl", Constants.BASE_IMG_URL + picurl);
-                    intent.putExtra("gid", mGid);
-                    intent.putExtra("response", strGoodsDetailInfo);
-
-                    if (!mstoreName.equals("") && !mstaffName.equals("") && !msalerNo.equals("")){
-                        intent.putExtra("storeName", mstoreName);
-                        intent.putExtra("staffName", mstaffName);
-                        intent.putExtra("salerNo", msalerNo);
-                        intent.putExtra("storeId", mstoreId);
-                        intent.putExtra("city", mcity);
-                    }
-                    startActivity(intent);
-                }
-            }
-        }, new HttpUtil.Param[]{
-                new HttpUtil.Param("gid", mGid)
-        });
-
     }
 
     @Override
@@ -1123,7 +1138,7 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
 
         }
 
-        MyApp addShoppingApp =(MyApp) getActivity().getApplicationContext();
+        MyApp addShoppingApp = (MyApp) getActivity().getApplicationContext();
         Object obj3 = addShoppingApp.GetActivityIntent(Constants.ADD_SHOPPING_CART_REFRESH);
         if (null != obj3) {
             int iValue = (Integer) obj3;

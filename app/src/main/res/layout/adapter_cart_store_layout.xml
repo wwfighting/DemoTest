@@ -6,10 +6,10 @@
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="70dp"
+        android:layout_height="55dp"
         android:id="@+id/tv_store_name"
         android:text="南京公司光华门店"
-        android:textSize="18sp"
+        android:textSize="12sp"
         android:textColor="#666666"
         android:gravity="center" />
 

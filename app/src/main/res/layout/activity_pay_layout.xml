@@ -84,6 +84,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="商品"
+                        android:id="@+id/tv_goods_label"
                         android:layout_alignParentLeft="true"
                         android:textColor="#999999"
                         android:textSize="16sp"/>
@@ -92,10 +93,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/tv_goods_name"
+                        android:layout_toRightOf="@+id/tv_goods_label"
                         android:text="自定义商品标题"
-                        android:layout_alignParentRight="true"
+                        android:layout_marginLeft="8dp"
                         android:textColor="#999999"
-                        android:textSize="16sp"/>
+                        android:textSize="14sp"/>
 
                 </RelativeLayout>
 

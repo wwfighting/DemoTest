@@ -111,7 +111,7 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
         refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refreshLayout);
         listView = (RecyclerView) view.findViewById(R.id.recyclerView);
         convenientBanner = (ConvenientBanner)LayoutInflater.from(getActivity()).inflate(R.layout.adapter_header_cb, null);
-        convenientBanner.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 410));
+        convenientBanner.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DisplayUtil.dip2px(getActivity(), 230)));
         mpbHome = (ProgressWheel) view.findViewById(R.id.pb_common);
         mpbHome.setVisibility(View.VISIBLE);
         refreshLayout.setVisibility(View.GONE);
@@ -441,7 +441,6 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
         });
 
         adapter.addHeader(convenientBanner);
-        //loadTestDatas();
     }
 
 
