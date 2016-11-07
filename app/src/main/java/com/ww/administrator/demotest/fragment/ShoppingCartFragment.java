@@ -20,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -106,15 +107,7 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
     String msalerNo = "";   //记录选中员工的工号
     String mreceiverName = "";  //记录收信人姓名
 
-    float mPrice = 0;
-    int mCount = 0;
-
-    String mGid = "";
-    String picurl = "";
-    String strGoodsDetailInfo = "";
-
     MaterialDialog mDialog;
-
     MaterialDialog mDialogNum;
 
     MyApp mApp;
@@ -122,14 +115,13 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
     RelativeLayout mrlStore, mrlAddress;
     Button mbtnLogin;
 
-    boolean isAllSelected = false;  //判断是否被全选
-    boolean hasProduct = false; //判断一次只能选择一件（橱柜或全屋商品）
     int hasProNum = 0; //判断选择了是否已经选择了一件（橱柜或全屋商品）hasProNum = 1时，不能再勾选全屋或者橱柜
-    int schedprice;
+    int schedprice; //记录预约价
+    float mPrice = 0;   //记录总价
+    int mCount = 0; //记录勾选的数量
+
     String payId = "";
     String phone = "";
-    int posPro = -1;   //记录下选择全屋或橱柜的position
-
 
     @Override
     protected void getArgs() {
@@ -412,9 +404,9 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
 
 
         botStoreDialog.setContentView(bottomStoreView);
-
-
         botStoreDialog.show();
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.spinner_tv_layout, Constants.CITY_ARRAY);
+        mcitySpinner.setAdapter(adapter);
         mcitySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -536,7 +528,6 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
                                             mCount = 0;
                                             mtvAllMoney.setText("￥" + mPrice);
                                             mtvSelCount.setText(mCount + "");
-                                            //mcbAllSelected.setChecked(false);
                                             loadDatas();
                                             initChooseDialog();
                                         }
@@ -830,9 +821,9 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
-            if (dy > 0){//表示RecyclerView下滑
+            if (dy > 0){    //表示RecyclerView下滑
                 mrlBottom.setVisibility(View.GONE);
-            }else {//表示RecyclerView上滑
+            }else { //表示RecyclerView上滑
                 mrlBottom.setVisibility(View.VISIBLE);
             }
         }
@@ -862,7 +853,6 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
                     mCount = 0;
                     mtvAllMoney.setText("￥" + mPrice + "");
                     mtvSelCount.setText(mCount + "");
-                    //mcbAllSelected.setChecked(false);
                     Snackbar.make(mContainer, "删除成功！", Snackbar.LENGTH_SHORT).show();
                 }
 
@@ -1000,7 +990,6 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
 
                 //结账
                 toPayCar();
-                //toPay();
 
                 break;
             case R.id.btn_to_login:
@@ -1023,9 +1012,7 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
 
             @Override
             public void onResponse(String response) {
-                System.out.println("============");
-                System.out.println(response);
-                System.out.println("============");
+
                 OrderInfo info = mGson.fromJson(response, OrderInfo.class);
                 if (info.getCode().equals("200")){
                     payId = "";

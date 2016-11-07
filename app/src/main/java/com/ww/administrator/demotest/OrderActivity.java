@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -404,6 +405,8 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
 
         botStoreDialog.setContentView(bottomStoreView);
         botStoreDialog.show();
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(OrderActivity.this, R.layout.spinner_tv_layout, Constants.CITY_ARRAY);
+        mcitySpinner.setAdapter(adapter);
         mcitySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {

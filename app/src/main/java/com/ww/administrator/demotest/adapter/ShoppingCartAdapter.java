@@ -16,8 +16,6 @@ import com.ww.administrator.demotest.model.ShoppingcartInfo;
 import com.ww.administrator.demotest.util.ButtonUtil;
 import com.ww.administrator.demotest.util.Constants;
 
-import java.util.Map;
-
 /**
  * Created by Administrator on 2016/9/21.
  */
@@ -27,9 +25,6 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     private Context mContext;
     private ShoppingcartInfo mInfo;
-
-    // 用来控制CheckBox的选中状况
-    public Map<Integer, Boolean> selectedMap;
 
 
     public ShoppingCartAdapter(Context context, ShoppingcartInfo info) {
@@ -136,11 +131,6 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             ((ShoppingcartViewHolder) holder).mcbSelected.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    /*if(isChecked){
-                        selectedMap.put(position, true);
-                    }else{
-                        selectedMap.put(position, false);
-                    }*/
 
                     if (monCartChecked != null){
                         monCartChecked.isSetChecked(mInfo, isChecked, position);
