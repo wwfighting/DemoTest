@@ -130,6 +130,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
     MaterialDialog mDialog;
 
+
     FloatingActionsMenu mfabMenu;
 
     Button mbtnMinus, mbtnPlus;

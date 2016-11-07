@@ -245,7 +245,7 @@
                 app:tabTextColor="#999999" />
 
             <com.ww.administrator.demotest.AutoHeightViewPager
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_width="match_parent"
                 android:id="@+id/vp_detail"/>
 

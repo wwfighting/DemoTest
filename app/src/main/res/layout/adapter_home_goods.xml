@@ -35,7 +35,7 @@
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="25dp"
+            android:layout_height="35dp"
             android:layout_below="@+id/iv_goods_show"
             android:layout_marginTop="4dp"
             android:gravity="center_vertical"

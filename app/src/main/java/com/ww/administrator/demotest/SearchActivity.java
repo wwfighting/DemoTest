@@ -87,7 +87,6 @@ public class SearchActivity extends AppCompatActivity {
                 intent.setClass(SearchActivity.this, ProductListActivity.class);
                 intent.putExtra("keyName", keyName);
                 intent.putExtra("isRecom", "-1");
-                Log.d("ww", "========================================执行到了flowtag搜索=");
 
                 startActivity(intent);
                 return true;

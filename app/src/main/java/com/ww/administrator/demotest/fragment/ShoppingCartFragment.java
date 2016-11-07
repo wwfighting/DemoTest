@@ -120,7 +120,7 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
     float mPrice = 0;   //记录总价
     int mCount = 0; //记录勾选的数量
 
-    String payId = "";
+    String payId = "";  //记录并拼接已勾选的商品的Id
     String phone = "";
 
     @Override
@@ -482,7 +482,7 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
                                             mCount++;
                                             if (info.getData().get(pos).getSubtitle().equals("配件")) {
                                                 TextView tvItemPrice = (TextView) manager.findViewByPosition(pos).findViewById(R.id.tv_cart_pro_money);
-                                                int itemPrice = Integer.parseInt(tvItemPrice.getText().toString());
+                                                float itemPrice = Float.parseFloat(tvItemPrice.getText().toString());
                                                 mPrice += itemPrice;
                                             } else {
                                                 TextView tvItemOrderMoney = (TextView) manager.findViewByPosition(pos).findViewById(R.id.tv_cart_pro_order_money);
@@ -502,7 +502,7 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
 
                                             if (info.getData().get(pos).getSubtitle().equals("配件")) {
                                                 TextView tvItemPrice = (TextView) manager.findViewByPosition(pos).findViewById(R.id.tv_cart_pro_money);
-                                                int itemPrice = Integer.parseInt(tvItemPrice.getText().toString());
+                                                float itemPrice = Float.parseFloat(tvItemPrice.getText().toString());
                                                 mPrice -= itemPrice;
                                             } else {
 
@@ -546,8 +546,8 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
                                         AppCompatCheckBox cb = (AppCompatCheckBox) manager.findViewByPosition(pos).findViewById(R.id.cb_cart_pro_selected);
                                         TextView tvItemPrice = (TextView) manager.findViewByPosition(pos).findViewById(R.id.tv_cart_pro_money);
                                         TextView tvItemNum = (TextView) manager.findViewByPosition(pos).findViewById(R.id.tv_cart_pro_num);
-                                        int unitPrice = Integer.parseInt(info.getData().get(pos).getPrice());
-                                        int itemPrice = Integer.parseInt(tvItemPrice.getText().toString());
+                                        float unitPrice = Float.parseFloat(info.getData().get(pos).getPrice());
+                                        float itemPrice = Float.parseFloat(tvItemPrice.getText().toString());
                                         int itemNum = Integer.parseInt(tvItemNum.getText().toString());
                                         //判断该商品有没有被选中
                                         if (info.getData().get(pos).getisSelected()) {
@@ -579,8 +579,8 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
                                         AppCompatCheckBox cb = (AppCompatCheckBox) manager.findViewByPosition(pos).findViewById(R.id.cb_cart_pro_selected);
                                         TextView tvItemPrice = (TextView) manager.findViewByPosition(pos).findViewById(R.id.tv_cart_pro_money);
                                         TextView tvItemNum = (TextView) manager.findViewByPosition(pos).findViewById(R.id.tv_cart_pro_num);
-                                        int unitPrice = Integer.parseInt(info.getData().get(pos).getPrice());
-                                        int itemPrice = Integer.parseInt(tvItemPrice.getText().toString());
+                                        float unitPrice = Float.parseFloat(info.getData().get(pos).getPrice());
+                                        float itemPrice = Float.parseFloat(tvItemPrice.getText().toString());
                                         int itemNum = Integer.parseInt(tvItemNum.getText().toString());
                                         //判断该商品有没有被选中
                                         if (info.getData().get(pos).getisSelected()) {

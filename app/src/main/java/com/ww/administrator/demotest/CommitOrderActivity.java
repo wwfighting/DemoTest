@@ -205,7 +205,7 @@ public class CommitOrderActivity extends AppCompatActivity implements View.OnCli
         }
         mtvOrderMoney.setText(strorderMoney);
         mtvBottomMoney.setText(strorderMoney);
-        mtvAllMoney.setText("预约价：" + strallMoney + " 起");
+        mtvAllMoney.setText("预估价：" + strallMoney + " 起");
 
         mtvDoor.setText("门  型：" + strDoor);
         mtvColor.setText("颜  色：" + strColor);

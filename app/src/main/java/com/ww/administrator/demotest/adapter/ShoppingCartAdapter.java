@@ -68,7 +68,7 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         if (holder instanceof ShoppingcartViewHolder){
             ((ShoppingcartViewHolder) holder).mtvTitle.setText(mInfo.getData().get(position).getGoodsname());
-            ((ShoppingcartViewHolder) holder).mtvMoney.setText(Integer.parseInt(mInfo.getData().get(position).getPrice()) * Integer.parseInt(mInfo.getData().get(position).getBuycount()) + "");
+            ((ShoppingcartViewHolder) holder).mtvMoney.setText(Float.parseFloat(mInfo.getData().get(position).getPrice()) * Integer.parseInt(mInfo.getData().get(position).getBuycount()) + "");
 
             if (mInfo.getData().get(position).getSubtitle().equals("配件")){
                 ((ShoppingcartViewHolder) holder).mtvOrderLabel.setVisibility(View.GONE);

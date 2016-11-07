@@ -95,5 +95,14 @@
         <item name="android:windowAnimationStyle">@null</item>
     </style>
 
+    <style name="NobackDialog" parent="@android:style/Theme.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:background">#00FFFFFF</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:backgroundDimAmount">0.5</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:backgroundDimEnabled">true</item><!--背景是否模糊-->
+        <item name="android:windowFrame">@null</item><!--无边框-->
+    </style>
 
 </resources>

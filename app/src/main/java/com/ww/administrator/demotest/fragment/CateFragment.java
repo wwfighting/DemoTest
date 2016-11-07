@@ -66,7 +66,6 @@ public class CateFragment extends BaseFragment {
     String cityName = "";   //记录当前的城市
     int mCurExpandPos = 0;   //记录点击的GroupPosition
 
-
     RecyclerView.LayoutManager mlayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
 
     @Override

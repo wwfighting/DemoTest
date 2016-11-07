@@ -41,7 +41,7 @@ public class DetailFragment extends Fragment {
 
     private void initViews(View view) {
         mLvDetail = (AutoHeightListView) view.findViewById(R.id.lv_detail);
-        mPbDetail = (ProgressWheel)  view.findViewById(R.id.pb_common);
+        mPbDetail = (ProgressWheel) view.findViewById(R.id.pb_common);
         mLvDetail.setVisibility(View.GONE);
         mPbDetail.setVisibility(View.VISIBLE);
 

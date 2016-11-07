@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.RadioButton;
@@ -18,6 +19,7 @@ import com.ww.administrator.demotest.fragment.CateFragment;
 import com.ww.administrator.demotest.fragment.HomeFragment;
 import com.ww.administrator.demotest.fragment.MyFragment;
 import com.ww.administrator.demotest.fragment.ShoppingCartFragment;
+import com.ww.administrator.demotest.util.DisplayUtil;
 
 import me.drakeet.materialdialog.MaterialDialog;
 
@@ -60,6 +62,16 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
         setmIsLogin(false);
 
         checkUpdate();
+
+        checkDeviceInfo();
+
+    }
+
+     void checkDeviceInfo(){
+        int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
+         Log.d("MainActivity", "最大内存是" + maxMemory + "KB");
+         Log.d("MainActivity", "屏幕分辨率width：" + DisplayUtil.getScreenWidth(this));
+         Log.d("MainActivity", "屏幕分辨率height：" + DisplayUtil.getScreenHeight(this));
     }
 
     private void checkUpdate(){
