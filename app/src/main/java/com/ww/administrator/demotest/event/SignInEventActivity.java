@@ -108,7 +108,7 @@ public class SignInEventActivity extends AppCompatActivity {
             }
         }, new HttpUtil.Param[]{
                 new HttpUtil.Param("uid", uid),
-                new HttpUtil.Param("goodsId", "3506")
+                new HttpUtil.Param("goodsId", "3507")
 
         });
     }

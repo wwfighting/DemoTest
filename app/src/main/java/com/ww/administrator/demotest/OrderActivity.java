@@ -310,7 +310,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
             lineHanging.setVisibility(View.GONE);
         }
 
-        if (mDetailInfo.getData().getDetail().getSubtitle().equals("")){
+        if (mDetailInfo.getData().getDetail().getSubtitle().equals("") || mDetailInfo.getData().getDetail().getSubtitle().equals("双十一活动")){
             mrlFloorContainer.setVisibility(View.VISIBLE);
             mrlHangingContainer.setVisibility(View.VISIBLE);
             mcvDoorContainer.setVisibility(View.VISIBLE);
@@ -568,7 +568,11 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
     private void initColor(){
         mRvColor.setNestedScrollingEnabled(false);
         final String colorName = (mDetailInfo.getData().getDetail().getTag().split(";"))[0];
-        mTvDetailColorName.setText(colorName + "：");
+        if (colorName.length() > 12){
+            mTvDetailColorName.setText(colorName.substring(0, 10) + "... ：");
+        }else {
+            mTvDetailColorName.setText(colorName + "：");
+        }
         llColorManager = new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false);
         mRvColor.setLayoutManager(llColorManager);
         mColorAdapter = new DetailColAdapter(this, mDetailInfo);
@@ -727,6 +731,10 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                 }
 
                 if (mDetailInfo.getData().getDetail().getSubtitle().equals("") && orderMode != 500){
+                    submitMainOrder();
+                }
+
+                if (mDetailInfo.getData().getDetail().getSubtitle().equals("双十一活动") && orderMode != 500){
                     submitMainOrder();
                 }
 
@@ -1129,7 +1137,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == 200){
+        if (resultCode == 200 && data != null){
             finish();
         }
     }

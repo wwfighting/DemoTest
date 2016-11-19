@@ -300,7 +300,7 @@ public class CommitOrderActivity extends AppCompatActivity implements View.OnCli
                 mtvLoad.setVisibility(View.VISIBLE);
                 mtvLoad.setText("下单失败！请检查您的网络");
 
-                mHandler.sendEmptyMessageDelayed(DIALOG_DISMISS, 3000);
+                mHandler.sendEmptyMessageDelayed(DIALOG_DISMISS, 1500);
             }
 
             @Override
@@ -313,7 +313,7 @@ public class CommitOrderActivity extends AppCompatActivity implements View.OnCli
                     mtvLoad.setText("下单成功，去付款");
                     //Toast.makeText(CommitOrderActivity.this, ((OrderInfo.T)info.getData()).getAllSchedprice() + "", Toast.LENGTH_LONG).show();
                     mDialog.getPositiveButton().setVisibility(View.GONE);
-                    mHandler.sendEmptyMessageDelayed(DIALOG_DISMISS, 3000);
+                    mHandler.sendEmptyMessageDelayed(DIALOG_DISMISS, 1500);
 
                     Intent intent = new Intent(CommitOrderActivity.this, PayActivity.class);
                     intent.putExtra("title", ((OrderPartsInfo.T)info.getData()).getGoodsName());
@@ -324,7 +324,7 @@ public class CommitOrderActivity extends AppCompatActivity implements View.OnCli
                     mpbLoad.setVisibility(View.GONE);
                     mtvLoad.setVisibility(View.VISIBLE);
                     mtvLoad.setText(info.getInfo());
-                    mHandler.sendEmptyMessageDelayed(DIALOG_DISMISS, 3000);
+                    mHandler.sendEmptyMessageDelayed(DIALOG_DISMISS, 1500);
                 }
             }
         }, new HttpUtil.Param[]{
@@ -360,7 +360,7 @@ public class CommitOrderActivity extends AppCompatActivity implements View.OnCli
                 mtvLoad.setVisibility(View.VISIBLE);
                 mtvLoad.setText("下单失败！请检查您的网络");
 
-                mHandler.sendEmptyMessageDelayed(DIALOG_DISMISS, 3000);
+                mHandler.sendEmptyMessageDelayed(DIALOG_DISMISS, 1500);
 
             }
 
@@ -374,7 +374,7 @@ public class CommitOrderActivity extends AppCompatActivity implements View.OnCli
                     mtvLoad.setText("下单成功！");
                     //Toast.makeText(CommitOrderActivity.this, ((OrderInfo.T)info.getData()).getAllSchedprice() + "", Toast.LENGTH_LONG).show();
                     mDialog.getPositiveButton().setVisibility(View.GONE);
-                    mHandler.sendEmptyMessageDelayed(DIALOG_DISMISS, 3000);
+                    mHandler.sendEmptyMessageDelayed(DIALOG_DISMISS, 1500);
                     Intent intent = new Intent(CommitOrderActivity.this, PayActivity.class);
                     intent.putExtra("title", ((OrderInfo.T) info.getData()).getGoodsName());
                     intent.putExtra("ordNum", ((OrderInfo.T) info.getData()).getSuperbillid());
@@ -384,7 +384,7 @@ public class CommitOrderActivity extends AppCompatActivity implements View.OnCli
                     mpbLoad.setVisibility(View.GONE);
                     mtvLoad.setVisibility(View.VISIBLE);
                     mtvLoad.setText(info.getInfo());
-                    mHandler.sendEmptyMessageDelayed(DIALOG_DISMISS, 3000);
+                    mHandler.sendEmptyMessageDelayed(DIALOG_DISMISS, 1500);
                 }
             }
         }, new HttpUtil.Param[]{
@@ -428,7 +428,7 @@ public class CommitOrderActivity extends AppCompatActivity implements View.OnCli
                 mtvLoad.setVisibility(View.VISIBLE);
                 mtvLoad.setText("下单失败！请检查您的网络");
 
-                mHandler.sendEmptyMessageDelayed(DIALOG_DISMISS, 3000);
+                mHandler.sendEmptyMessageDelayed(DIALOG_DISMISS, 1500);
             }
 
             @Override
@@ -460,7 +460,7 @@ public class CommitOrderActivity extends AppCompatActivity implements View.OnCli
                     mpbLoad.setVisibility(View.GONE);
                     mtvLoad.setVisibility(View.VISIBLE);
                     mtvLoad.setText(info.getInfo());
-                    mHandler.sendEmptyMessageDelayed(DIALOG_DISMISS, 3000);
+                    mHandler.sendEmptyMessageDelayed(DIALOG_DISMISS, 1500);
                 }
             }
         }, new HttpUtil.Param[]{
@@ -505,7 +505,8 @@ public class CommitOrderActivity extends AppCompatActivity implements View.OnCli
         super.onActivityResult(requestCode, resultCode, data);
         if (data != null && resultCode == 200){
             if (data.getStringExtra("value") != null){
-                setResult(200);
+                Intent intent = new Intent(CommitOrderActivity.this, OrderActivity.class);
+                setResult(200, intent);
                 finish();
             }
         }

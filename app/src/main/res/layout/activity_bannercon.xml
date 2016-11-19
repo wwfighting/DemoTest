@@ -15,5 +15,26 @@
 
         <include
             layout="@layout/loading_layout" />
+
+
     </FrameLayout>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:id="@+id/btn_buy"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="55dp"
+        android:elevation="8dp"
+        android:background="#e60f0f"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:text="立 即 抢 购"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="58dp"
+        android:id="@+id/btn_bottom"
+        android:layout_alignParentBottom="true"
+        android:background="#00000000" />
 </RelativeLayout>

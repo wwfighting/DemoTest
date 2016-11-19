@@ -133,13 +133,17 @@
         <activity
             android:name=".SelectCityActivity"
             android:exported="false"
-            android:theme="@style/DayTheme.Translucent"/>
+            android:theme="@style/DayTheme.Translucent" />
 
         <activity android:name=".event.SignInEventActivity" />
 
         <activity
             android:name=".event.OneBuyEventActivity"
             android:theme="@style/DayTheme.Translucent"/>
+
+        <activity android:name=".NearActivity" />
+
+        <activity android:name=".event.RotateEventActivity" />
 
     </application>
 

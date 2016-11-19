@@ -64,7 +64,7 @@ public class ToolsUtil {
     public static boolean isEventExpire(){
         //格式化时间
         SimpleDateFormat CurrentTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String endDate = "2016-11-11 23:59:59";
+        String endDate = "2016-11-26 23:59:59";
         Date d = new Date(System.currentTimeMillis());//获取当前时间
         String beginDate = CurrentTime.format(d);
         try {

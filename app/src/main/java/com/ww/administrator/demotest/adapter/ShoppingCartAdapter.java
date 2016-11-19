@@ -91,7 +91,7 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 ((ShoppingcartViewHolder) holder).mtvNum.setVisibility(View.GONE);
                 ((ShoppingcartViewHolder) holder).mtvNumPlus.setVisibility(View.GONE);
                 ((ShoppingcartViewHolder) holder).mtvOrdMoney.setText(mInfo.getData().get(position).getOrderMoney() + "");
-            }else if (mInfo.getData().get(position).getSubtitle().equals("")){  //橱柜
+            }else if (mInfo.getData().get(position).getSubtitle().equals("") || mInfo.getData().get(position).getSubtitle().equals("双十一活动")){  //橱柜
                 ((ShoppingcartViewHolder) holder).mtvOrderLabel.setVisibility(View.VISIBLE);
                 ((ShoppingcartViewHolder) holder).mtvOrdMoney.setVisibility(View.VISIBLE);
                 ((ShoppingcartViewHolder) holder).mtvOrderMinus.setVisibility(View.VISIBLE);

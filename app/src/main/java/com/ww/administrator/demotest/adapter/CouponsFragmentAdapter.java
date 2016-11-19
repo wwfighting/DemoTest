@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide;
 import com.ww.administrator.demotest.R;
 import com.ww.administrator.demotest.model.CouponsResultInfo;
 import com.ww.administrator.demotest.util.Constants;
+import com.ww.administrator.demotest.util.DisplayUtil;
 
 import java.util.List;
 
@@ -90,6 +91,12 @@ public class CouponsFragmentAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                         .load(Constants.BASE_IMG_URL + "uploads/1478051956.jpg")
                         .crossFade()
                         .into(((CouponsSignViewHolder) holder).mivSigninShow);
+            }else if (mList.get(position).getLpGoodid().equals("3507")){
+                Glide.with(mContext)
+                        .load(Constants.BASE_IMG_URL + "uploads/1479110026.jpg")
+                        .crossFade()
+                        .override( DisplayUtil.dip2px(mContext, 200), DisplayUtil.dip2px(mContext, 100))
+                        .into(((CouponsSignViewHolder) holder).mivSigninShow);
             }
 
             ((CouponsSignViewHolder) holder).mtvSigninNo.setText(mList.get(position).getName());
@@ -98,7 +105,6 @@ public class CouponsFragmentAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             ((CouponsSignViewHolder) holder).mtvSigninUseRule.setText(mode);
 
         }
-
 
     }
 

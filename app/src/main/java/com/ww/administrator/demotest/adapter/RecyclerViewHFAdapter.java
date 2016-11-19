@@ -7,7 +7,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ww.administrator.demotest.ProductListActivity;
 import com.ww.administrator.demotest.R;
@@ -25,17 +27,21 @@ public class RecyclerViewHFAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     private static final int TYPE_FOOTER = 1;
 
-    private static final int TYPE_NEWGOODS_TITLE = 2; //新品推荐标题
+    private static final int TYPE_CATE_TITLE= 2; //八个种类图标
 
-    private static final int TYPE_NEWGOODS_CONTENT = 3; //新品推荐内容
+    private static final int TYPE_EVENT_TITLE = 3; //Banner下的活动图
 
-    private static final int TYPE_HOTGOODS_TITLE = 4; //热门商品标题
+    private static final int TYPE_NEWGOODS_TITLE = 4; //新品推荐标题
 
-    private static final int TYPE_HOTGOODS_CONTENT = 5; //热门商品内容
+    private static final int TYPE_NEWGOODS_CONTENT = 5; //新品推荐内容
 
-    private static final int TYPE_HOMEGOODS_TITLE = 6; //全屋定制标题
+    private static final int TYPE_HOTGOODS_TITLE = 6; //热门商品标题
 
-    private static final int TYPE_HOMEGOODS_CONTENT = 7; //全屋定制内容
+    private static final int TYPE_HOTGOODS_CONTENT = 7; //热门商品内容
+
+    private static final int TYPE_HOMEGOODS_TITLE = 8; //全屋定制标题
+
+    private static final int TYPE_HOMEGOODS_CONTENT = 9; //全屋定制内容
 
     private View mHeaderView;
 
@@ -44,6 +50,7 @@ public class RecyclerViewHFAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private View mEmptyView;
 
     HomeGoodsAdapter mAdapter;
+    HomeCateAdapter mCateAdapter;
 
     GoodsInfo mNewList, mHotList, mHomeList;
     Context mContext;
@@ -71,12 +78,23 @@ public class RecyclerViewHFAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         if (viewType == TYPE_HEADER) {
             View v = mHeaderView;
             return new HeaderHolder(v);
-        } else if (viewType == TYPE_NEWGOODS_TITLE) {
+
+        }else if (viewType == TYPE_EVENT_TITLE) {
+            View v = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.adapter_event, parent, false);
+            return new EventViewHolder(v);
+
+        }else if (viewType == TYPE_CATE_TITLE) {
+            View v = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.recyclerview_layout, parent, false);
+            return new HomeCateViewHolder(v);
+
+        }else if (viewType == TYPE_NEWGOODS_TITLE) {
             View v = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.adapter_title, parent, false);
             return new NewGoodsTitleHolder(v);
 
-        } else if (viewType == TYPE_NEWGOODS_CONTENT) {
+        }else if (viewType == TYPE_NEWGOODS_CONTENT) {
             View v = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.recyclerview_layout, parent, false);
             return new NewGoodsContentHolder(v);
@@ -100,11 +118,10 @@ public class RecyclerViewHFAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                     .inflate(R.layout.recyclerview_layout, parent, false);
             return new HomeGoodsContentHolder(v);
 
-        }
-        else if (viewType == TYPE_FOOTER) {
+        }else if (viewType == TYPE_FOOTER) {
             View v = mFooterView;
             return new FooterHolder(v);
-        } else if (viewType == TYPE_NEWGOODS_CONTENT) {
+        }else if (viewType == TYPE_NEWGOODS_CONTENT) {
             View v = mEmptyView;
             return new EmptyHolder(v);
         }
@@ -115,7 +132,22 @@ public class RecyclerViewHFAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof HeaderHolder) {
 
-        } else if (holder instanceof NewGoodsTitleHolder) {
+        }else if (holder instanceof EventViewHolder) {
+            ((EventViewHolder) holder).mivEvent.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(mContext, "跳转到活动页", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+        }else if (holder instanceof HomeCateViewHolder) {
+            if (((HomeCateViewHolder) holder).mNewRecyclerView.getAdapter() == null){
+                mCateAdapter = new HomeCateAdapter(mContext);
+                ((HomeCateViewHolder) holder).mNewRecyclerView.setAdapter(mCateAdapter);
+            }else {
+                ((HomeCateViewHolder) holder).mNewRecyclerView.getAdapter().notifyDataSetChanged();
+            }
+        }else if (holder instanceof NewGoodsTitleHolder) {
             ((NewGoodsTitleHolder) holder).mNewTvTitle.setText("新品推荐");
             ((NewGoodsTitleHolder) holder).mNewTvMore.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -128,7 +160,7 @@ public class RecyclerViewHFAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
                 }
             });
-        } else if (holder instanceof NewGoodsContentHolder) {
+        }else if (holder instanceof NewGoodsContentHolder) {
             if (((NewGoodsContentHolder) holder).mNewRecyclerView.getAdapter() == null){
                 mAdapter = new HomeGoodsAdapter(mContext, mNewList);
                 ((NewGoodsContentHolder) holder).mNewRecyclerView.setAdapter(mAdapter);
@@ -137,7 +169,7 @@ public class RecyclerViewHFAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             }
 
 
-        } else if (holder instanceof HotGoodsTitleHolder) {
+        }else if (holder instanceof HotGoodsTitleHolder) {
             ((HotGoodsTitleHolder) holder).mHotTvTitle.setText("热门商品");
             ((HotGoodsTitleHolder) holder).mHotTvMore.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -150,11 +182,11 @@ public class RecyclerViewHFAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
                 }
             });
-        } else if (holder instanceof HotGoodsContentHolder) {
+        }else if (holder instanceof HotGoodsContentHolder) {
             if (((HotGoodsContentHolder) holder).mHotRecyclerView.getAdapter() == null){
                 mAdapter = new HomeGoodsAdapter(mContext, mHotList);
                 ((HotGoodsContentHolder) holder).mHotRecyclerView.setAdapter(mAdapter);
-                if (getItemCount() == 5){
+                if (getItemCount() == 7){
                     RecyclerView.LayoutParams lp = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                     lp.setMargins(0, 0, 0, DisplayUtil.dip2px(mContext, 50));
                     ((HotGoodsContentHolder) holder).mHotRecyclerView.setLayoutParams(lp);
@@ -163,7 +195,7 @@ public class RecyclerViewHFAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 ((HotGoodsContentHolder) holder).mHotRecyclerView.getAdapter().notifyDataSetChanged();
             }
 
-        } else if (holder instanceof HomeGoodsTitleHolder) {
+        }else if (holder instanceof HomeGoodsTitleHolder) {
             ((HomeGoodsTitleHolder) holder).mHomeTvTitle.setText("全屋热卖");
             ((HomeGoodsTitleHolder) holder).mHomeTvMore.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -176,7 +208,7 @@ public class RecyclerViewHFAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
                 }
             });
-        } else if (holder instanceof HomeGoodsContentHolder) {
+        }else if (holder instanceof HomeGoodsContentHolder) {
             if (((HomeGoodsContentHolder) holder).mHomeRecyclerView.getAdapter() == null){
                 if (getItemCount() == 7){
                     RecyclerView.LayoutParams lp = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -189,20 +221,21 @@ public class RecyclerViewHFAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 ((HomeGoodsContentHolder) holder).mHomeRecyclerView.getAdapter().notifyDataSetChanged();
             }
 
-        } else if (holder instanceof FooterHolder) {
+        }else if (holder instanceof FooterHolder) {
 
-        } else if (holder instanceof EmptyHolder) {
+        }else if (holder instanceof EmptyHolder) {
 
         }
     }
 
     @Override
     public int getItemCount() {
-        if (!mCity.equals("南京")){
-            return 7;
+        return 7;
+       /* if (!mCity.equals("南京")){
+            return 9;
         }else {
-            return 5;
-        }
+            return 7;
+        }*/
 
     }
 
@@ -212,27 +245,36 @@ public class RecyclerViewHFAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             if (position == 0){
                 return TYPE_HEADER;
             }else if (position == 1){
-                return TYPE_NEWGOODS_TITLE;
+                return TYPE_EVENT_TITLE;
             }else if (position == 2){
-                return TYPE_NEWGOODS_CONTENT;
+                return TYPE_CATE_TITLE;
             }else if (position == 3){
-                return TYPE_HOTGOODS_TITLE;
+                return TYPE_NEWGOODS_TITLE;
             }else if (position == 4){
-                return TYPE_HOTGOODS_CONTENT;
+                return TYPE_NEWGOODS_CONTENT;
             }else if (position == 5){
+                return TYPE_HOMEGOODS_TITLE;
+                //return TYPE_HOTGOODS_TITLE;
+            }else {
+                return TYPE_HOMEGOODS_CONTENT;
+                //return TYPE_HOTGOODS_CONTENT;
+            }/*else if (position == 7){
                 return TYPE_HOMEGOODS_TITLE;
             }else {
                 return TYPE_HOMEGOODS_CONTENT;
-            }
-
+            }*/
         }else {
             if (position == 0){
                 return TYPE_HEADER;
             }else if (position == 1){
-                return TYPE_NEWGOODS_TITLE;
+                return TYPE_EVENT_TITLE;
             }else if (position == 2){
+                return TYPE_CATE_TITLE;
+            } else if (position == 3){
+                return TYPE_NEWGOODS_TITLE;
+            }else if (position == 4){
                 return TYPE_NEWGOODS_CONTENT;
-            }else if (position == 3){
+            }else if (position == 5){
                 return TYPE_HOTGOODS_TITLE;
             }else {
                 return TYPE_HOTGOODS_CONTENT;
@@ -307,6 +349,29 @@ public class RecyclerViewHFAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         public HeaderHolder(View itemView) {
             super(itemView);
 
+        }
+    }
+
+    //Banner下活动图ViewHolder
+    class EventViewHolder extends RecyclerView.ViewHolder {
+        ImageView mivEvent;
+
+        public EventViewHolder(View itemView) {
+            super(itemView);
+            mivEvent = (ImageView) itemView.findViewById(R.id.iv_home_event);
+        }
+    }
+
+    //首页种类ViewHolder
+    class HomeCateViewHolder extends RecyclerView.ViewHolder {
+        RecyclerView mNewRecyclerView;
+
+        public HomeCateViewHolder(View itemView) {
+            super(itemView);
+            mNewRecyclerView = (RecyclerView) itemView.findViewById(R.id.rv_common);
+            RecyclerView.LayoutManager layoutManager = new GridLayoutManager(mContext, 4);
+            layoutManager.setAutoMeasureEnabled(true);
+            mNewRecyclerView.setLayoutManager(layoutManager);
         }
     }
 

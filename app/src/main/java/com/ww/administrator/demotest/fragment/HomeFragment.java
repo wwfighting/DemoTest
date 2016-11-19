@@ -10,9 +10,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
@@ -21,15 +18,20 @@ import android.view.animation.AnimationSet;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.bigkoo.convenientbanner.ConvenientBanner;
 import com.bigkoo.convenientbanner.holder.CBViewHolderCreator;
 import com.bigkoo.convenientbanner.listener.OnItemClickListener;
 import com.google.gson.Gson;
+import com.melnykov.fab.FloatingActionButton;
 import com.pnikosis.materialishprogress.ProgressWheel;
 import com.squareup.okhttp.Request;
 import com.ww.administrator.demotest.About4Acitivity;
@@ -45,6 +47,7 @@ import com.ww.administrator.demotest.adapter.RecyclerViewHFAdapter;
 import com.ww.administrator.demotest.cityselect.MyApp;
 import com.ww.administrator.demotest.cityselect.utils.SharedPreUtil;
 import com.ww.administrator.demotest.event.OneBuyEventActivity;
+import com.ww.administrator.demotest.event.RotateEventActivity;
 import com.ww.administrator.demotest.event.SignInEventActivity;
 import com.ww.administrator.demotest.model.BannerInfo;
 import com.ww.administrator.demotest.model.GoodsInfo;
@@ -90,7 +93,13 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
     ListView mlvCity;
 
     private ImageView ivEvent;
+    int iAnim = 0;
 
+    EditText metToSearch;
+    ImageButton imbtnSearch;
+    TextView mtvLocate;
+    ImageView mivAbout;
+    FloatingActionButton mfabAround;
 
     @Override
     protected void getArgs() {
@@ -110,21 +119,48 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
         ivEvent = (ImageView) view.findViewById(R.id.iv_event);
         refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refreshLayout);
         listView = (RecyclerView) view.findViewById(R.id.recyclerView);
-        convenientBanner = (ConvenientBanner)LayoutInflater.from(getActivity()).inflate(R.layout.adapter_header_cb, null);
+        mfabAround = (FloatingActionButton) view.findViewById(R.id.fab_around);
+        //BannerView = LayoutInflater.from(getActivity()).inflate(R.layout.adapter_header2_cb, null);
+        //convenientBanner = (ConvenientBanner) BannerView.findViewById(R.id.convenientBanner);
+        //BannerView.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DisplayUtil.dip2px(getActivity(), 230)));
+        convenientBanner = (ConvenientBanner) LayoutInflater.from(getActivity()).inflate(R.layout.adapter_header_cb, null);
         convenientBanner.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DisplayUtil.dip2px(getActivity(), 230)));
+
         mpbHome = (ProgressWheel) view.findViewById(R.id.pb_common);
         mpbHome.setVisibility(View.VISIBLE);
         refreshLayout.setVisibility(View.GONE);
         refreshLayout.setColorSchemeResources(R.color.day_colorPrimary, R.color.day_colorPrimaryDark,
                 R.color.day_colorAccent);
-        setToolbar(view);
-        mtbHome.setNavigationIcon(R.mipmap.logo);
+
+
+        metToSearch = (EditText) view.findViewById(R.id.et_search);
+        imbtnSearch = (ImageButton) view.findViewById(R.id.imbtn_search);
+        mtvLocate = (TextView) view.findViewById(R.id.tv_locate);
+        mivAbout = (ImageView) view.findViewById(R.id.iv_about);
+        setEditTextReadOnly();
+        mfabAround.attachToRecyclerView(listView);
+        mfabAround.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Intent intent = new Intent(getActivity(), NearActivity.class);
+                Intent intent = new Intent(getActivity(), RotateEventActivity.class);
+                startActivity(intent);
+            }
+        });
+
     }
+
+    private void setEditTextReadOnly(){
+        metToSearch.setCursorVisible(false);      //设置输入框中的光标不可见
+        metToSearch.setFocusable(false);           //无焦点
+        metToSearch.setFocusableInTouchMode(false);     //触摸时也得不到焦点
+    }
+
 
     @Override
     protected void doBusiness() {
         initCity();
-
+        setToolbar();
         //得到banner的相关信息
         loadDatas();
         initDialog();
@@ -206,20 +242,21 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
 
             @Override
             public void onResponse(String response) {
-
+                mfabAround.setVisibility(View.VISIBLE);
                 mHotList = mGson.fromJson(response, GoodsInfo.class);
-                if (!cityName.equals("南京")){
+                if (!cityName.equals("南京")) {
                     getHomeGoods();
 
-                }else {
+                } else {
                     init(mBannerInfo, mNewList, mHotList);
                     initEvents();
 
                 }
 
-                if (!ToolsUtil.isEventExpire()){ //判断活动是否过期
+                if (!ToolsUtil.isEventExpire()) { //判断活动是否过期
                     ivEvent.setVisibility(View.VISIBLE);
-                    new Thread(){
+                    playHeartbeatAnimation(ivEvent);
+                    /*new Thread(){
                         public void run() {
                             while (true){
                                 try {
@@ -236,7 +273,7 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
                                 });
                             }
                         }
-                    }.start();
+                    }.start();*/
 
                     Intent i = new Intent(getActivity(), OneBuyEventActivity.class);
                     startActivity(i);
@@ -308,28 +345,29 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
             @Override
             public void onItemClick(int position) {
                 String url = mBannerInfo.getData().get(position).getHref();
-                if (url.equals("#")){
+                if (url.equals("#")) {
 
                     return;
                 }
 
-                if (url.equals("qdyl.php")){
+                if (url.equals("qdyl.php")) {
                     Intent intent = new Intent(getActivity(), SignInEventActivity.class);
                     startActivity(intent);
 
-                }else {
+                } else {
                     String[] urlArr = mBannerInfo.getData().get(position).getHref().split("[?]");
 
-                    if (urlArr.length == 1){ //证明不是商品购买
+                    if (urlArr.length == 1) { //证明不是商品购买
+
                         url = "http://www.jvawa.com/app/" + url;
                         Intent banner = new Intent();
                         banner.setClass(getActivity(), BannerConActivity.class);
                         banner.putExtra("bannerUrl", url);
                         startActivity(banner);
-                    }else {
+                    } else {
                         gid = urlArr[1].substring(3);
                         //Log.d("ww", "gid:" + gid + "=======");
-                        if (gid != ""){
+                        if (gid != "") {
                             Intent detail = new Intent();
                             detail.setClass(getActivity(), DetailActivity.class);
                             detail.putExtra("gid", gid);
@@ -353,13 +391,15 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
         animationSet.addAnimation(new ScaleAnimation(1.0f, 1.3f, 1.0f, 1.3f,
                 Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,
                 0.5f));
-        animationSet.addAnimation(new AlphaAnimation(0.5f, 1.0f));
+        animationSet.addAnimation(new AlphaAnimation(0.3f, 1.0f));
         animationSet.setDuration(900);
         animationSet.setInterpolator(new LinearInterpolator());
         animationSet.setFillAfter(true);
         animationSet.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
+
+
             }
 
             @Override
@@ -372,7 +412,7 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
                 animationSet.addAnimation(new ScaleAnimation(1.3f, 1.0f, 1.3f,
                         1.0f, Animation.RELATIVE_TO_SELF, 0.5f,
                         Animation.RELATIVE_TO_SELF, 0.5f));
-                animationSet.addAnimation(new AlphaAnimation(1.0f, 0.5f));
+                animationSet.addAnimation(new AlphaAnimation(1.0f, 0.7f));
                 animationSet.setDuration(1000);
                 animationSet.setInterpolator(new LinearInterpolator());
                 animationSet.setFillAfter(true);
@@ -444,14 +484,17 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
     }
 
 
-    private void setToolbar(View view){
-        mtbHome = (Toolbar) view.findViewById(R.id.tb_common);
-        mtbHome.setTitle("家瓦商城");
-        //((MainActivity)getActivity()).setSupportActionBar(mtbHome);
-        mtbHome.inflateMenu(R.menu.main);
-        mtbHome.setNavigationIcon(R.mipmap.ic_launcher);
+    private void setToolbar(){
 
-        mtbHome.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+
+        //mtbHome = (Toolbar) view.findViewById(R.id.tb_common);
+        //mtbHome.setNavigationIcon(R.mipmap.logo);
+        //mtbHome.setTitle("家瓦商城");
+        //((MainActivity)getActivity()).setSupportActionBar(mtbHome);
+        //mtbHome.inflateMenu(R.menu.main);
+        //mtbHome.setNavigationIcon(R.mipmap.ic_launcher);
+
+       /* mtbHome.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
@@ -471,7 +514,7 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
                     case R.id.menu_locate:
 
                         startActivityForResult(new Intent(getActivity(), SelectCityActivity.class), 100);
-                        /*cityDialog.show();
+                        *//*cityDialog.show();
                         mlvCity.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -500,13 +543,13 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
                                 SharedPreUtil.saveData(getActivity(), "locatCity", cityName);
                                 loadDatas();
                             }
-                        });*/
+                        });*//*
 
                         //startActivity(new Intent(getActivity(), LocatCityActivity.class));
                         return true;
 
                     case R.id.menu_about:
-                       /* startActivity(new Intent(getActivity(), About4Acitivity.class));*/
+                       *//* startActivity(new Intent(getActivity(), About4Acitivity.class));*//*
                         if (ToolsUtil.GetVersionSDK() < Build.VERSION_CODES.LOLLIPOP) {
                             startActivity(new Intent(getActivity(), About4Acitivity.class));
                         } else {
@@ -519,6 +562,70 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
                 }
                 return false;
             }
+        });*/
+        mtvLocate.setText(cityName);
+        mtvLocate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivityForResult(new Intent(getActivity(), SelectCityActivity.class), 100);
+                mlvCity.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        switch (position) {
+                            case 0: //南京
+                                cityName = "南京";
+                                cityDialog.dismiss();
+
+                                break;
+                            case 1: //上海
+                                cityName = "上海";
+                                cityDialog.dismiss();
+
+                                break;
+                            case 2: //兰州
+                                cityName = "兰州";
+                                cityDialog.dismiss();
+
+                                break;
+                            case 3: //沈阳
+                                cityName = "沈阳";
+                                cityDialog.dismiss();
+
+                                break;
+                        }
+                        SharedPreUtil.saveData(getActivity(), "locatCity", cityName);
+                        loadDatas();
+                    }
+                });
+            }
+        });
+
+        mivAbout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (ToolsUtil.GetVersionSDK() < Build.VERSION_CODES.LOLLIPOP) {
+                    startActivity(new Intent(getActivity(), About4Acitivity.class));
+                } else {
+
+                    startActivity(new Intent(getActivity(), AboutActivity.class));
+                }
+            }
+        });
+
+        metToSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), SearchActivity.class);
+                if (ToolsUtil.GetVersionSDK() < Build.VERSION_CODES.LOLLIPOP) {
+                    startActivity(intent);
+                } else {
+                    View sharedView = imbtnSearch;
+                    String transitionName = "img_back";
+                    ActivityOptions transitionActivityOptions = ActivityOptions.makeSceneTransitionAnimation(getActivity(), sharedView, transitionName);
+                    startActivity(intent, transitionActivityOptions.toBundle());
+                }
+
+            }
         });
     }
 
@@ -527,23 +634,24 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);//在fragment中设置toolbar上的menuitem可见
+        //setHasOptionsMenu(true);//在fragment中设置toolbar上的menuitem可见
 
     }
 
-    @Override
+    /*@Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
         inflater.inflate(R.menu.main, menu);
 
         super.onCreateOptionsMenu(menu, inflater);
 
-    }
+    }*/
 
     /**
      * 载入信息
      */
     public void loadDatas() {
+        mtvLocate.setText((String)SharedPreUtil.getData(getActivity(), "locatCity", "南京"));
         getBanner();
     }
 
@@ -560,6 +668,10 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
 
             @Override
             public void onResponse(String response) {
+
+                System.out.println("=============");
+                System.out.println(response.toString());
+                System.out.println("=============");
 
                 mpbHome.setVisibility(View.GONE);
                 refreshLayout.setVisibility(View.VISIBLE);

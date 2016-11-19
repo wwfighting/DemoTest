@@ -13,6 +13,7 @@
         android:layout_margin="10dp"
         android:layout_gravity="center"
         android:background="@drawable/dialog_background"
+        android:elevation="10dp"
         android:clickable="true"
         android:orientation="vertical">
 

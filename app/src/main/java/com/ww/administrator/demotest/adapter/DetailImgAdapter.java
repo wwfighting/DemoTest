@@ -13,9 +13,7 @@ import com.bm.library.PhotoView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.target.Target;
 import com.ww.administrator.demotest.R;
-import com.ww.administrator.demotest.util.DisplayUtil;
 import com.ww.administrator.demotest.widget.PicShowAlertDialog;
 
 import java.util.List;
@@ -27,9 +25,11 @@ public class DetailImgAdapter extends BaseAdapter {
 
     Context mContext;
     List<String> mList;
+    private LayoutInflater mInflater;
     public DetailImgAdapter(Context context, List<String> list) {
         this.mContext = context;
         this.mList = list;
+        mInflater = LayoutInflater.from(context);
     }
 
     @Override
@@ -52,8 +52,8 @@ public class DetailImgAdapter extends BaseAdapter {
 
         ImgViewHolder imgViewHolder;
         if (convertView == null){
+            convertView = mInflater.inflate(R.layout.adapter_detail_layout, null);
             imgViewHolder = new ImgViewHolder();
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.adapter_detail_layout, null);
             imgViewHolder.mIvDetailShow = (PhotoView) convertView.findViewById(R.id.iv_detail_show);
             convertView.setTag(imgViewHolder);
         }else {
@@ -67,26 +67,19 @@ public class DetailImgAdapter extends BaseAdapter {
     }
 
     private void loadGlideBitmap(String url,final ImgViewHolder viewHolder){
+
         Glide.with(mContext)
                 .load(url)
                 .asBitmap()
-                .into(new SimpleTarget<Bitmap>(DisplayUtil.getScreenWidth(mContext), Target.SIZE_ORIGINAL) {
-
+                .into(new SimpleTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(final Bitmap bitmap, GlideAnimation glideAnimation) {
 
                         //获取bitmap信息，可赋值给外部变量操作，也可在此时行操作。
-                        System.out.println("=============");
-                        System.out.println("width:" + bitmap.getWidth() + "height:" + bitmap.getHeight());
-                        System.out.println("=============");
-                       /* ViewGroup.LayoutParams params = viewHolder.mIvDetailShow.getLayoutParams();
-                        params.height = bitmap.getHeight();
-                        params.width = DisplayUtil.getScreenWidth(mContext);
-                        viewHolder.mIvDetailShow.setLayoutParams(params);*/
+
                         viewHolder.mIvDetailShow.setImageBitmap(bitmap);
                         viewHolder.mIvDetailShow.disenable();
                         viewHolder.mIvDetailShow.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                        //viewHolder.mIvDetailShow.setScaleType(ImageView.ScaleType.CENTER);
                         viewHolder.mIvDetailShow.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -106,7 +99,7 @@ public class DetailImgAdapter extends BaseAdapter {
         dialog.show();
     }
 
-    private static class ImgViewHolder{
+    private class ImgViewHolder{
         PhotoView mIvDetailShow;
     }
 

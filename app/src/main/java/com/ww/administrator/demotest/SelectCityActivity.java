@@ -36,7 +36,6 @@ public class SelectCityActivity extends AppCompatActivity {
                     case 0: //南京
                         SharedPreUtil.saveData(SelectCityActivity.this, "locatCity", "南京");
 
-
                         break;
                     case 1: //上海
                         SharedPreUtil.saveData(SelectCityActivity.this, "locatCity", "上海");
@@ -45,11 +44,9 @@ public class SelectCityActivity extends AppCompatActivity {
                     case 2: //兰州
                         SharedPreUtil.saveData(SelectCityActivity.this, "locatCity", "兰州");
 
-
                         break;
                     case 3: //沈阳
                         SharedPreUtil.saveData(SelectCityActivity.this, "locatCity", "沈阳");
-
 
                         break;
                 }

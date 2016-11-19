@@ -4,15 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.baidu.location.BDLocation;
-import com.baidu.location.BDLocationListener;
-import com.baidu.location.LocationClient;
-import com.baidu.location.LocationClientOption;
 import com.ww.administrator.demotest.cityselect.CitySelecterActivity;
 
 /**
@@ -24,12 +18,14 @@ public class LocatCityActivity extends AppCompatActivity{
     TextView mtvLocate;
 
     //定位相关
-    private LocationClient mLocationClient;
-    private MyLocationListener myLocationListener;
+
+   // private LocationClient mLocationClient;
+   // private MyLocationListener myLocationListener;
     private boolean IsFirstIn = true;//记录是否是第一次进入
     private double mLatitude;//记录经度
     private double mLongtitude;//记录纬度
     private String CurrentLocation;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +56,8 @@ public class LocatCityActivity extends AppCompatActivity{
     }
 
     private void initLocation(){
-        mLocationClient = new LocationClient(this);
+
+       /* mLocationClient = new LocationClient(this);
         myLocationListener = new MyLocationListener();
         mLocationClient.registerLocationListener(myLocationListener);//注册接口
         LocationClientOption option = new LocationClientOption();
@@ -69,20 +66,23 @@ public class LocatCityActivity extends AppCompatActivity{
         option.setOpenGps(true);
         option.setScanSpan(1000);
 
-        mLocationClient.setLocOption(option);
+        mLocationClient.setLocOption(option);*/
     }
 
 
-    private class MyLocationListener implements BDLocationListener {
+   /* private class MyLocationListener implements BDLocationListener {
 
         @Override
         public void onReceiveLocation(BDLocation location) {
 
             mLatitude = location.getLatitude();
             mLongtitude = location.getLongitude();
+
             if (IsFirstIn) {
 
                 IsFirstIn = false;
+
+
                 if (location.getAddrStr().isEmpty()) {
                     mtvLocate.setText("无法定位到您的位置！");
                     CurrentLocation = "无法定位到您的位置！";
@@ -144,5 +144,5 @@ public class LocatCityActivity extends AppCompatActivity{
         if (data != null && resultCode == 1110){
             mtvLocate.setText(data.getStringExtra("selectCityName"));
         }
-    }
+    }*/
 }

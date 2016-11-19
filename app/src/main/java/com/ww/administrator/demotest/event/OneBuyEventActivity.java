@@ -97,7 +97,7 @@ public class OneBuyEventActivity extends AppCompatActivity {
     private void initDialogWarn(){
         mDialogWarn = new MaterialDialog(this);
         mDialogWarn.setTitle("注意！");
-        mDialogWarn.setMessage("一元抢购的礼券仅限11.1-11.11期间下预约金的订单使用");
+        mDialogWarn.setMessage("一元抢购的礼券仅限11.14-11.27期间下预约金的订单使用");
         mDialogWarn.setPositiveButton("确定", new View.OnClickListener() {
             @Override
             public void onClick(View v) {

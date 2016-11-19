@@ -14,6 +14,7 @@ import com.google.gson.Gson;
 import com.pnikosis.materialishprogress.ProgressWheel;
 import com.squareup.okhttp.Request;
 import com.ww.administrator.demotest.adapter.HotActyAdapter;
+import com.ww.administrator.demotest.cityselect.utils.SharedPreUtil;
 import com.ww.administrator.demotest.model.ActyInfo;
 import com.ww.administrator.demotest.util.Constants;
 import com.ww.administrator.demotest.util.HttpUtil;
@@ -90,7 +91,8 @@ public class HotActivity extends AppCompatActivity {
                 }
             }
         }, new HttpUtil.Param[]{
-                new HttpUtil.Param("action", "activity")
+                new HttpUtil.Param("action", "activity"),
+                new HttpUtil.Param("city", (String) SharedPreUtil.getData(HotActivity.this, "locatCity", "兰州"))
         });
     }
 

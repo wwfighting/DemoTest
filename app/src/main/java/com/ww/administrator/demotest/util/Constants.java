@@ -6,6 +6,7 @@ package com.ww.administrator.demotest.util;
 public class Constants {
 
     //api
+    public static final String BASE_TEST_URL = "http://192.168.1.25/test/jvawa/";
     //public static final String BASE_URL = "http://192.168.1.25/test/jvawa/";
     public static final String BASE_URL = "http://www.jvawa.com/new/jvawaApi/";
     public static final String BASE_IMG_URL= "http://www.jvawa.com/";

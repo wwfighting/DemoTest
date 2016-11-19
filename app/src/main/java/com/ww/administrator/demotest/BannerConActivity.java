@@ -1,5 +1,6 @@
 package com.ww.administrator.demotest;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -8,6 +9,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
 
 import com.pnikosis.materialishprogress.ProgressWheel;
 
@@ -22,6 +24,8 @@ public class BannerConActivity extends AppCompatActivity {
 
     private ProgressWheel mpbLoading;
 
+    Button btnBuy, btnBottom;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,14 +37,40 @@ public class BannerConActivity extends AppCompatActivity {
     }
 
     private void initParams() {
-
         bannerUrl = getIntent().getStringExtra("bannerUrl");
     }
 
     private void initViews(){
         mWebView = (WebView) findViewById(R.id.wv_banner);
+        btnBuy = (Button) findViewById(R.id.btn_buy);
+        btnBottom = (Button) findViewById(R.id.btn_bottom);
         mpbLoading = (ProgressWheel) findViewById(R.id.pb_common);
         mpbLoading.setVisibility(View.VISIBLE);
+
+        if (bannerUrl.equals("http://www.jvawa.com/app/game/AprilSpecial/nov.php") || bannerUrl.equals("http://www.jvawa.com/app/game/AprilSpecial/nov2.php")){
+            btnBuy.setVisibility(View.VISIBLE);
+            btnBuy.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent();
+                    intent.setClass(BannerConActivity.this, ProductListActivity.class);
+                    intent.putExtra("keyName", "11特惠");
+                    intent.putExtra("isRecom", "-1");
+                    startActivity(intent);
+                    finish();
+                }
+            });
+
+        }else {
+            btnBuy.setVisibility(View.GONE);
+        }
+
+        btnBottom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                return;
+            }
+        });
     }
 
     private void showWebView(){
@@ -73,6 +103,7 @@ public class BannerConActivity extends AppCompatActivity {
     }
 
     private void doBussiness(){
+
         mWebView.setWebViewClient(new WebViewClient() {
 
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -93,6 +124,13 @@ public class BannerConActivity extends AppCompatActivity {
 
             }
 
+        });
+
+        mWebView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                return;
+            }
         });
 
     }

@@ -60,16 +60,24 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:id="@+id/ll_banner_container"
+                android:orientation="vertical"
+                android:visibility="gone"
+                android:elevation="3dp">
+
+
+            </LinearLayout>
+
             <!--现价、原价、预约金、预约数-->
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:id="@+id/cv_price"
                 android:layout_marginTop="3dp">
-                <ImageView
-                    android:layout_width="1dp"
-                    android:layout_height="1dp"
-                    android:id="@+id/iv_test"/>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

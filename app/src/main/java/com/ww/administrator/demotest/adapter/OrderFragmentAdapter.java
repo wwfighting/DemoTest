@@ -99,8 +99,14 @@ public class OrderFragmentAdapter extends RecyclerView.Adapter<RecyclerView.View
                     .load(picurl)
                     .crossFade()
                     .into(((OrderFraViewHolder) holder).mivGoods);
+            String goodsName = "";
+            if (mList.get(position).getGoodsname().length() > 50){
+                goodsName = mList.get(position).getGoodsname().substring(0,50) + "...";
+            }else {
+                goodsName = mList.get(position).getGoodsname();
+            }
 
-            ((OrderFraViewHolder) holder).mtvTitle.setText(mList.get(position).getGoodsname() + "(" + mList.get(position).getColor() + ")");
+            ((OrderFraViewHolder) holder).mtvTitle.setText(goodsName + "(" + mList.get(position).getColor() + ")");
 
             ((OrderFraViewHolder) holder).mtvOrderMoney.setText("支付金额：￥" + mList.get(position).getSchedprice());
             //((OrderFraViewHolder) holder).mtvAllMoney.setText("金额：￥" + mList.get(position).getBillprice());

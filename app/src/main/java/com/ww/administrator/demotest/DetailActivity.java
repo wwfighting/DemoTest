@@ -23,6 +23,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.CycleInterpolator;
@@ -52,6 +53,7 @@ import com.ww.administrator.demotest.fragment.DetailFragment;
 import com.ww.administrator.demotest.model.GoodsDetailInfo;
 import com.ww.administrator.demotest.model.ResultInfo;
 import com.ww.administrator.demotest.util.Constants;
+import com.ww.administrator.demotest.util.DisplayUtil;
 import com.ww.administrator.demotest.util.HttpUtil;
 import com.ww.administrator.demotest.util.TextUtil;
 
@@ -130,7 +132,6 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
     MaterialDialog mDialog;
 
-
     FloatingActionsMenu mfabMenu;
 
     Button mbtnMinus, mbtnPlus;
@@ -141,6 +142,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     String mode = "";   //记录商品的类别
     int num = 1;    //记录商品的数量
     LinearLayout llMode;
+    LinearLayout llBanner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,14 +155,18 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         mGid = getIntent().getExtras().getString("gid");
         initViews();
         loadDatas();
+
     }
 
     private void initViews() {
         mTbDetail = (Toolbar) findViewById(R.id.tb_detail);
         mTlDetail = (TabLayout) findViewById(R.id.tl_detail);
         llMode = (LinearLayout) findViewById(R.id.ll_mode);
+        llBanner = (LinearLayout) findViewById(R.id.ll_banner_container);
         mVpDetail = (AutoHeightViewPager) findViewById(R.id.vp_detail);
         mBanner = (ConvenientBanner) findViewById(R.id.cb_detail);
+
+        mBanner.setLayoutParams(new CollapsingToolbarLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DisplayUtil.dip2px(DetailActivity.this, 220)));
         mNsvDetail = (NestedScrollView) findViewById(R.id.nsv_detail);
         mPwBanner = (ProgressWheel) findViewById(R.id.pw_banner);
         mfabMenu = (FloatingActionsMenu) findViewById(R.id.fab_menu);
@@ -257,7 +263,8 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                         mcvTaimian.setVisibility(View.GONE);
                         llMode.setVisibility(View.GONE);
                     }
-                    if (mInfo.getData().getDetail().getSubtitle().equals("全屋定制") || mInfo.getData().getDetail().getSubtitle().equals("")) {
+                    if (mInfo.getData().getDetail().getSubtitle().equals("全屋定制") || mInfo.getData().getDetail().getSubtitle().equals("")
+                            || mInfo.getData().getDetail().getSubtitle().equals("双十一活动")) {
                         mode = "0";
                         mfabOrder.setTitle("一键预约");
 
@@ -365,7 +372,11 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     private void initColor(){
         mRvColor.setNestedScrollingEnabled(false);
         final String colorName = (mInfo.getData().getDetail().getTag().split(";"))[0];
-        mTvDetailColorName.setText(colorName + "：");
+        if (colorName.length() > 12){
+            mTvDetailColorName.setText(colorName.substring(0, 10) + "... ：");
+        }else {
+            mTvDetailColorName.setText(colorName + "：");
+        }
         llColorManager = new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false);
         mRvColor.setLayoutManager(llColorManager);
         mColorAdapter = new DetailColAdapter(this, mInfo);

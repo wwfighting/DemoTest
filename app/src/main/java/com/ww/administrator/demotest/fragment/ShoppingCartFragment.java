@@ -16,6 +16,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -619,7 +620,7 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
                                                     mPrice -= 1000;
                                                     schedprice -= 1000;
                                                 }
-                                            } else if (info.getData().get(pos).getSubtitle().equals("")) {
+                                            } else if (info.getData().get(pos).getSubtitle().equals("") || info.getData().get(pos).getSubtitle().equals("双十一活动")) {
                                                 if (itemMoney > 2000) {
                                                     itemMoney -= 1000;
                                                     mPrice -= 1000;
@@ -985,8 +986,10 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
                 for (int i = 0; i < cartInfo.getData().size(); i++){
                     if (cartInfo.getData().get(i).getisSelected()){
                         payId = payId + cartInfo.getData().get(i).getId() + ",";
+
                     }
                 }
+                Log.d("ShoppingCart", "payId:"+payId);
 
                 //结账
                 toPayCar();

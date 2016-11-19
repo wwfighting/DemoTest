@@ -174,11 +174,12 @@ public class PayActivity extends AppCompatActivity {
                         Log.d(TAG, "子渠道类型:" + BCReqParams.BCChannelTypes.getTranslatedChannelName(billOrder.getSubChannel()));
                         Log.d(TAG, "订单是否成功:" + billOrder.getPayResult());
 
-                        if (billOrder.getPayResult())
+                        if (billOrder.getPayResult()){
                             Log.d(TAG, "渠道返回的交易号，未支付成功时，是不含该参数的:" + billOrder.getTradeNum());
-                        else
+                        } else{
                             Log.d(TAG, "订单是否被撤销，该参数仅在线下产品（例如二维码和扫码支付）有效:"
                                     + billOrder.getRevertResult());
+                        }
 
                         Log.d(TAG, "订单创建时间:" + new Date(billOrder.getCreatedTime()));
                         Log.d(TAG, "扩展参数:" + billOrder.getOptional());
@@ -216,8 +217,7 @@ public class PayActivity extends AppCompatActivity {
                 });
 
 
-                builder.setNegativeButton("取消",
-                        new View.OnClickListener() {
+                builder.setNegativeButton("取消", new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 builder.dismiss();
@@ -433,6 +433,18 @@ public class PayActivity extends AppCompatActivity {
 
         //使用百度支付的，在activity结束时detach
         BCPay.detachBaiduPay();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (value == ""){
+            Toast.makeText(PayActivity.this, "支付取消！去 '我的订单' 查询订单", Toast.LENGTH_LONG).show();
+        }
+        Intent intent = new Intent(PayActivity.this, CommitOrderActivity.class);
+        value = "未付款";
+        intent.putExtra("value", value);
+        setResult(200, intent);
+        finish();
     }
 
     @Override

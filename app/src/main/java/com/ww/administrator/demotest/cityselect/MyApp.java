@@ -2,6 +2,7 @@ package com.ww.administrator.demotest.cityselect;
 
 import android.app.Application;
 
+import com.baidu.mapapi.SDKInitializer;
 import com.facebook.stetho.Stetho;
 import com.pgyersdk.crash.PgyCrashManager;
 import com.ww.administrator.demotest.cityselect.db.DBManager;
@@ -27,7 +28,7 @@ public class MyApp extends Application{
     public void onCreate() {
         super.onCreate();
         //初始化百度地图
-        //SDKInitializer.initialize(this);
+        SDKInitializer.initialize(this);
         //导入数据库
         dbHelper = new DBManager(this);
         dbHelper.openDatabase();

@@ -12,6 +12,10 @@ import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import com.baidu.location.BDLocation;
+import com.baidu.location.BDLocationListener;
+import com.baidu.location.LocationClient;
+import com.baidu.location.LocationClientOption;
 import com.pgyersdk.javabean.AppBean;
 import com.pgyersdk.update.PgyUpdateManager;
 import com.pgyersdk.update.UpdateManagerListener;
@@ -35,6 +39,11 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
     public static ShoppingCartFragment mShoppingCartFragment;
     public static MyFragment mMyFragment;
 
+    private LocationClient mLocationClient;
+    private MyLocationListener myLocationListener;
+    private boolean IsFirstIn = true;//记录是否是第一次进入
+    private double mLatitude;//记录经度
+    private double mLongtitude;//记录纬度
 
     public boolean getmIsLogin() {
         return mIsLogin;
@@ -62,12 +71,13 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
         setmIsLogin(false);
 
         checkUpdate();
-
         checkDeviceInfo();
+
+        //initLocation();
 
     }
 
-     void checkDeviceInfo(){
+    private void checkDeviceInfo(){
         int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
          Log.d("MainActivity", "最大内存是" + maxMemory + "KB");
          Log.d("MainActivity", "屏幕分辨率width：" + DisplayUtil.getScreenWidth(this));
@@ -103,28 +113,7 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
                         });
 
                         updateDialog.show();
-                        /*new AlertDialog.Builder(MainActivity.this)
-                                .setTitle("更新提示")
-                                .setMessage("发现新版本")
-                                .setPositiveButton(
-                                        "马上升级",
-                                        new DialogInterface.OnClickListener() {
 
-                                            @Override
-                                            public void onClick(
-                                                    DialogInterface dialog,
-                                                    int which) {
-                                                startDownloadTask(
-                                                        MainActivity.this,
-                                                        appBean.getDownloadURL());
-                                            }
-                                        })
-                                .setNegativeButton("以后再说", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        dialog.cancel();
-                                    }
-                                })
-                                .show();*/
                     }
 
                     @Override
@@ -134,6 +123,37 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
                 });
     }
 
+    private void initLocation(){
+        mLocationClient = new LocationClient(this);
+        myLocationListener = new MyLocationListener();
+        mLocationClient.registerLocationListener(myLocationListener);//注册接口
+        LocationClientOption option = new LocationClientOption();
+        option.setCoorType("bd09ll");
+        option.setIsNeedAddress(true);
+        option.setOpenGps(true);
+        option.setScanSpan(1000);
+
+        mLocationClient.setLocOption(option);
+    }
+
+    private class MyLocationListener implements BDLocationListener {
+
+        @Override
+        public void onReceiveLocation(BDLocation location) {
+
+            mLatitude = location.getLatitude();
+            mLongtitude = location.getLongitude();
+
+            if (IsFirstIn) {
+                IsFirstIn = false;
+                if (!location.getAddrStr().isEmpty()) {
+                    Log.d("ww","在定位。。。。。");
+                    Log.d("MainActivity", "Lat：" + mLatitude);
+                    Log.d("MainActivity", "Long：" + mLongtitude);
+                }
+            }
+        }
+    }
 
     private void initViews(){
         mRadioGroup = (RadioGroup) findViewById(R.id.rgp_main);
@@ -210,7 +230,27 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
         }
     }
 
+    @Override
+    protected void onStart() {
+        // TODO 自动生成的方法存根
+        super.onStart();
+        /*if (!mLocationClient.isStarted()) {
+            mLocationClient.start();
+        }
+        mLocationClient.start();*/
+    }
 
+    @Override
+    protected void onStop() {
+        // TODO 自动生成的方法存根
+        super.onStop();
+        //mLocationClient.stop();
+    }
+    @Override
+    protected void onDestroy() {
+        // TODO Auto-generated method stub
+        super.onDestroy();
+    }
 
 
 }
