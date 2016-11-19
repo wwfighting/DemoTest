@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.Toolbar
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    android:id="@+id/tb_common"
+    android:background="@color/transparent"
+    style="@android:style/ThemeOverlay.Material.Light"
+    app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+    app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+    app:contentInsetStart="0dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
+            android:drawableTop="@drawable/ic_room_24dp"
+            android:text="南  京"
+            android:id="@+id/tv_locate"
+            android:textSize="8sp"
+            android:drawablePadding="3dp"
+            android:gravity="center"
+            android:textColor="#FFFFFF"/>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:layout_weight="1"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/searchbg2_shape">
+
+            <ImageButton
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="4dp"
+                android:id="@+id/imbtn_search"
+                android:background="@drawable/ic_search_24dp"
+                />
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="8dp">
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/et_search"
+                    android:editable="false"
+                    android:imeOptions="actionSearch"
+                    android:background="@drawable/editsearchbg_shape"
+                    android:hint="双十二活动"
+                    android:textSize="12sp"
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#FFFFFF"
+                    android:inputType="text"
+                    android:layout_gravity="center_vertical"/>
+            </FrameLayout>
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center_vertical"
+            android:id="@+id/iv_about"
+            android:src="@drawable/ic_more_vert_24dp" />
+    </LinearLayout>
+
+
+</android.support.v7.widget.Toolbar>

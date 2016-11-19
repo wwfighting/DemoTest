@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        layout="@layout/head_layout" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#FDD727">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:src="@drawable/event_homed"/>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:src="@drawable/event_title"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="300dp">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    android:src="@drawable/event_cd"/>
+
+                <ImageView
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_margin="16dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentLeft="true"
+                    android:src="@drawable/event_lp1"/>
+
+                <ImageView
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_margin="16dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:src="@drawable/event_lp2"/>
+
+                <ImageView
+                    android:layout_width="260dp"
+                    android:layout_height="260dp"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/event_ly_plate"/>
+                <ImageView
+                    android:layout_width="260dp"
+                    android:layout_height="260dp"
+                    android:id="@+id/iv_rotate_bg"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/event_ly_plate"/>
+
+                <ImageView
+                    android:layout_width="128dp"
+                    android:layout_height="128dp"
+                    android:id="@+id/iv_rotate_arrow"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/event_rotate_static"/>
+
+                <ImageView
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:id="@+id/iv_rotate_start"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/event_qdcj"/>
+
+                <RelativeLayout
+                    android:layout_width="120dp"
+                    android:layout_height="180dp"
+                    android:layout_centerInParent="true"
+                    android:visibility="gone"
+                    android:id="@+id/rl_tip">
+                    <ImageView
+                        android:layout_width="120dp"
+                        android:layout_height="100dp"
+                        android:layout_centerInParent="true"
+                        android:id="@+id/iv_coupons_tip"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/event_czbg" />
+
+                    <TextView
+                        android:layout_width="60dp"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:id="@+id/tv_coupons_name"
+                        android:textSize="10sp"
+                        android:gravity="center"
+                        android:textColor="#FFFFFF"
+                        android:layout_alignBottom="@+id/iv_coupons_tip"
+                        android:layout_marginBottom="30dp"
+                        android:layout_centerHorizontal="true" />
+
+                    <ImageView
+                        android:layout_width="70dp"
+                        android:layout_height="30dp"
+                        android:id="@+id/iv_ok"
+                        android:src="@drawable/event_qd"
+                        android:layout_centerHorizontal="true"
+                        android:layout_alignParentBottom="true"/>
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+
+
+
+</LinearLayout>
