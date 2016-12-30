@@ -145,6 +145,16 @@
 
         <activity android:name=".event.RotateEventActivity" />
 
+        <activity android:name=".event.D12HomeActivity" />
+
+        <activity
+            android:name=".event.D12SignInEventActivity"
+            android:theme="@style/DayTheme.Translucent"/>
+
+        <activity android:name=".ProductListActivity1" />
+
+        <activity android:name="com.alipay.sdk.app.H5PayActivity" />
+
     </application>
 
 

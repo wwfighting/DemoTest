@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import com.ww.administrator.demotest.DetailActivity;
 import com.ww.administrator.demotest.ProductListActivity;
 import com.ww.administrator.demotest.R;
 import com.ww.administrator.demotest.model.GoodsInfo;
+import com.ww.administrator.demotest.util.Constants;
 import com.ww.administrator.demotest.util.TextUtil;
 import com.ww.administrator.demotest.util.ToolsUtil;
 
@@ -68,20 +70,37 @@ public class HomeGoodsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 ((GoodsContentHolder) holder).mTvGoodsTip.setText("热卖");
             }
 
-
             ((GoodsContentHolder) holder).mTvGoodsTitle.setText(mGoodsInfo.getData().get(position).getGoodsname());
 
             if (mGoodsInfo.getData().get(position).getIsrecom().equals("3")){
                 String nowPrice = "预约金：￥" + mGoodsInfo.getData().get(position).getPrice();
                 ((GoodsContentHolder) holder).mTvGoodsNowPrice.setText(nowPrice);
             }else {
-
                 String nowPrice = "现价：￥" + mGoodsInfo.getData().get(position).getPrice();
                 ((GoodsContentHolder) holder).mTvGoodsNowPrice.setText(nowPrice);
                 String orgPrice = "原价：￥" + mGoodsInfo.getData().get(position).getPrice_old();
                 ((GoodsContentHolder) holder).mTvGoodsOrgPrice.setText(TextUtil.setStrSpan(orgPrice));
             }
 
+            if (!mGoodsInfo.getData().get(position).getImg1().isEmpty()){
+                ((GoodsContentHolder) holder).mivLeftLogo.setVisibility(View.VISIBLE);
+                Glide.with(mContext)
+                        .load(Constants.BASE_IMG_URL + mGoodsInfo.getData().get(position).getImg1())
+                        .crossFade()
+                        .into(((GoodsContentHolder) holder).mivLeftLogo);
+            }else {
+                ((GoodsContentHolder) holder).mivLeftLogo.setVisibility(View.GONE);
+            }
+
+            if (!mGoodsInfo.getData().get(position).getImg2().isEmpty()){
+                ((GoodsContentHolder) holder).mivLabel.setVisibility(View.VISIBLE);
+                Glide.with(mContext)
+                        .load(Constants.BASE_IMG_URL + mGoodsInfo.getData().get(position).getImg2())
+                        .crossFade()
+                        .into(((GoodsContentHolder) holder).mivLabel);
+            }else {
+                ((GoodsContentHolder) holder).mivLabel.setVisibility(View.GONE);
+            }
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -122,12 +141,14 @@ public class HomeGoodsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     class GoodsContentHolder extends RecyclerView.ViewHolder {
-        ImageView mIvGoodsPic;
+        ImageView mIvGoodsPic, mivLeftLogo, mivLabel;
         TextView mTvGoodsTip, mTvGoodsTitle, mTvGoodsNowPrice, mTvGoodsOrgPrice;
 
         public GoodsContentHolder(View itemView) {
             super(itemView);
 
+            mivLabel = (ImageView) itemView.findViewById(R.id.iv_label);
+            mivLeftLogo = (ImageView) itemView.findViewById(R.id.iv_home_left_logo);
             mIvGoodsPic = (ImageView) itemView.findViewById(R.id.iv_goods_show);
             mTvGoodsTip = (TextView) itemView.findViewById(R.id.tv_goods_tip);
             mTvGoodsTitle = (TextView) itemView.findViewById(R.id.tv_goods_title);

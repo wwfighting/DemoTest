@@ -52,6 +52,8 @@ public class AddAddressActivity extends AppCompatActivity implements View.OnClic
         uid = ((MyApp) getApplicationContext()).getUser().getId();
         initViews();
         initEvents();
+
+
     }
 
     private void initViews() {

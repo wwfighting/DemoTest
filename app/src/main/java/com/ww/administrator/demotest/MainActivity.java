@@ -12,6 +12,8 @@ import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import com.ashokvarma.bottomnavigation.BottomNavigationBar;
+import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
@@ -27,10 +29,14 @@ import com.ww.administrator.demotest.util.DisplayUtil;
 
 import me.drakeet.materialdialog.MaterialDialog;
 
-public class MainActivity extends AppCompatActivity implements RadioGroup.OnCheckedChangeListener{
+public class MainActivity extends AppCompatActivity implements RadioGroup.OnCheckedChangeListener,
+        BottomNavigationBar.OnTabSelectedListener{
 
     private RadioGroup mRadioGroup;
     private RadioButton homeRadBtn,publishRadBtn,searchRadBtn,myRadBtn;
+
+    public BottomNavigationBar mBottomNavBar;
+    int lastSelectedPosition = 0;
     private Fragment mFragment;
     private FragmentManager mFragmentManager;
 
@@ -55,24 +61,45 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
 
     private boolean mIsLogin;
 
-
     long miExitTime;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main3);
         initViews();
+
+       /* BadgeItem badge = new BadgeItem()
+                .setBorderWidth(2)//Badge的Border(边界)宽度
+                .setBorderColor("#FF0000")//Badge的Border颜色
+                .setBackgroundColor("#9ACD32")//Badge背景颜色
+                .setGravity(Gravity.RIGHT| Gravity.TOP)//位置，默认右上角
+                .setText("2")//显示的文本
+                .setTextColor("#F0F8FF")//文本颜色
+                .setAnimationDuration(1000)
+                .setHideOnSelect(true);//当选中状态时消失，非选中状态显示*/
+        mBottomNavBar
+                .addItem(new BottomNavigationItem(R.drawable.home_icon_normal, "首页")
+                        .setActiveColor("#7D48DA"))
+                .addItem(new BottomNavigationItem(R.drawable.cate_icon_normal, "分类")
+                        .setActiveColor("#FF4081"))
+                .addItem(new BottomNavigationItem(R.drawable.shoppingcart_icon_normal, "购物车")
+                        .setActiveColor("#F44336"))
+                .addItem(new BottomNavigationItem(R.drawable.my_icon_normal, "个人")
+                        .setActiveColor("#00796B"))
+                .setFirstSelectedPosition(lastSelectedPosition )
+                .initialise();
         initFragment();
         mFragmentManager = getSupportFragmentManager();
-        homeRadBtn.setChecked(true);
+        //homeRadBtn.setChecked(true);
         changefragment(mHomeFragment);
-        mRadioGroup.setOnCheckedChangeListener(this);
+        mBottomNavBar.setTabSelectedListener(this);
+        //mRadioGroup.setOnCheckedChangeListener(this);
         setmIsLogin(false);
 
         checkUpdate();
-        checkDeviceInfo();
-
+        //checkDeviceInfo();
         //initLocation();
 
     }
@@ -123,6 +150,9 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
                 });
     }
 
+    /**
+     * 定位用户位置，得到经纬度
+     */
     private void initLocation(){
         mLocationClient = new LocationClient(this);
         myLocationListener = new MyLocationListener();
@@ -132,7 +162,6 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
         option.setIsNeedAddress(true);
         option.setOpenGps(true);
         option.setScanSpan(1000);
-
         mLocationClient.setLocOption(option);
     }
 
@@ -156,11 +185,18 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
     }
 
     private void initViews(){
+        /*findViewById(R.id.iv_event).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, D12HomeActivity.class));
+            }
+        });
         mRadioGroup = (RadioGroup) findViewById(R.id.rgp_main);
         homeRadBtn = (RadioButton) findViewById(R.id.rdb_home);
         publishRadBtn = (RadioButton) findViewById(R.id.rdb_publish);
         searchRadBtn = (RadioButton) findViewById(R.id.rdb_search);
-        myRadBtn = (RadioButton) findViewById(R.id.rdb_my);
+        myRadBtn = (RadioButton) findViewById(R.id.rdb_my);*/
+        mBottomNavBar = (BottomNavigationBar) findViewById(R.id.bottom_navigation_bar);
     }
 
     public void changefragment(Fragment fragment){
@@ -194,7 +230,7 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
         if (keyCode == KeyEvent.KEYCODE_BACK
                 && event.getAction() == KeyEvent.ACTION_DOWN) {
             if ((System.currentTimeMillis() - miExitTime) > 2000) {
-                Snackbar.make(mRadioGroup, "再按一次退出程序！", Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(mBottomNavBar, "再按一次退出程序！", Snackbar.LENGTH_SHORT).show();
 
                 miExitTime = System.currentTimeMillis();
             } else {
@@ -207,8 +243,36 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
     }
 
     @Override
+    public void onTabSelected(int position) {
+        switch (position){
+            case 0:
+                switchContent(mHomeFragment);
+                break;
+            case 1:
+                switchContent(mCateFragment);
+                break;
+            case 2:
+                switchContent(mShoppingCartFragment);
+                break;
+            case 3:
+                switchContent(mMyFragment);
+                break;
+
+        }
+    }
+
+    @Override
+    public void onTabUnselected(int position) {
+
+    }
+
+    @Override
+    public void onTabReselected(int position) {
+
+    }
+    @Override
     public void onCheckedChanged(RadioGroup group, int checkedId) {
-        switch (checkedId){
+        /*switch (checkedId){
             case R.id.rdb_home:
                 switchContent(mHomeFragment);
                 break;
@@ -216,9 +280,9 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
                 switchContent(mCateFragment);
                 break;
             case R.id.rdb_search:
-                /*if (getmIsLogin()){
+                *//*if (getmIsLogin()){
                     ((TextView)mShoppingCartFragment.getView().findViewById(R.id.tv_shoppingcart)).setText("isLgoin");
-                }*/
+                }*//*
 
                 switchContent(mShoppingCartFragment);
                 break;
@@ -227,7 +291,7 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
                 break;
             default:
                 break;
-        }
+        }*/
     }
 
     @Override

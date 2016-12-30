@@ -17,6 +17,7 @@ import com.bumptech.glide.Glide;
 import com.ww.administrator.demotest.DetailActivity;
 import com.ww.administrator.demotest.R;
 import com.ww.administrator.demotest.model.ProductListInfo;
+import com.ww.administrator.demotest.util.Constants;
 import com.ww.administrator.demotest.util.DisplayUtil;
 import com.ww.administrator.demotest.util.ToolsUtil;
 
@@ -65,7 +66,35 @@ public class CateContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 ((CateContentViewHolder) holder).mTvGoodsNowPrice.setText(nowPrice);
             }
 
+            if (mInfo.getData().get(position).getImg1() != null){
+                if (!mInfo.getData().get(position).getImg1().isEmpty()){
+                    ((CateContentViewHolder) holder).mivLeftLogo.setVisibility(View.VISIBLE);
+                    Glide.with(mContext)
+                            .load(Constants.BASE_IMG_URL + mInfo.getData().get(position).getImg1())
+                            .crossFade()
+                            .into(((CateContentViewHolder) holder).mivLeftLogo);
+                }else {
+                    ((CateContentViewHolder) holder).mivLeftLogo.setVisibility(View.GONE);
+                }
+            }
 
+            if (mInfo.getData().get(position).getImg2() != null){
+                if (!mInfo.getData().get(position).getImg2().isEmpty()){
+                    ((CateContentViewHolder) holder).mivLabel.setVisibility(View.VISIBLE);
+                    Glide.with(mContext)
+                            .load(Constants.BASE_IMG_URL + mInfo.getData().get(position).getImg2())
+                            .crossFade()
+                            .into(((CateContentViewHolder) holder).mivLabel);
+                }else {
+                    ((CateContentViewHolder) holder).mivLabel.setVisibility(View.GONE);
+                }
+            }
+
+            /*if (mInfo.getData().get(position).getId().equals("3221")){  //隐藏一分钱小礼品
+                ((CateContentViewHolder) holder).mcvContainer.setVisibility(View.GONE);
+            }else {
+                ((CateContentViewHolder) holder).mcvContainer.setVisibility(View.VISIBLE);
+            }*/
 
             Glide.with(mContext)
                     .load(mInfo.getData().get(position).getPicurl())
@@ -97,7 +126,7 @@ public class CateContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     private class CateContentViewHolder extends RecyclerView.ViewHolder{
         CardView mcvContainer;
-        ImageView mIvGoodsPic;
+        ImageView mIvGoodsPic,mivLeftLogo, mivLabel;
         TextView mTvGoodsTip, mTvGoodsTitle, mTvGoodsNowPrice, mTvGoodsOrgPrice;
 
         public CateContentViewHolder(View itemView) {
@@ -105,6 +134,8 @@ public class CateContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             mcvContainer = (CardView) itemView.findViewById(R.id.card_container);
             mIvGoodsPic = (ImageView) itemView.findViewById(R.id.iv_goods_show);
             mTvGoodsTip = (TextView) itemView.findViewById(R.id.tv_goods_tip);
+            mivLabel = (ImageView) itemView.findViewById(R.id.iv_label);
+            mivLeftLogo = (ImageView) itemView.findViewById(R.id.iv_home_left_logo);
             mTvGoodsTitle = (TextView) itemView.findViewById(R.id.tv_goods_title);
             mTvGoodsNowPrice = (TextView) itemView.findViewById(R.id.tv_goods_nowprice);
             mTvGoodsOrgPrice = (TextView) itemView.findViewById(R.id.tv_goods_orgprice);

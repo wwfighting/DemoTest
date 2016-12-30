@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.squareup.okhttp.Request;
 import com.ww.administrator.demotest.CouponsActivity;
+import com.ww.administrator.demotest.LoginActivity;
 import com.ww.administrator.demotest.R;
 import com.ww.administrator.demotest.cityselect.MyApp;
 import com.ww.administrator.demotest.model.ResultInfo;
@@ -32,6 +33,8 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 
+import me.drakeet.materialdialog.MaterialDialog;
+
 /**
  * Created by Administrator on 2016/11/18.
  */
@@ -40,13 +43,14 @@ public class RotateEventActivity extends AppCompatActivity implements View.OnCli
 
     Toolbar mtb;
     ImageView mivBg, mivArrow, mivStart;
-    ImageView mivOk;
+    ImageView mivOk, mivCoupons;
     TextView mtvCouponName;
     RelativeLayout mrlTip;
-    String uid = "";
+    String uid = "-1";
+    MaterialDialog mDialog;
 
     int num = -1;   //可以转动的次数
-
+    MyApp mApp;
     boolean isRotating = false;  //表示正在转动
 
     Gson mGson = new Gson();
@@ -60,16 +64,21 @@ public class RotateEventActivity extends AppCompatActivity implements View.OnCli
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rotateevent_layout);
-        uid = ((MyApp) getApplicationContext()).getUser().getId();
+        mApp = (MyApp) getApplicationContext();
+        if (mApp.getUser() != null){
+            uid = mApp.getUser().getId();
+        }
         initViews();
+        initDialog();
         initDatas();
         loadDatas();
+
 
     }
 
     private void initViews(){
         mtb = (Toolbar) findViewById(R.id.tb_common);
-        mtb.setTitle("大转盘抽奖");
+        mtb.setTitle("双十二大转盘抽奖");
         setSupportActionBar(mtb);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -77,12 +86,35 @@ public class RotateEventActivity extends AppCompatActivity implements View.OnCli
         mivArrow = (ImageView) findViewById(R.id.iv_rotate_arrow);
         mivStart = (ImageView) findViewById(R.id.iv_rotate_start);
         mivOk = (ImageView) findViewById(R.id.iv_ok);
+        mivCoupons = (ImageView) findViewById(R.id.iv_my_coupons);
         mtvCouponName = (TextView) findViewById(R.id.tv_coupons_name);
         mrlTip = (RelativeLayout) findViewById(R.id.rl_tip);
         mrlTip.setVisibility(View.GONE);
         mivOk.setOnClickListener(this);
+        mivCoupons.setOnClickListener(this);
     }
+    private void initDialog() {
+        mDialog = new MaterialDialog(this);
+        mDialog.setTitle("提示");
+        mDialog.setMessage("检测到您还未登录，点击确定立刻前往登录！");
+        mDialog.setPositiveButton("确定", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDialog.dismiss();
+                Intent intent = new Intent(RotateEventActivity.this, LoginActivity.class);
+                startActivityForResult(intent, 100);
+            }
+        });
+        mDialog.setNegativeButton("取消", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDialog.dismiss();
+            }
+        });
 
+        //点击对话框外，对话框消失
+        mDialog.setCanceledOnTouchOutside(true);
+    }
     private void initDatas(){
         hmMy.clear();
         hmMy.put("3215", "套锅");
@@ -109,19 +141,19 @@ public class RotateEventActivity extends AppCompatActivity implements View.OnCli
                 System.out.println("=====action为0======");
                 System.out.println(response.toString());
                 System.out.println("=====action为0======");
-                try{
+                try {
                     JSONObject jsonRoot = new JSONObject(response);
                     String strCode = jsonRoot.getString("code");
-                    if (strCode.equals("200")){
+                    if (strCode.equals("200")) {
                         RotateNumInfo info = mGson.fromJson(response, RotateNumInfo.class);
                         num = info.getData().getNum();
                         getRotateCoupons();
                         mivStart.setOnClickListener(RotateEventActivity.this);
-                    }else {
+                    } else {
                         Toast.makeText(RotateEventActivity.this, jsonRoot.getString("info"), Toast.LENGTH_LONG).show();
                     }
 
-                }catch (JSONException e){
+                } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
@@ -179,6 +211,7 @@ public class RotateEventActivity extends AppCompatActivity implements View.OnCli
     private RotateCouponsInfo.DataBean calculateCoupons(){
         int random = (int)(0 + Math.random() * (mInfo.getData().size()) - 1);
         Log.d("RotateActivity", "lid：" + hmAll.get(random).getId() + "， mode：" + hmAll.get(random).getMode());
+        Log.d("RotateActivity", "转到的奖品为：" + hmMy.get(hmAll.get(random).getMode()));
         return hmAll.get(random);
     }
 
@@ -197,6 +230,8 @@ public class RotateEventActivity extends AppCompatActivity implements View.OnCli
         float angle = 3600f;
         final RotateCouponsInfo.DataBean couponData = calculateCoupons();
         final String mode = couponData.getMode();
+        //转之前已知道奖品
+        Log.d("RotateActivity", "转到的奖品为：" + hmMy.get(mode));
         switch (mode){
             case "3215":    //套锅
                 angle = 3780f;
@@ -243,7 +278,6 @@ public class RotateEventActivity extends AppCompatActivity implements View.OnCli
                 mrlTip.setVisibility(View.VISIBLE);
                 mtvCouponName.setText(hmMy.get(mode));
 
-                Log.d("RotateActivity", "转到的奖品为：" + hmMy.get(mode));
             }
         });
         // 实现转动的View
@@ -282,22 +316,34 @@ public class RotateEventActivity extends AppCompatActivity implements View.OnCli
         switch (v.getId()){
             case R.id.iv_rotate_start:
 
-                if (isRotating){  //表示正在转动
-                    return;
+                if (uid.equals("-1")) {
+                    mDialog.show();
+                } else {
+                    if (isRotating){  //表示正在转动
+                        return;
+                    }
+
+                    if (num == -1){
+                        Toast.makeText(RotateEventActivity.this, "抱歉，无法抽奖！", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    startRotate();
                 }
 
-                if (num == -1){
-                    Toast.makeText(RotateEventActivity.this, "抱歉，无法抽奖！", Toast.LENGTH_SHORT).show();
-                    return;
-                }
 
-                startRotate();
                 break;
             case R.id.iv_ok:
                 Intent intent = new Intent(RotateEventActivity.this, CouponsActivity.class);
                 startActivity(intent);
                 finish();
                 break;
+
+            case R.id.iv_my_coupons:
+                Intent coupons = new Intent(RotateEventActivity.this, CouponsActivity.class);
+                startActivity(coupons);
+                break;
+
         }
 
     }
@@ -309,5 +355,14 @@ public class RotateEventActivity extends AppCompatActivity implements View.OnCli
             onBackPressed();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == 200){
+            uid = ((MyApp) getApplicationContext()).getUser().getId();
+            Toast.makeText(RotateEventActivity.this, "登录成功！", Toast.LENGTH_SHORT).show();
+        }
     }
 }

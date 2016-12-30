@@ -27,13 +27,15 @@
                 android:textColor="#FFFFFF"
                 android:gravity="center_vertical"/>
 
-            <ImageView
-                android:layout_width="54dp"
-                android:layout_height="54dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginLeft="16dp"
-                android:id="@+id/iv_coupons_show"
-                android:src="@mipmap/ic_launcher"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="￥100"
+                android:id="@+id/tv_coupons_price"
+                android:textSize="20sp"
+                android:textColor="#FFFFFF"
+                android:layout_gravity="center"
+                android:gravity="center"/>
 
         </LinearLayout>
 

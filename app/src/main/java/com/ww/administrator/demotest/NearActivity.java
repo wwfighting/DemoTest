@@ -355,7 +355,8 @@ public class NearActivity extends AppCompatActivity{
             if (location == null || mMapView == null){
                 return;
             }
-
+            /*37度50
+            144度58分*/
             //构造定位数据
             MyLocationData locData = new MyLocationData.Builder()
                     .accuracy(location.getRadius())

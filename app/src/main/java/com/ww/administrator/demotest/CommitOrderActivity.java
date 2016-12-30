@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
@@ -22,10 +23,12 @@ import com.squareup.okhttp.Request;
 import com.ww.administrator.demotest.cityselect.MyApp;
 import com.ww.administrator.demotest.model.OrderInfo;
 import com.ww.administrator.demotest.model.OrderPartsInfo;
+import com.ww.administrator.demotest.model.ResultInfo;
 import com.ww.administrator.demotest.pay.EventPayActivity;
 import com.ww.administrator.demotest.pay.PayActivity;
 import com.ww.administrator.demotest.util.Constants;
 import com.ww.administrator.demotest.util.HttpUtil;
+import com.ww.administrator.demotest.util.ToolsUtil;
 
 import cn.beecloud.BCPay;
 import me.drakeet.materialdialog.MaterialDialog;
@@ -88,12 +91,18 @@ public class CommitOrderActivity extends AppCompatActivity implements View.OnCli
 
     TextView mtvOrderMoneyLabel;
     TextView mtvMoneyBottom;
+    String action = "";
+
+    TextView mtvQiang;
+
+    String mQid = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_commitorder_layout);
         initParams();
+
         initViews();
         initWechatPay();
     }
@@ -117,6 +126,9 @@ public class CommitOrderActivity extends AppCompatActivity implements View.OnCli
         msalerNo = getIntent().getExtras().getString("salerNo").substring(2);
         mcity = getIntent().getExtras().getString("city");
 
+        action = getIntent().getExtras().getString("action", "");
+        mQid = getIntent().getExtras().getString("qid", "");
+
         //橱柜参数 多了台面地柜以及颜色和米数
         if (morderMode == 200){
             mDoorId = getIntent().getExtras().getString("doorid");
@@ -134,6 +146,42 @@ public class CommitOrderActivity extends AppCompatActivity implements View.OnCli
             orderNum = getIntent().getExtras().getInt("num");
         }
 
+        if (!mQid.equals("") && !mQid.equals("0")){
+            if (ToolsUtil.isCMEventExpire()){
+                loadDatas();
+            }else {
+                Toast.makeText(CommitOrderActivity.this, "一元抢定减100活动只限12.24一天！", Toast.LENGTH_LONG).show();
+            }
+
+
+        }
+
+    }
+
+    private void loadDatas(){
+        HttpUtil.postAsyn(Constants.BASE_URL + "has_qiangding.php", new HttpUtil.ResultCallback<String>() {
+            @Override
+            public void onError(Request request, Exception e) {
+
+            }
+
+            @Override
+            public void onResponse(String response) {
+                ResultInfo result = mGson.fromJson(response, ResultInfo.class);
+                if (result.getCode().equals("401")){
+                    mtvQiang.setVisibility(View.VISIBLE);
+                    int jianMoney = Integer.parseInt(strorderMoney.substring(1)) - 100;
+                    strorderMoney = "￥" + jianMoney;
+                    mtvOrderMoney.setText(strorderMoney);
+                    mtvBottomMoney.setText(strorderMoney);
+                }else {
+                    mtvQiang.setVisibility(View.GONE);
+                }
+            }
+        }, new HttpUtil.Param[]{
+                new HttpUtil.Param("uid", uid),
+                new HttpUtil.Param("qid", mQid),
+        });
     }
 
     private void initViews(){
@@ -162,6 +210,7 @@ public class CommitOrderActivity extends AppCompatActivity implements View.OnCli
         mtvTips = (TextView) findViewById(R.id.tv_commit_goods_tip);
         mtvBottomMoney = (TextView) findViewById(R.id.tv_bottom_money);
         mfabCommit = (FloatingActionButton) findViewById(R.id.fab_commit);
+        mtvQiang = (TextView) findViewById(R.id.tv_commit_goods_qiang);
 
         mDialog = new MaterialDialog(this);
 
@@ -178,8 +227,12 @@ public class CommitOrderActivity extends AppCompatActivity implements View.OnCli
 
         mtvGoodName.setText(strGoodsName);
 
-        if (morderMode == 500){
+        if (morderMode == 500 && action.equals("")){
             mtvActivity.setText("活动内容：" + "2016双十一1元抢购活动！");
+        }
+
+        if (morderMode == 500 && action.equals("qd")){
+            mtvActivity.setText("活动内容：" + "2016圣诞特惠1元抢定活动！");
         }
 
         if (morderMode == 100 || morderMode == 500){ //配件
@@ -300,7 +353,7 @@ public class CommitOrderActivity extends AppCompatActivity implements View.OnCli
                 mtvLoad.setVisibility(View.VISIBLE);
                 mtvLoad.setText("下单失败！请检查您的网络");
 
-                mHandler.sendEmptyMessageDelayed(DIALOG_DISMISS, 1500);
+                mHandler.sendEmptyMessageDelayed(DIALOG_DISMISS, 800);
             }
 
             @Override
@@ -313,7 +366,7 @@ public class CommitOrderActivity extends AppCompatActivity implements View.OnCli
                     mtvLoad.setText("下单成功，去付款");
                     //Toast.makeText(CommitOrderActivity.this, ((OrderInfo.T)info.getData()).getAllSchedprice() + "", Toast.LENGTH_LONG).show();
                     mDialog.getPositiveButton().setVisibility(View.GONE);
-                    mHandler.sendEmptyMessageDelayed(DIALOG_DISMISS, 1500);
+                    mHandler.sendEmptyMessageDelayed(DIALOG_DISMISS, 800);
 
                     Intent intent = new Intent(CommitOrderActivity.this, PayActivity.class);
                     intent.putExtra("title", ((OrderPartsInfo.T)info.getData()).getGoodsName());
@@ -324,7 +377,7 @@ public class CommitOrderActivity extends AppCompatActivity implements View.OnCli
                     mpbLoad.setVisibility(View.GONE);
                     mtvLoad.setVisibility(View.VISIBLE);
                     mtvLoad.setText(info.getInfo());
-                    mHandler.sendEmptyMessageDelayed(DIALOG_DISMISS, 1500);
+                    mHandler.sendEmptyMessageDelayed(DIALOG_DISMISS, 800);
                 }
             }
         }, new HttpUtil.Param[]{
@@ -360,7 +413,7 @@ public class CommitOrderActivity extends AppCompatActivity implements View.OnCli
                 mtvLoad.setVisibility(View.VISIBLE);
                 mtvLoad.setText("下单失败！请检查您的网络");
 
-                mHandler.sendEmptyMessageDelayed(DIALOG_DISMISS, 1500);
+                mHandler.sendEmptyMessageDelayed(DIALOG_DISMISS, 800);
 
             }
 
@@ -374,7 +427,7 @@ public class CommitOrderActivity extends AppCompatActivity implements View.OnCli
                     mtvLoad.setText("下单成功！");
                     //Toast.makeText(CommitOrderActivity.this, ((OrderInfo.T)info.getData()).getAllSchedprice() + "", Toast.LENGTH_LONG).show();
                     mDialog.getPositiveButton().setVisibility(View.GONE);
-                    mHandler.sendEmptyMessageDelayed(DIALOG_DISMISS, 1500);
+                    mHandler.sendEmptyMessageDelayed(DIALOG_DISMISS, 800);
                     Intent intent = new Intent(CommitOrderActivity.this, PayActivity.class);
                     intent.putExtra("title", ((OrderInfo.T) info.getData()).getGoodsName());
                     intent.putExtra("ordNum", ((OrderInfo.T) info.getData()).getSuperbillid());
@@ -384,7 +437,7 @@ public class CommitOrderActivity extends AppCompatActivity implements View.OnCli
                     mpbLoad.setVisibility(View.GONE);
                     mtvLoad.setVisibility(View.VISIBLE);
                     mtvLoad.setText(info.getInfo());
-                    mHandler.sendEmptyMessageDelayed(DIALOG_DISMISS, 1500);
+                    mHandler.sendEmptyMessageDelayed(DIALOG_DISMISS, 800);
                 }
             }
         }, new HttpUtil.Param[]{
@@ -428,7 +481,7 @@ public class CommitOrderActivity extends AppCompatActivity implements View.OnCli
                 mtvLoad.setVisibility(View.VISIBLE);
                 mtvLoad.setText("下单失败！请检查您的网络");
 
-                mHandler.sendEmptyMessageDelayed(DIALOG_DISMISS, 1500);
+                mHandler.sendEmptyMessageDelayed(DIALOG_DISMISS, 800);
             }
 
             @Override
@@ -441,8 +494,8 @@ public class CommitOrderActivity extends AppCompatActivity implements View.OnCli
                     mtvLoad.setText("下单成功，去付款");
                     //Toast.makeText(CommitOrderActivity.this, ((OrderInfo.T)info.getData()).getAllSchedprice() + "", Toast.LENGTH_LONG).show();
                     mDialog.getPositiveButton().setVisibility(View.GONE);
-                    mHandler.sendEmptyMessageDelayed(DIALOG_DISMISS, 3000);
-                    if (morderMode == 500){
+                    mHandler.sendEmptyMessageDelayed(DIALOG_DISMISS, 800);
+                    if (morderMode == 500 && !action.equals("qd")){
                         Intent intent = new Intent(CommitOrderActivity.this, EventPayActivity.class);
                         intent.putExtra("title", ((OrderPartsInfo.T)info.getData()).getGoodsName());
                         intent.putExtra("ordNum", ((OrderPartsInfo.T)info.getData()).getSuperbillid());
@@ -460,7 +513,7 @@ public class CommitOrderActivity extends AppCompatActivity implements View.OnCli
                     mpbLoad.setVisibility(View.GONE);
                     mtvLoad.setVisibility(View.VISIBLE);
                     mtvLoad.setText(info.getInfo());
-                    mHandler.sendEmptyMessageDelayed(DIALOG_DISMISS, 1500);
+                    mHandler.sendEmptyMessageDelayed(DIALOG_DISMISS, 800);
                 }
             }
         }, new HttpUtil.Param[]{

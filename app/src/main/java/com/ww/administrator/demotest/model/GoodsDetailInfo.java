@@ -139,6 +139,33 @@ public class GoodsDetailInfo {
             private String tag;
             private int ordermoney;
             private int ordercount;
+            private String img1;
+            private String img2;
+            private String qid;
+
+            public String getImg1() {
+                return img1;
+            }
+
+            public void setImg1(String img1) {
+                this.img1 = img1;
+            }
+
+            public String getImg2() {
+                return img2;
+            }
+
+            public void setImg2(String img2) {
+                this.img2 = img2;
+            }
+
+            public String getQid() {
+                return qid;
+            }
+
+            public void setQid(String qid) {
+                this.qid = qid;
+            }
 
             public String getGid() {
                 return gid;

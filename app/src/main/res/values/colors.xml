@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="day_colorPrimary">#F44336</color>
+    <!--<color name="day_colorPrimary">#E4393C</color>-->
     <color name="day_colorPrimaryDark">#D32F2F</color>
     <color name="day_colorAccent">#FF4081</color>
     <color name="day_lightPrimaryColor">#FFCDD2</color>
@@ -21,7 +22,7 @@
     <color name="lightblack">#383434</color>
     <color name="loadblue">#5588FF</color>
     <color name="colorNormal">#a9b7b7</color>
-
+    <color name="selected_colorPrimary">#f27e0a</color>
     <color name="content_placeholder">#ffe0e0e0</color>
 
     <color name="scrim">#99786464</color>

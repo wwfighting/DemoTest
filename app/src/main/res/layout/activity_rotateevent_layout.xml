@@ -36,21 +36,6 @@
                     android:layout_height="300dp"
                     android:src="@drawable/event_cd"/>
 
-                <ImageView
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    android:layout_margin="16dp"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignParentLeft="true"
-                    android:src="@drawable/event_lp1"/>
-
-                <ImageView
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    android:layout_margin="16dp"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignParentRight="true"
-                    android:src="@drawable/event_lp2"/>
 
                 <ImageView
                     android:layout_width="260dp"
@@ -116,12 +101,68 @@
 
             </RelativeLayout>
 
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="70dp">
+
+                <ImageView
+                    android:layout_width="70dp"
+                    android:layout_height="60dp"
+                    android:layout_margin="8dp"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentLeft="true"
+                    android:src="@drawable/event_lp1"/>
+
+                <ImageView
+                    android:layout_width="70dp"
+                    android:layout_height="60dp"
+                    android:layout_margin="8dp"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    android:src="@drawable/event_lp2"/>
+                <ImageView
+                    android:layout_width="150dp"
+                    android:layout_height="45dp"
+                    android:id="@+id/iv_my_coupons"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/event_jp_button"/>
+            </RelativeLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_margin="16dp"
+                android:background="@drawable/rotate_rule_bg"
+                android:orientation="horizontal"
+                android:elevation="6dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_weight="7"
+                    android:textColor="#333333"
+                    android:textSize="12sp"
+                    android:lineSpacingExtra="3dp"
+                    android:gravity="center_vertical"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/rotate_rule"
+                    />
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="130dp"
+                    android:layout_weight="3"
+                    android:layout_margin="6dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/event_hdgz"
+                    />
+
+            </LinearLayout>
         </LinearLayout>
-
     </ScrollView>
-
-
-
-
 
 </LinearLayout>

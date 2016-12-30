@@ -17,6 +17,7 @@ import com.melnykov.fab.FloatingActionButton;
 import com.pnikosis.materialishprogress.ProgressWheel;
 import com.squareup.okhttp.Request;
 import com.ww.administrator.demotest.adapter.ProductListAdapter;
+import com.ww.administrator.demotest.cityselect.utils.SharedPreUtil;
 import com.ww.administrator.demotest.model.ProductListInfo;
 import com.ww.administrator.demotest.util.Constants;
 import com.ww.administrator.demotest.util.HttpUtil;
@@ -43,9 +44,9 @@ public class ProductListActivity extends AppCompatActivity {
     RecyclerView mRvProList;
     Toolbar mtbSearch;
     SwipeRefreshLayout mSrlProList;
-    Toolbar mTbPro;
     ProgressWheel mpbPro;
     FloatingActionButton mFabPro;
+    String city = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +67,7 @@ public class ProductListActivity extends AppCompatActivity {
         mIsRecom = getIntent().getStringExtra("isRecom");
         mKeyName = getIntent().getStringExtra("keyName");
         mclassId = getIntent().getStringExtra("classId");
-
+        city = (String) SharedPreUtil.getData(this, "locatCity", "南京");
         if (mclassId == null){
             mclassId = "";
         }
@@ -86,7 +87,6 @@ public class ProductListActivity extends AppCompatActivity {
     private void initViews(){
         mRvProList = (RecyclerView) findViewById(R.id.rv_productlist);
         mSrlProList = (SwipeRefreshLayout) findViewById(R.id.srl_productlist);
-        mTbPro = (Toolbar) findViewById(R.id.tb_common);
         mpbPro = (ProgressWheel) findViewById(R.id.pb_common);
         mFabPro = (FloatingActionButton) findViewById(R.id.fab_pro);
         setToolbar();
@@ -135,6 +135,7 @@ public class ProductListActivity extends AppCompatActivity {
                     JSONObject jsonRoot = new JSONObject(response);
                     String strCode = jsonRoot.getString("code");
                     if (strCode.equals("200")){
+
                         mList = mGson.fromJson(response, ProductListInfo.class);
                         mAdapter = new ProductListAdapter(ProductListActivity.this, mList);
                         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(ProductListActivity.this, LinearLayoutManager.VERTICAL, false);
@@ -154,7 +155,8 @@ public class ProductListActivity extends AppCompatActivity {
             }
         }, new HttpUtil.Param[]{
                 new HttpUtil.Param("isrecom", mIsRecom),
-                new HttpUtil.Param("key", mKeyName)
+                new HttpUtil.Param("key", mKeyName),
+                new HttpUtil.Param("city", city)
         });
     }
 
@@ -177,6 +179,7 @@ public class ProductListActivity extends AppCompatActivity {
                 RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(ProductListActivity.this, LinearLayoutManager.VERTICAL, false);
                 mRvProList.setLayoutManager(layoutManager);
                 mRvProList.setAdapter(mAdapter);
+
             }
         }, new HttpUtil.Param[]{
                 new HttpUtil.Param("cid", classId)

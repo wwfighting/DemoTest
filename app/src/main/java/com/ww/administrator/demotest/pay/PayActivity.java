@@ -174,9 +174,9 @@ public class PayActivity extends AppCompatActivity {
                         Log.d(TAG, "子渠道类型:" + BCReqParams.BCChannelTypes.getTranslatedChannelName(billOrder.getSubChannel()));
                         Log.d(TAG, "订单是否成功:" + billOrder.getPayResult());
 
-                        if (billOrder.getPayResult()){
+                        if (billOrder.getPayResult()) {
                             Log.d(TAG, "渠道返回的交易号，未支付成功时，是不含该参数的:" + billOrder.getTradeNum());
-                        } else{
+                        } else {
                             Log.d(TAG, "订单是否被撤销，该参数仅在线下产品（例如二维码和扫码支付）有效:"
                                     + billOrder.getRevertResult());
                         }
@@ -258,11 +258,11 @@ public class PayActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mtvTitle.setText(payTitle);
-        int moneyShow = payMoney / 100;
+        float moneyShow = ((float)payMoney) / 100f;
         if (moneyShow == 0){
             mtvMoney.setText("￥0.01");
         }else {
-            mtvMoney.setText("￥" + payMoney / 100);
+            mtvMoney.setText("￥" + moneyShow);
         }
 
         mtvOrderNum.setText(ordNum + "");
@@ -286,13 +286,15 @@ public class PayActivity extends AppCompatActivity {
                         break;
 
                     case 1: //支付宝支付
-                        mOtherDialog.setMessage("抱歉尚未开通支付宝！");
-                        mOtherDialog.show();
+                        //mOtherDialog.setMessage("抱歉尚未开通支付宝！");
+                        //mOtherDialog.show();
+                        mDialog.show();
+                        useAliPay();
                         break;
 
                     case 2: //银联
-                        /*mOtherDialog.setMessage("抱歉尚未开通银联支付！");
-                        mOtherDialog.show();*/
+                        //mOtherDialog.setMessage("抱歉尚未开通银联支付！");
+                        //mOtherDialog.show();
                         mDialog.show();
                         useUnionPay();
                         break;
@@ -345,6 +347,23 @@ public class PayActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * 使用支付宝支付
+     */
+    private void useAliPay(){
+        Map<String, String> mapOptional = new HashMap<String, String>();
+        mapOptional.put("客户端", "android");
+        mapOptional.put("商品订单", ordNum + "");
+        mapOptional.put("erpNum", erpNum);
+        mapOptional.put("预约金", payMoney + "");
+
+        BCPay.getInstance(PayActivity.this).reqAliPaymentAsync(
+                "家瓦商城:" + ordNum,               //订单标题
+                payMoney,                           //订单金额(分)
+                ordNum + "",  //订单流水号
+                mapOptional,            //扩展参数(可以null)
+                bcCallback);
+    }
 
     /**
      * 使用银联支付
@@ -367,6 +386,8 @@ public class PayActivity extends AppCompatActivity {
         BCPay.getInstance(PayActivity.this).reqPaymentAsync(payParam,
                 bcCallback);
     }
+
+
 
     //保存支付单
     private void paySuccess(){

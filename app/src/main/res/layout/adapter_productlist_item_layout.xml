@@ -14,13 +14,33 @@
         android:orientation="horizontal"
         android:gravity="center_vertical">
 
-        <ImageView
+
+        <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="100dp"
-            android:layout_weight="4"
-            android:scaleType="fitXY"
-            android:id="@+id/iv_pro_show"
-            android:layout_marginLeft="4dp"/>
+            android:layout_weight="4">
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:scaleType="fitXY"
+                android:id="@+id/iv_pro_show"
+                android:layout_marginLeft="4dp"/>
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:visibility="gone"
+                android:src="@mipmap/ic_launcher"
+                android:id="@+id/iv_home_left_logo"/>
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="25dp"
+                android:id="@+id/iv_label"
+                android:layout_alignParentBottom="true"
+                android:orientation="vertical"
+                android:visibility="gone"
+                android:scaleType="fitXY"
+                android:elevation="3dp" />
+        </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="0dp"

@@ -23,7 +23,7 @@
         android:id="@+id/refreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="?attr/actionBarSize"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:visibility="gone">
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerView"
@@ -33,14 +33,31 @@
     </com.ww.administrator.demotest.CustomSwipeToRefresh>
 
     <ImageView
+        android:id="@+id/iv_event_signin"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_gravity="bottom|left"
+        android:layout_marginBottom="84dp"
+        android:layout_marginLeft="8dp"
+        android:visibility="gone"
+        android:elevation="12dp"
+        android:src="@drawable/d12_signin_icon"
+        android:clickable="true"
+        />
+    <!--app:layout_behavior="com.ww.administrator.demotest.behavior.MyFloatViewBehavior"-->
+
+    <ImageView
         android:id="@+id/iv_event"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_gravity="bottom|left"
-        android:layout_margin="8dp"
+        android:layout_marginBottom="60dp"
         android:visibility="gone"
         android:src="@drawable/ic_activity_fab"
-        android:clickable="true" />
+        android:clickable="true"
+        />
+    <!--app:layout_behavior="com.ww.administrator.demotest.behavior.MyFloatViewBehavior"-->
+
 
     <com.melnykov.fab.FloatingActionButton
         android:id="@+id/fab_around"

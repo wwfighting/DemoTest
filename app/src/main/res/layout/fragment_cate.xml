@@ -3,14 +3,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:wheel="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
+    android:layout_marginBottom="50dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <include
         layout="@layout/head_layout" />
-
-    <include
-        layout="@layout/loading_layout" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -22,14 +20,11 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:layout_weight="1">
-
-
             <ExpandableListView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:childIndicatorLeft="0dp"
                 android:id="@+id/elv_cate"/>
-
 
         </LinearLayout>
 
@@ -44,8 +39,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:visibility="gone"
-                android:layout_margin="6dp"
-                android:background="#F2F2F2"
                 android:id="@+id/rv_cate_show"/>
 
             <com.pnikosis.materialishprogress.ProgressWheel
@@ -74,5 +67,7 @@
 
     </LinearLayout>
 
+    <include
+        layout="@layout/loading_layout" />
 
 </RelativeLayout>

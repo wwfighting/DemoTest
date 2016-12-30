@@ -6,6 +6,7 @@
     android:layout_height="?attr/actionBarSize"
     android:id="@+id/tb_common"
     android:background="@color/transparent"
+    app:layout_scrollFlags="scroll|enterAlways"
     style="@android:style/ThemeOverlay.Material.Light"
     app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
     app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
@@ -54,13 +55,13 @@
                     android:id="@+id/et_search"
                     android:editable="false"
                     android:imeOptions="actionSearch"
-                    android:background="@drawable/editsearchbg_shape"
-                    android:hint="双十二活动"
+                    android:background="@drawable/editsearchbg2_shape"
+                    android:hint="小康美厨"
                     android:textSize="12sp"
                     android:textColor="#FFFFFF"
                     android:textColorHint="#FFFFFF"
                     android:inputType="text"
-                    android:layout_gravity="center_vertical"/>
+                    android:layout_gravity= "center_vertical"/>
             </FrameLayout>
         </LinearLayout>
 

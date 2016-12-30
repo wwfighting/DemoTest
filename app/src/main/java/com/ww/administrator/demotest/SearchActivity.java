@@ -9,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -87,7 +86,6 @@ public class SearchActivity extends AppCompatActivity {
                 intent.setClass(SearchActivity.this, ProductListActivity.class);
                 intent.putExtra("keyName", keyName);
                 intent.putExtra("isRecom", "-1");
-
                 startActivity(intent);
                 return true;
             }

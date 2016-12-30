@@ -9,27 +9,40 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:id="@+id/rl_bg"
-        android:background="@drawable/ic_activity_bg">
+        android:background="#333333"
+        android:id="@+id/rl_bg">
+
+        <!--<ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/iv_event_bg"
+            android:background="#333333"
+            android:scaleType="fitXY" />-->
 
         <RelativeLayout
             android:layout_width="280dp"
             android:layout_height="380dp"
+            android:id="@+id/rl_main_bg"
             android:orientation="vertical"
-            android:layout_centerInParent="true"
-            android:background="@drawable/ic_activity_main">
+            android:layout_centerInParent="true">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/iv_eventmain_bg"
+                android:scaleType="fitXY" />
 
             <Button
                 android:layout_width="180dp"
                 android:layout_height="30dp"
                 android:id="@+id/btn_event_buy"
                 android:text="立即抢购"
-                android:textColor="#7e6f6f"
-                android:transitionName="event_share"
+                android:textColor="#F13B41"
                 android:layout_centerHorizontal="true"
                 android:layout_alignParentBottom="true"
+                android:transitionName="event_buy_share"
                 android:layout_marginBottom="20dp"
-                android:background="@drawable/ic_activity_buy"/>
+                android:background="@drawable/sign_bg_shape"/>
         </RelativeLayout>
 
         <ImageView
@@ -39,7 +52,7 @@
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="24dp"
-            android:src="@drawable/ic_activity_off"/>
+            android:src="@drawable/ic_event_remove_24dp"/>
 
     </RelativeLayout>
 

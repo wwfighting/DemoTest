@@ -12,10 +12,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
-import android.view.animation.LinearInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
@@ -39,6 +40,7 @@ import com.ww.administrator.demotest.AboutActivity;
 import com.ww.administrator.demotest.BannerConActivity;
 import com.ww.administrator.demotest.BaseFragment;
 import com.ww.administrator.demotest.DetailActivity;
+import com.ww.administrator.demotest.MainActivity;
 import com.ww.administrator.demotest.NetworkImageHolderView;
 import com.ww.administrator.demotest.R;
 import com.ww.administrator.demotest.SearchActivity;
@@ -46,8 +48,8 @@ import com.ww.administrator.demotest.SelectCityActivity;
 import com.ww.administrator.demotest.adapter.RecyclerViewHFAdapter;
 import com.ww.administrator.demotest.cityselect.MyApp;
 import com.ww.administrator.demotest.cityselect.utils.SharedPreUtil;
+import com.ww.administrator.demotest.event.D12HomeActivity;
 import com.ww.administrator.demotest.event.OneBuyEventActivity;
-import com.ww.administrator.demotest.event.RotateEventActivity;
 import com.ww.administrator.demotest.event.SignInEventActivity;
 import com.ww.administrator.demotest.model.BannerInfo;
 import com.ww.administrator.demotest.model.GoodsInfo;
@@ -70,7 +72,7 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
     public static final int NEW_GOODS = 1;  //1：新品推荐
     public static final int HOT_GOODS = 2;  //2：热门商品
     public static final int HOME_GOODS = 3; //3：全屋热卖
-
+    public static final int D12_GOODS = 5; //5：圣诞特惠
     Toolbar mtbHome;
     BannerInfo mBannerInfo;
     private Gson mGson = new Gson();
@@ -83,8 +85,10 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
     private GoodsInfo mNewList = new GoodsInfo();
     private GoodsInfo mHotList = new GoodsInfo();
     private GoodsInfo mHomeList = new GoodsInfo();
+    private GoodsInfo mD12List = new GoodsInfo();
 
     String gid = "";
+    int iAnim = 1;
 
     ProgressWheel mpbHome;
     String cityName = "";
@@ -92,8 +96,7 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
     MaterialDialog cityDialog;
     ListView mlvCity;
 
-    private ImageView ivEvent;
-    int iAnim = 0;
+    private ImageView ivEvent, ivD12Event;
 
     EditText metToSearch;
     ImageButton imbtnSearch;
@@ -112,17 +115,43 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
         return R.layout.fragment_home;
     }
 
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        listView.setOnScrollListener(new MyScrollListener());
 
+    }
+    /**
+     * RecyclerView的滑动事件(用于实现隐藏显示底部导航栏)
+     */
+    class MyScrollListener extends RecyclerView.OnScrollListener{
+        boolean isSlidingToLast = false;
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            if (dy > 0) {
+                isSlidingToLast = true;
+
+                ((MainActivity)getActivity()).mBottomNavBar.hide();
+            } else {
+                isSlidingToLast = false;
+                ((MainActivity)getActivity()).mBottomNavBar.show();
+            }
+        }
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+
+        }
+    }
     @Override
     protected void initViews(View view) {
         mtbHome = (Toolbar) view.findViewById(R.id.tb_common);
         ivEvent = (ImageView) view.findViewById(R.id.iv_event);
+        ivD12Event = (ImageView) view.findViewById(R.id.iv_event_signin);
         refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refreshLayout);
         listView = (RecyclerView) view.findViewById(R.id.recyclerView);
         mfabAround = (FloatingActionButton) view.findViewById(R.id.fab_around);
-        //BannerView = LayoutInflater.from(getActivity()).inflate(R.layout.adapter_header2_cb, null);
-        //convenientBanner = (ConvenientBanner) BannerView.findViewById(R.id.convenientBanner);
-        //BannerView.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DisplayUtil.dip2px(getActivity(), 230)));
         convenientBanner = (ConvenientBanner) LayoutInflater.from(getActivity()).inflate(R.layout.adapter_header_cb, null);
         convenientBanner.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DisplayUtil.dip2px(getActivity(), 230)));
 
@@ -132,21 +161,20 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
         refreshLayout.setColorSchemeResources(R.color.day_colorPrimary, R.color.day_colorPrimaryDark,
                 R.color.day_colorAccent);
 
-
         metToSearch = (EditText) view.findViewById(R.id.et_search);
         imbtnSearch = (ImageButton) view.findViewById(R.id.imbtn_search);
         mtvLocate = (TextView) view.findViewById(R.id.tv_locate);
         mivAbout = (ImageView) view.findViewById(R.id.iv_about);
         setEditTextReadOnly();
-        mfabAround.attachToRecyclerView(listView);
+        /*mfabAround.attachToRecyclerView(listView);
         mfabAround.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Intent intent = new Intent(getActivity(), NearActivity.class);
-                Intent intent = new Intent(getActivity(), RotateEventActivity.class);
+                Intent intent = new Intent(getActivity(), NearActivity.class);
+                //Intent intent = new Intent(getActivity(), RotateEventActivity.class);
                 startActivity(intent);
             }
-        });
+        });*/
 
     }
 
@@ -223,6 +251,7 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
 
                 mNewList = mGson.fromJson(response, GoodsInfo.class);
                 getHotGoods();
+
             }
         }, new HttpUtil.Param[]{
                 new HttpUtil.Param("isrecom", NEW_GOODS + "")
@@ -242,38 +271,58 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
 
             @Override
             public void onResponse(String response) {
-                mfabAround.setVisibility(View.VISIBLE);
+                //mfabAround.setVisibility(View.VISIBLE);
                 mHotList = mGson.fromJson(response, GoodsInfo.class);
                 if (!cityName.equals("南京")) {
                     getHomeGoods();
 
                 } else {
-                    init(mBannerInfo, mNewList, mHotList);
+                    init(mBannerInfo, mD12List, mNewList, mHotList);
                     initEvents();
 
                 }
+                /*ivD12Event.setVisibility(View.VISIBLE);
+                ivD12Event.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent d12Sign = new Intent(getActivity(), D12SignInEventActivity.class);
+                        if (ToolsUtil.GetVersionSDK() < Build.VERSION_CODES.LOLLIPOP) {
+                            startActivity(d12Sign);
+                        } else {
+                            String transitionName = "event_d12_share";
+                            ActivityOptions transitionActivityOptions = ActivityOptions.makeSceneTransitionAnimation(getActivity(), ivD12Event, transitionName);
+                            startActivity(d12Sign, transitionActivityOptions.toBundle());
+                        }
 
+                    }
+                });*/
                 if (!ToolsUtil.isEventExpire()) { //判断活动是否过期
                     ivEvent.setVisibility(View.VISIBLE);
-                    playHeartbeatAnimation(ivEvent);
-                    /*new Thread(){
-                        public void run() {
-                            while (true){
-                                try {
-                                    //增大900mm，减小1000mm，所以这里设置2000mm左右即可
-                                    Thread.sleep(2000);
-                                } catch (InterruptedException e) {
-                                    // TODO Auto-generated catch block
-                                    e.printStackTrace();
-                                }
-                                getActivity().runOnUiThread(new Runnable() {
-                                    public void run() {
-                                        playHeartbeatAnimation(ivEvent);
+                    //playHeartbeatAnimation(ivEvent);
+                    if (iAnim == 0) {
+                        new Thread() {
+                            public void run() {
+                                while (true) {
+                                    try {
+                                        //增大900mm，减小1000mm，所以这里设置2000mm左右即可
+                                        Thread.sleep(2000);
+                                    } catch (InterruptedException e) {
+                                        // TODO Auto-generated catch block
+                                        e.printStackTrace();
                                     }
-                                });
+                                    getActivity().runOnUiThread(new Runnable() {
+                                        public void run() {
+                                            playHeartbeatAnimation(ivEvent);
+                                            playHeartbeatAnimation(ivD12Event);
+                                        }
+                                    });
+                                }
                             }
-                        }
-                    }.start();*/
+                        }.start();
+                    }
+
+                    //只有在iAnim为0的时候才开启线程，防止刷新的时候，开启多个线程。
+                    iAnim = 1;
 
                     Intent i = new Intent(getActivity(), OneBuyEventActivity.class);
                     startActivity(i);
@@ -282,14 +331,14 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
                         @Override
                         public void onClick(View v) {
                             Intent i = new Intent(getActivity(), OneBuyEventActivity.class);
-                            startActivity(i);
-                            /*if (ToolsUtil.GetVersionSDK() < Build.VERSION_CODES.LOLLIPOP) {
+                            //startActivity(i);
+                            if (ToolsUtil.GetVersionSDK() < Build.VERSION_CODES.LOLLIPOP) {
                                 startActivity(i);
                             } else {
-                                String transitionName = "event_share";
+                                String transitionName = "event_buy_share";
                                 ActivityOptions transitionActivityOptions = ActivityOptions.makeSceneTransitionAnimation(getActivity(), ivEvent, transitionName);
                                 startActivity(i, transitionActivityOptions.toBundle());
-                            }*/
+                            }
 
                         }
                     });
@@ -314,7 +363,7 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
             @Override
             public void onResponse(String response) {
                 mHomeList = mGson.fromJson(response, GoodsInfo.class);
-                init(mBannerInfo, mNewList, mHotList, mHomeList);
+                init(mBannerInfo, mD12List, mNewList, mHotList, mHomeList);
                 initEvents();
             }
         }, new HttpUtil.Param[]{
@@ -322,11 +371,31 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
         });
     }
 
-    private void init(BannerInfo bannerInfo, GoodsInfo newList, GoodsInfo hotList, GoodsInfo homeList){
+    /**
+     * 得到双十二商品
+     */
+    private void getD12Goods(){
+        HttpUtil.postAsyn(Constants.BASE_URL + "index_goods.php", new HttpUtil.ResultCallback<String>() {
+            @Override
+            public void onError(Request request, Exception e) {
+
+            }
+
+            @Override
+            public void onResponse(String response) {
+                mD12List = mGson.fromJson(response, GoodsInfo.class);
+                getNewGoods();
+            }
+        }, new HttpUtil.Param[]{
+                new HttpUtil.Param("isrecom", D12_GOODS + "")
+        });
+    }
+
+    private void init(BannerInfo bannerInfo, GoodsInfo d12List, GoodsInfo newList, GoodsInfo hotList, GoodsInfo homeList){
         listView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         listView.setLayoutManager(layoutManager);
-        adapter = new RecyclerViewHFAdapter(getActivity(), newList, hotList, homeList, cityName);
+        adapter = new RecyclerViewHFAdapter(getActivity(), d12List, newList, hotList, homeList, cityName);
         listView.setAdapter(adapter);
         networkImages.clear();
         for (int i = 0; i < bannerInfo.getData().size(); i++){
@@ -351,9 +420,17 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
                 }
 
                 if (url.equals("qdyl.php")) {
-                    Intent intent = new Intent(getActivity(), SignInEventActivity.class);
-                    startActivity(intent);
+                        Intent intent = new Intent(getActivity(), SignInEventActivity.class);
+                        startActivity(intent);
 
+                }else if (url.equals("game/AprilSpecial/decSpecial.php") || url.equals("game/AprilSpecial/njDecSpecial.php")){
+                    Intent intent = new Intent(getActivity(), D12HomeActivity.class);
+                    startActivity(intent);
+                }else if (url.equals("game/AprilSpecial/yuandan.php")){
+                    Intent banner = new Intent();
+                    banner.setClass(getActivity(), BannerConActivity.class);
+                    banner.putExtra("bannerUrl", "http://www.jvawa.com/new/game/AprilSpecial/yuandan.php");
+                    startActivity(banner);
                 } else {
                     String[] urlArr = mBannerInfo.getData().get(position).getHref().split("[?]");
 
@@ -391,9 +468,9 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
         animationSet.addAnimation(new ScaleAnimation(1.0f, 1.3f, 1.0f, 1.3f,
                 Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,
                 0.5f));
-        animationSet.addAnimation(new AlphaAnimation(0.3f, 1.0f));
-        animationSet.setDuration(900);
-        animationSet.setInterpolator(new LinearInterpolator());
+        animationSet.addAnimation(new AlphaAnimation(0.7f, 1.0f));
+        animationSet.setDuration(1000);
+        animationSet.setInterpolator(new AccelerateInterpolator());
         animationSet.setFillAfter(true);
         animationSet.setAnimationListener(new Animation.AnimationListener() {
             @Override
@@ -413,8 +490,8 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
                         1.0f, Animation.RELATIVE_TO_SELF, 0.5f,
                         Animation.RELATIVE_TO_SELF, 0.5f));
                 animationSet.addAnimation(new AlphaAnimation(1.0f, 0.7f));
-                animationSet.setDuration(1000);
-                animationSet.setInterpolator(new LinearInterpolator());
+                animationSet.setDuration(900);
+                animationSet.setInterpolator(new DecelerateInterpolator());
                 animationSet.setFillAfter(true);
                 // 实现跳动的View
                 iv.startAnimation(animationSet);
@@ -424,11 +501,11 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
         iv.startAnimation(animationSet);
     }
 
-    private void init(BannerInfo bannerInfo, GoodsInfo newList, GoodsInfo hotList){
+    private void init(BannerInfo bannerInfo, GoodsInfo d12List, GoodsInfo newList, GoodsInfo hotList){
         listView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         listView.setLayoutManager(layoutManager);
-        adapter = new RecyclerViewHFAdapter(getActivity(), newList, hotList, cityName);
+        adapter = new RecyclerViewHFAdapter(getActivity(),d12List, newList, hotList, cityName);
         listView.setAdapter(adapter);
         networkImages.clear();
         for (int i = 0; i < bannerInfo.getData().size(); i++){
@@ -457,6 +534,14 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
                     Intent intent = new Intent(getActivity(), SignInEventActivity.class);
                     startActivity(intent);
 
+                }else if (url.equals("game/AprilSpecial/decSpecial.php") || url.equals("game/AprilSpecial/njDecSpecial.php")){
+                    Intent intent = new Intent(getActivity(), D12HomeActivity.class);
+                    startActivity(intent);
+                }else if (url.equals("game/AprilSpecial/yuandan.php")){
+                    Intent banner = new Intent();
+                    banner.setClass(getActivity(), BannerConActivity.class);
+                    banner.putExtra("bannerUrl", "http://www.jvawa.com/new/game/AprilSpecial/yuandan.php");
+                    startActivity(banner);
                 }else {
                     String[] urlArr = mBannerInfo.getData().get(position).getHref().split("[?]");
 
@@ -676,7 +761,8 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
                 mpbHome.setVisibility(View.GONE);
                 refreshLayout.setVisibility(View.VISIBLE);
                 mBannerInfo = mGson.fromJson(response, BannerInfo.class);
-                getNewGoods();
+                getD12Goods();
+
 
 
             }

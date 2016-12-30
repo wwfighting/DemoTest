@@ -1,16 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:elevation="3dp"
-    android:background="#eabd07"
-    android:layout_height="120dp">
+    android:elevation="6dp"
+    android:layout_height="220dp"
+    android:layout_marginTop="-60dp">
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/iv_home_event"
-        android:src="@mipmap/ic_launcher"/>
+        android:id="@+id/iv_event_new_bg"
+        android:scaleType="fitXY" />
 
-</LinearLayout>
+    <ImageView
+        android:layout_width="290dp"
+        android:layout_height="130dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/cmbg"
+        android:id="@+id/iv_home_event"
+        android:scaleType="fitXY" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_common_event"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/iv_home_event"
+        android:elevation="6dp" />
+
+
+</RelativeLayout>

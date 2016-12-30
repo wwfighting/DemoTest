@@ -17,6 +17,7 @@ import com.bumptech.glide.Glide;
 import com.ww.administrator.demotest.DetailActivity;
 import com.ww.administrator.demotest.R;
 import com.ww.administrator.demotest.model.ProductListInfo;
+import com.ww.administrator.demotest.util.Constants;
 import com.ww.administrator.demotest.util.ToolsUtil;
 
 /**
@@ -45,6 +46,28 @@ public class ProductListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 new ContentViewHolder(LayoutInflater.from(mContext).inflate(R.layout.adapter_productlist_item_layout, parent, false)) ;
     }
 
+    public void addAll(ProductListInfo list) {
+        int startIndex;
+
+        if (mList.getData() == null){
+            startIndex = 0;
+        }else {
+            startIndex = mList.getData().size();
+        }
+
+        mList.getData().addAll(startIndex, list.getData());
+        notifyItemRangeInserted(startIndex, list.getData().size());
+    }
+
+    public void add(ProductListInfo list) {
+        insert(list, mList.getData().size());
+    }
+
+    public void insert(ProductListInfo list, int position) {
+        mList.getData().add(position, list.getData().get(position));
+        notifyItemInserted(position);
+    }
+
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         if (holder instanceof TitleViewHolder){
@@ -61,11 +84,44 @@ public class ProductListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 ((ContentViewHolder) holder).mTvProTitle.setText(mList.getData().get(position - 1).getGoodsname());
                 ((ContentViewHolder) holder).mTvProOrderCount.setText("已预约" + mList.getData().get(position - 1).getMyordercount() + "次");
                 ((ContentViewHolder) holder).mTvProCommentCount.setText(mList.getData().get(position - 1).getMycommentcount() + "人评价");
+
+                if (mList.getData().get(position - 1).getImg1() != null){
+                    if (!mList.getData().get(position - 1).getImg1().isEmpty()){
+                        ((ContentViewHolder) holder).mivLeftLogo.setVisibility(View.VISIBLE);
+                        Glide.with(mContext)
+                                .load(Constants.BASE_IMG_URL + mList.getData().get(position - 1).getImg1())
+                                .crossFade()
+                                .into(((ContentViewHolder) holder).mivLeftLogo);
+                    }else {
+                        ((ContentViewHolder) holder).mivLeftLogo.setVisibility(View.GONE);
+                    }
+                }
+
+
+                if (mList.getData().get(position - 1).getImg2() != null){
+                    if (!mList.getData().get(position - 1).getImg2().isEmpty()){
+                        ((ContentViewHolder) holder).mivLabel.setVisibility(View.VISIBLE);
+                        Glide.with(mContext)
+                                .load(Constants.BASE_IMG_URL + mList.getData().get(position - 1).getImg2())
+                                .crossFade()
+                                .into(((ContentViewHolder) holder).mivLabel);
+                    }else {
+                        ((ContentViewHolder) holder).mivLabel.setVisibility(View.GONE);
+                    }
+                }
+
             }
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
+                   /* String gid = "";
+                    if (mList.getData().get(position - 1).getQid() != null && !mList.getData().get(position - 1).getQid().equals("0")){
+                        gid = mList.getData().get(position - 1).getQid();
+                    }else {
+                        gid = mList.getData().get(position - 1).getId();
+                    }*/
 
                     Intent intent = new Intent();
                     intent.setClass(mContext, DetailActivity.class);
@@ -109,7 +165,7 @@ public class ProductListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     public class ContentViewHolder extends RecyclerView.ViewHolder{
 
-        ImageView mIvProShow;
+        ImageView mIvProShow, mivLabel, mivLeftLogo;
         TextView mTvProTitle, mTvProOrderCount, mTvProCommentCount;
 
         public ContentViewHolder(View itemView) {
@@ -118,6 +174,8 @@ public class ProductListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             mTvProTitle = (TextView) itemView.findViewById(R.id.tv_pro_title);
             mTvProOrderCount = (TextView) itemView.findViewById(R.id.tv_pro_ordercount);
             mTvProCommentCount = (TextView) itemView.findViewById(R.id.tv_pro_commentcount);
+            mivLabel = (ImageView) itemView.findViewById(R.id.iv_label);
+            mivLeftLogo = (ImageView) itemView.findViewById(R.id.iv_home_left_logo);
         }
     }
 }

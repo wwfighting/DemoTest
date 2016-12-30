@@ -283,7 +283,7 @@ public class CateFragment extends BaseFragment {
      * 点击分类id载入分类商品列表
      * @param cid
      */
-    private void loadContentDatas(String cid){
+    private void loadContentDatas(final String cid){
 
         HttpUtil.postAsyn(Constants.BASE_URL + "product_list.php", new HttpUtil.ResultCallback<ProductListInfo>() {
             @Override
@@ -298,6 +298,9 @@ public class CateFragment extends BaseFragment {
                 if (info.getCode().equals("200")){
                     if (info.getData().size() != 0){
                         mrvContent.setVisibility(View.VISIBLE);
+                        /*if (cid.equals("75")){
+                            info.getData().remove(1);
+                        }*/
                         mContentAdapter = new CateContentAdapter(getActivity(), info);
                         mrvContent.setAdapter(mContentAdapter);
                     }else {

@@ -6,6 +6,8 @@
     android:layout_height="40dp"
     android:background="@color/day_colorPrimary"
     style="?android:borderlessButtonStyle"
+    android:descendantFocusability="blocksDescendants"
+    android:focusable="false"
     android:textSize="14sp"
     android:textColor="#FFFFFF"
     android:gravity="center">

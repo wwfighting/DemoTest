@@ -25,7 +25,9 @@ public abstract class BaseFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(TAG, "Fragment_onCreateView()");
         getArgs();
-        mParentView = inflater.inflate(getLayout(), null);
+        if (mParentView == null){
+            mParentView = inflater.inflate(getLayout(), container, false);
+        }
         initViews(mParentView);
         doBusiness();
         return mParentView;

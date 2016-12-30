@@ -37,7 +37,8 @@
             android:paddingLeft="0dp"
             />
 
-        <RadioButton android:layout_height="wrap_content"
+        <RadioButton
+            android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:layout_weight="1"
             android:id="@+id/rdb_publish"

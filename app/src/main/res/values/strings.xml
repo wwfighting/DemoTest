@@ -1,4 +1,11 @@
 <resources>
     <string name="app_name">家瓦商城</string>
     <string name="title_activity_second">SecondActivity</string>
+    <string name="rotate_rule">
+        1.幸运大转盘活动每个微信号限抽奖一次。\n
+        2.活期期间，点击页面上的“启动抽奖”，即可抽取礼品。\n
+        3.不同的礼券适用范围不同，使用前请认真阅读礼券使用说明。\n
+        4.在法律允许的范围内，家瓦商城有权对规则进行解释。
+    </string>
+
 </resources>

@@ -1,6 +1,9 @@
 package com.ww.administrator.demotest.event;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -9,6 +12,9 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.google.gson.Gson;
 import com.squareup.okhttp.Request;
 import com.ww.administrator.demotest.LoginActivity;
@@ -28,14 +34,15 @@ import me.drakeet.materialdialog.MaterialDialog;
 public class OneBuyEventActivity extends AppCompatActivity {
 
     ImageView mivOff;
+    ImageView mivBg, mivMainBg;
     Button mbtnBuy;
-    RelativeLayout rlBg;
+    RelativeLayout rlBg, rlMainBg;
     MyApp mApp;
     MaterialDialog mDialog;
     MaterialDialog mDialogWarn;
     private String uid = "-1";
 
-    private String gid = "3505";
+    private String gid = "3593";
     private int num = 1;
 
     String strGoodsDetailInfo = "";   //将GoodsDetailInfo对象通过String跳转
@@ -59,9 +66,32 @@ public class OneBuyEventActivity extends AppCompatActivity {
 
     private void initViews(){
         mivOff = (ImageView) findViewById(R.id.iv_event_off);
+        //mivBg = (ImageView) findViewById(R.id.iv_event_bg);
+        mivMainBg = (ImageView) findViewById(R.id.iv_eventmain_bg);
         mbtnBuy = (Button) findViewById(R.id.btn_event_buy);
         rlBg = (RelativeLayout) findViewById(R.id.rl_bg);
-        rlBg.getBackground().setAlpha(190);
+        rlMainBg = (RelativeLayout) findViewById(R.id.rl_main_bg);
+        Glide.with(this)
+                .load(R.drawable.ic_activity_bg)
+                .asBitmap()
+                .into(new SimpleTarget<Bitmap>() {
+
+                    @Override
+                    public void onResourceReady(Bitmap bitmap, GlideAnimation glideAnimation) {
+
+                        Drawable drawable = new BitmapDrawable(bitmap);
+                        rlBg.setBackground(drawable);
+                        rlBg.getBackground().setAlpha(190);
+                    }
+
+                });
+
+        Glide.with(this)
+                .load(R.drawable.cm_onebuy)
+                .into(mivMainBg);
+
+
+        //mivBg.getBackground().setAlpha(190);
         initDialog();
 
         mivOff.setOnClickListener(new View.OnClickListener() {
@@ -97,7 +127,7 @@ public class OneBuyEventActivity extends AppCompatActivity {
     private void initDialogWarn(){
         mDialogWarn = new MaterialDialog(this);
         mDialogWarn.setTitle("注意！");
-        mDialogWarn.setMessage("一元抢购的礼券仅限11.14-11.27期间下预约金的订单使用");
+        mDialogWarn.setMessage("一元抢购的礼券仅限12.14-12.25期间下预约金的订单使用");
         mDialogWarn.setPositiveButton("确定", new View.OnClickListener() {
             @Override
             public void onClick(View v) {

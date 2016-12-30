@@ -195,6 +195,17 @@
             android:textSize="16sp"
             android:background="#FFFFFF"
             android:gravity="center_vertical"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:textColor="#666666"
+            android:text="抢定抵扣：-100元"
+            android:id="@+id/tv_commit_goods_qiang"
+            android:visibility="gone"
+            android:paddingLeft="8dp"
+            android:textSize="16sp"
+            android:background="#FFFFFF"
+            android:gravity="center_vertical"/>
 
         <TextView
             android:layout_width="match_parent"

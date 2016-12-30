@@ -6,20 +6,21 @@
     android:layout_gravity="center"
     android:layout_margin="8dp"
     android:layout_width="match_parent"
-    android:layout_height="55dp">
+    android:layout_height="72dp">
 
     <ImageView
-        android:layout_width="45dp"
-        android:layout_height="45dp"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
         android:id="@+id/iv_cate_img"
         android:src="@mipmap/ic_launcher" />
     <TextView
-        android:layout_width="45dp"
+        android:layout_width="50dp"
         android:layout_height="20dp"
         android:id="@+id/tv_cate_title"
         android:layout_gravity="center"
         android:gravity="center"
         android:text="生活用品"
-        android:textSize="8sp"/>
+        android:textColor="#FEE595"
+        android:textSize="12sp"/>
 
 </LinearLayout>

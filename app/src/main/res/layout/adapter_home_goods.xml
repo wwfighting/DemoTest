@@ -14,11 +14,20 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="90dp"
             android:scaleType="fitXY"
+            android:src="@mipmap/ic_launcher"
             android:id="@+id/iv_goods_show" />
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:visibility="gone"
+            android:src="@mipmap/ic_launcher"
+            android:id="@+id/iv_home_left_logo"/>
 
         <TextView
             android:layout_width="40dp"
@@ -30,8 +39,19 @@
             android:textColor="#FFFFFF"
             android:textStyle="bold"
             android:textSize="12sp"
+            android:visibility="gone"
             android:gravity="center"
             android:layout_alignParentRight="true"/>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:id="@+id/iv_label"
+            android:layout_above="@+id/tv_goods_title"
+            android:orientation="vertical"
+            android:visibility="gone"
+            android:scaleType="fitXY"
+            android:elevation="3dp" />
 
         <TextView
             android:layout_width="match_parent"

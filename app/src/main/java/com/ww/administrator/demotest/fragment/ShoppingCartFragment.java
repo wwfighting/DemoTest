@@ -21,7 +21,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -63,7 +62,6 @@ import me.drakeet.materialdialog.MaterialDialog;
  * Created by Administrator on 2016/7/19.
  */
 public class ShoppingCartFragment extends BaseFragment implements View.OnClickListener{
-
 
     private static final String SHOPPING_CART_REFRESH = "SHOPPING_CART_REFRESH";
 
@@ -144,6 +142,7 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
         mrlStore = (RelativeLayout) view.findViewById(R.id.rl_store);
         mrlAddress = (RelativeLayout) view.findViewById(R.id.rl_address);
         mrvCart = (RecyclerView) view.findViewById(R.id.rv_shopping_cart);
+        mrvCart.setHasFixedSize(true);
         mpbLoad = (ProgressWheel) view.findViewById(R.id.pb_common);
         mtbCart = (Toolbar) view.findViewById(R.id.tb_cart);
         mrlBottom = (RelativeLayout) view.findViewById(R.id.rl_bottom);
@@ -224,7 +223,7 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
 
     private void setBtnColor(){
         if (mCount > 0){
-            mbtnCount.setBackgroundColor(Color.parseColor("#F5183C"));
+            mbtnCount.setBackgroundColor(Color.parseColor("#F81646"));
         }else {
             mbtnCount.setBackgroundColor(Color.parseColor("#999999"));
         }
@@ -406,8 +405,9 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
 
         botStoreDialog.setContentView(bottomStoreView);
         botStoreDialog.show();
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.spinner_tv_layout, Constants.CITY_ARRAY);
-        mcitySpinner.setAdapter(adapter);
+        /*ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.spinner_tv_layout, Constants.CITY_ARRAY);
+        mcitySpinner.setAdapter(adapter);*/
+
         mcitySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -457,6 +457,9 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
             @Override
             public void onResponse(String response) {
                 mpbLoad.setVisibility(View.GONE);
+
+                Log.d("shoppingcart", "=================");
+                Log.d("shoppingcart", response.toString());
 
                 try {
                     JSONObject jsonRoot = new JSONObject(response);
@@ -520,7 +523,12 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
 
                                         }
 
-                                        cartInfo = info;
+                                        //cartInfo = info;
+                                        cartInfo.getData().get(pos).setIsSelected(isChecked);
+                                        //cartInfo.getData().get(pos).setPrice(((TextView) manager.findViewByPosition(pos).findViewById(R.id.tv_cart_pro_money)).getText().toString());
+                                        cartInfo.getData().get(pos).setOrderMoney(Integer.parseInt(((TextView) manager.findViewByPosition(pos).findViewById(R.id.tv_cart_pro_order_money)).getText().toString()));
+
+                                        mAdapter.onRefresh(cartInfo, pos);
                                         if (hasProNum > 1) {
                                             payId = "";
                                             hasProNum = 0;
@@ -570,6 +578,11 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
                                         }
 
                                         mDialogNum.show();
+                                        cartInfo.getData().get(pos).setBuycount(((TextView) manager.findViewByPosition(pos).findViewById(R.id.tv_cart_pro_num)).getText().toString());
+                                        //cartInfo.getData().get(pos).setPrice(((TextView) manager.findViewByPosition(pos).findViewById(R.id.tv_cart_pro_money)).getText().toString());
+                                        cartInfo.getData().get(pos).setOrderMoney(Integer.parseInt(((TextView) manager.findViewByPosition(pos).findViewById(R.id.tv_cart_pro_order_money)).getText().toString()));
+
+                                        mAdapter.onRefresh(cartInfo, pos);
                                         //修改该商品的购买数量
                                         updateBuyCount(info.getData().get(pos).getId(), itemNum);
 
@@ -600,6 +613,11 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
                                         }
 
                                         mDialogNum.show();
+                                        cartInfo.getData().get(pos).setBuycount(((TextView) manager.findViewByPosition(pos).findViewById(R.id.tv_cart_pro_num)).getText().toString());
+                                        //cartInfo.getData().get(pos).setPrice(((TextView) manager.findViewByPosition(pos).findViewById(R.id.tv_cart_pro_money)).getText().toString());
+                                        cartInfo.getData().get(pos).setOrderMoney(Integer.parseInt(((TextView) manager.findViewByPosition(pos).findViewById(R.id.tv_cart_pro_order_money)).getText().toString()));
+
+                                        mAdapter.onRefresh(cartInfo, pos);
                                         //修改该商品的购买数量
                                         updateBuyCount(info.getData().get(pos).getId(),itemNum);
                                     }
@@ -614,13 +632,13 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
                                         int itemMoney = Integer.parseInt(tvItemOrderMoney.getText().toString());
                                         //先判断该商品有没有被选中
                                         if (info.getData().get(pos).getisSelected()) {   //如果选中
-                                            if (info.getData().get(pos).getSubtitle().equals("全屋定制")) {
+                                            if (info.getData().get(pos).getSubtitle().equals("全屋定制") || info.getData().get(pos).getSubtitle().equals("双十二全屋") || info.getData().get(pos).getSubtitle().equals("圣诞全屋购")) {
                                                 if (itemMoney > 3000) {
                                                     itemMoney -= 1000;
                                                     mPrice -= 1000;
                                                     schedprice -= 1000;
                                                 }
-                                            } else if (info.getData().get(pos).getSubtitle().equals("") || info.getData().get(pos).getSubtitle().equals("双十一活动")) {
+                                            } else if (info.getData().get(pos).getSubtitle().equals("") || info.getData().get(pos).getSubtitle().equals("2017元旦活动") ) {
                                                 if (itemMoney > 2000) {
                                                     itemMoney -= 1000;
                                                     mPrice -= 1000;
@@ -636,6 +654,10 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
                                         } else { //如果未被选中
                                             cb.setChecked(true);
                                         }
+                                        //cartInfo.getData().get(pos).setPrice(((TextView) manager.findViewByPosition(pos).findViewById(R.id.tv_cart_pro_money)).getText().toString());
+                                        cartInfo.getData().get(pos).setOrderMoney(Integer.parseInt(((TextView) manager.findViewByPosition(pos).findViewById(R.id.tv_cart_pro_order_money)).getText().toString()));
+
+                                        mAdapter.onRefresh(cartInfo, pos);
 
                                     }
 
@@ -655,6 +677,11 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
                                         } else { //如果未被选中
                                             cb.setChecked(true);
                                         }
+
+                                        //cartInfo.getData().get(pos).setPrice(((TextView) manager.findViewByPosition(pos).findViewById(R.id.tv_cart_pro_money)).getText().toString());
+                                        cartInfo.getData().get(pos).setOrderMoney(Integer.parseInt(((TextView) manager.findViewByPosition(pos).findViewById(R.id.tv_cart_pro_order_money)).getText().toString()));
+
+                                        mAdapter.onRefresh(cartInfo, pos);
                                     }
                                 });
 
@@ -679,6 +706,16 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
                 new HttpUtil.Param("uid", uid)
         });
     }
+   /* private void specialUpdate(final ShoppingcartInfo info){
+        Handler handler = new Handler();
+        final Runnable r = new Runnable() {
+            public void run() {
+                mAdapter.onRefresh(info);
+
+            }
+        };
+        handler.post(r);
+    }*/
 
     private void updateBuyCount(String id, int buyCount){
         HttpUtil.postAsyn(Constants.BASE_URL + "shop_buycount.php", new HttpUtil.ResultCallback<String>() {
@@ -932,7 +969,7 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                             mstaffName = mStaffAdapter.getItem(position).getTruename();
-                            msalerNo = mStaffAdapter.getItem(position).getSalerno();
+                            msalerNo = "ww" + mStaffAdapter.getItem(position).getStoreId();
                             mtvChooseStore.setText(mstoreName + "  " + mstaffName + "(" + msalerNo + ")");
                             botStoreDialog.dismiss();
                         }

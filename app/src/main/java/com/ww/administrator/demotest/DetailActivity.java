@@ -21,6 +21,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +34,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bigkoo.convenientbanner.ConvenientBanner;
 import com.bigkoo.convenientbanner.holder.CBViewHolderCreator;
@@ -81,7 +83,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     String mGid;
     NestedScrollView mNsvDetail;
     private List<Fragment> mFralist = new ArrayList<>();
-    private String[] mTitle = {"商品详情","商品评价"};
+    private String[] mTitle = {"商品详情", "商品评价"};
 
     Toolbar mTbDetail;
     ConvenientBanner mBanner;
@@ -142,7 +144,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     String mode = "";   //记录商品的类别
     int num = 1;    //记录商品的数量
     LinearLayout llMode;
-    LinearLayout llBanner;
+    ImageView ivlabel, ivQiang, ivLeftLogo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -162,7 +164,9 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         mTbDetail = (Toolbar) findViewById(R.id.tb_detail);
         mTlDetail = (TabLayout) findViewById(R.id.tl_detail);
         llMode = (LinearLayout) findViewById(R.id.ll_mode);
-        llBanner = (LinearLayout) findViewById(R.id.ll_banner_container);
+        ivlabel = (ImageView) findViewById(R.id.iv_label);
+        ivQiang = (ImageView) findViewById(R.id.iv_event_qiang);
+        ivLeftLogo = (ImageView) findViewById(R.id.iv_left_logo);
         mVpDetail = (AutoHeightViewPager) findViewById(R.id.vp_detail);
         mBanner = (ConvenientBanner) findViewById(R.id.cb_detail);
 
@@ -200,6 +204,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         mfabOrder.setOnClickListener(this);
         mbtnMinus.setOnClickListener(this);
         mbtnPlus.setOnClickListener(this);
+        ivQiang.setOnClickListener(this);
 
         initDialog();
 
@@ -251,11 +256,13 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
             @Override
             public void onResponse(String response) {
-
+                System.out.println("=====商品详情=======");
+                System.out.println(response.toString());
+                System.out.println("=====商品详情=======");
                 mInfo = mGson.fromJson(response, GoodsDetailInfo.class);
                 if (mInfo.getCode().equals("200")) {
 
-                    if (mInfo.getData().getDetail().getSubtitle().equals("全屋定制")) {
+                    if (mInfo.getData().getDetail().getSubtitle().equals("全屋定制") || mInfo.getData().getDetail().getSubtitle().equals("双十二全屋") || mInfo.getData().getDetail().getSubtitle().equals("圣诞全屋购")) {
                         mode = "0";
                         mTvDetailprice.setVisibility(View.GONE);
                         mTvDetailOrgMoney.setVisibility(View.GONE);
@@ -263,8 +270,8 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                         mcvTaimian.setVisibility(View.GONE);
                         llMode.setVisibility(View.GONE);
                     }
-                    if (mInfo.getData().getDetail().getSubtitle().equals("全屋定制") || mInfo.getData().getDetail().getSubtitle().equals("")
-                            || mInfo.getData().getDetail().getSubtitle().equals("双十一活动")) {
+                    if (mInfo.getData().getDetail().getSubtitle().equals("全屋定制") || mInfo.getData().getDetail().getSubtitle().equals("圣诞全屋购") || mInfo.getData().getDetail().getSubtitle().equals("")
+                            || mInfo.getData().getDetail().getSubtitle().equals("双十二全屋") || mInfo.getData().getDetail().getSubtitle().equals("2017元旦活动")) {
                         mode = "0";
                         mfabOrder.setTitle("一键预约");
 
@@ -277,7 +284,44 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                         mTvDetailOrderCount.setVisibility(View.GONE);
 
                     }
+
+                    if (mInfo.getData().getDetail().getImg1() != null){
+                        if (!mInfo.getData().getDetail().getImg1().equals("")) {
+                            //Toast.makeText(DetailActivity.this, "img1：" + mInfo.getData().getDetail().getImg1() + "img2：" + mInfo.getData().getDetail().getImg2(), Toast.LENGTH_LONG).show();
+                            ivLeftLogo.setVisibility(View.VISIBLE);
+                            Glide.with(DetailActivity.this)
+                                    .load(Constants.BASE_IMG_URL + mInfo.getData().getDetail().getImg1())
+                                    .crossFade()
+                                    .into(ivLeftLogo);
+                        }
+                    }
+
+                    if (mInfo.getData().getDetail().getImg2() != null){
+                        if (!mInfo.getData().getDetail().getImg2().equals("")) {
+                            ivQiang.setVisibility(View.VISIBLE);
+                            ivlabel.setVisibility(View.VISIBLE);
+                            Glide.with(DetailActivity.this)
+                                    .load(Constants.BASE_IMG_URL + mInfo.getData().getDetail().getImg2())
+                                    .crossFade()
+                                    .into(ivlabel);
+                        } else {
+                            ivlabel.setVisibility(View.GONE);
+                            ivQiang.setVisibility(View.GONE);
+                        }
+                    }
+
+                    if (mInfo.getData().getDetail().getQid().equals("3571")){
+                        ivQiang.setVisibility(View.VISIBLE);
+                    }
+
+
                     strGoodsDetailInfo = response;
+                   /* if (mInfo.getData().getDetail().getImg2() != null){
+                        if (mInfo.getData().getDetail().getPrice().equals("1") && !mInfo.getData().getDetail().getImg2().equals("")) {
+                            loadD12Datas();
+                        }
+                    }*/
+
                     initBanner();
                     initMoney();
                     initSpecMode();
@@ -288,6 +332,29 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
             }
         }, new HttpUtil.Param[]{
                 new HttpUtil.Param("gid", mGid)
+        });
+    }
+
+    private void loadD12Datas(){
+        HttpUtil.postAsyn(Constants.BASE_URL + "product_detail.php", new HttpUtil.ResultCallback<String>() {
+            @Override
+            public void onError(Request request, Exception e) {
+
+            }
+
+            @Override
+            public void onResponse(String response) {
+                System.out.println("=====商品详情=======");
+                System.out.println(response.toString());
+                System.out.println("=====商品详情=======");
+                mInfo = mGson.fromJson(response, GoodsDetailInfo.class);
+                if (mInfo.getCode().equals("200")) {
+                    strGoodsDetailInfo = response;
+                    initMoney();
+                }
+            }
+        }, new HttpUtil.Param[]{
+                new HttpUtil.Param("gid", mInfo.getData().getDetail().getQid())
         });
     }
 
@@ -339,7 +406,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
             mTvDetailOrderMoney.setText(mInfo.getData().getDetail().getOrdercount() + "人预约");
         }
 
-        if (mInfo.getData().getDetail().getSubtitle().equals("全屋定制")){
+        if (mInfo.getData().getDetail().getSubtitle().equals("全屋定制") || mInfo.getData().getDetail().getSubtitle().equals("双十二全屋") || mInfo.getData().getDetail().getSubtitle().equals("圣诞全屋购")){
             mTvDetailOrderMoney.setTextColor(Color.parseColor("#999999"));
             mTvDetailOrderMoney.setText(mInfo.getData().getDetail().getOrdercount() + "人预约");
             mTvDetailprice.setVisibility(View.VISIBLE);
@@ -359,7 +426,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
             mTvDetailMode.setText(mInfo.getData().getDetail().getTag());
         }
 
-        if (mInfo.getData().getDetail().getSubtitle().equals("")){
+        if (mInfo.getData().getDetail().getSubtitle().equals("") || mInfo.getData().getDetail().getSubtitle().equals("2017元旦活动")){
             llCountContainer.setVisibility(View.GONE);
             mcvColor.setVisibility(View.VISIBLE);
             mcvTaimian.setVisibility(View.VISIBLE);
@@ -433,7 +500,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
             //加入购物车
             case R.id.fab_detail_shopping_cart:
-                if (mApp.getUser() == null){
+                if (mApp.getUser() == null){    //先判断用户有没有登录
                     mDialog.show();
                 }else {
                     addShoppingCart();
@@ -445,12 +512,10 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
             //预约
             case R.id.fab_detail_order:
 
-                if (mApp.getUser() == null){
+                if (mApp.getUser() == null){    //先判断用户有没有登录
                     mDialog.show();
                 }else {
-
                     Intent intent = new Intent(DetailActivity.this, OrderActivity.class);
-
                     intent.putExtra("imgurl", networkImages.get(0));
                     intent.putExtra("gid", mGid);
                     intent.putExtra("response", strGoodsDetailInfo);
@@ -477,10 +542,81 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                 mtvNum.setText(orderNum + "");
                 mTvDetailprice.setText("现价：￥" + orderNum * partMoney);
                 break;
+            //商品抢购
+            case R.id.iv_event_qiang:
+                if (mApp.getUser() == null){    //先判断有没有登录
+                    mDialog.show();
+                }else {
+                    eventQiang();
+                }
+
+                break;
         }
     }
 
+    /**
+     * 一元抢订
+     */
+   private void eventQiang(){
+        HttpUtil.postAsyn(Constants.BASE_URL + "has_qiangding.php", new HttpUtil.ResultCallback<String>() {
+            @Override
+            public void onError(Request request, Exception e) {
+                Toast.makeText(DetailActivity.this, "请检查您的网络！", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onResponse(String response) {
+                ResultInfo result = mGson.fromJson(response, ResultInfo.class);
+                if (result.getCode().equals("200")){
+
+                    GoodsDetailInfo info = mInfo;
+                    info.getData().getDetail().setPrice_old("0");
+                    info.getData().getDetail().setPrice("1");
+                    info.getData().getDetail().setPrice_old1("0");
+                    info.getData().getDetail().setPrice1("0");
+                    String detail = mGson.toJson(info);
+                    String picurl = "";
+                    if (mInfo.getData().getDetail().getPicurl().contains(";")){
+                        String[] url = mInfo.getData().getDetail().getPicurl().split(";");
+                        picurl =  Constants.BASE_IMG_URL + url[0];
+                    }else {
+                        picurl  = Constants.BASE_IMG_URL + mInfo.getData().getDetail().getPicurl();
+                    }
+
+                    String gid = mInfo.getData().getDetail().getQid();
+
+                    Intent intent = new Intent(DetailActivity.this, OrderActivity.class);
+                    intent.putExtra("imgurl", picurl);
+                    intent.putExtra("gid", gid);
+                    intent.putExtra("orderMode", 500);
+                    intent.putExtra("action", "qd");
+                    intent.putExtra("response", detail);
+                    startActivity(intent);
+                    /*Intent qiang = new Intent(DetailActivity.this, OrderActivity.class);
+                    qiang.putExtra("qid", mInfo.getData().getDetail().getQid());
+                    qiang.putExtra("num", 1);
+                    startActivity(qiang);*/
+
+                }else if (result.getCode().equals("401")){
+                    Toast.makeText(DetailActivity.this, result.getInfo(), Toast.LENGTH_LONG).show();
+                }else {
+                    Toast.makeText(DetailActivity.this, result.getInfo(), Toast.LENGTH_LONG).show();
+                }
+            }
+        }, new HttpUtil.Param[]{
+                new HttpUtil.Param("uid", uid),
+                new HttpUtil.Param("qid", mInfo.getData().getDetail().getQid()),
+        });
+    }
+
     private void addShoppingCart(){
+
+        Log.d("Detail", "uid：" + uid);
+        Log.d("Detail", "gid：" + mGid);
+        Log.d("Detail", "action：" + "add");
+        Log.d("Detail", "mode：" + mode);
+        Log.d("Detail", "num：" + num);
+
         HttpUtil.postAsyn(Constants.BASE_URL + "add_shoppingcart.php", new HttpUtil.ResultCallback<ResultInfo>() {
             @Override
             public void onError(Request request, Exception e) {
@@ -547,7 +683,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
             //根据距离 时间 初始设置的Y轴初速度与X轴初速度相同 获取到竖直方向上的加速度
             final float g;
-            if(xv>0) {
+            if(xv > 0) {
                 g = (YtoY + xv * time) / time / time *2;
             }else{
                 g = (YtoY - xv * time) / time / time *2;

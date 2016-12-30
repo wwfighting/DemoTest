@@ -53,12 +53,22 @@ public class CouponsResultInfo {
 
     public static class DataBean {
         private String lpGoodid;
+        private String lpPrice;
         private String discount;
         private String lastTime;
         private String name;
         private String status;
         private String mode;
         private String title;
+        private String lpmode;
+
+        public String getLpmode() {
+            return lpmode;
+        }
+
+        public void setLpmode(String lpmode) {
+            this.lpmode = lpmode;
+        }
 
         public String getTitle() {
             return title;
@@ -68,7 +78,13 @@ public class CouponsResultInfo {
             this.title = title;
         }
 
+        public String getLpPrice() {
+            return lpPrice;
+        }
 
+        public void setLpPrice(String lpPrice) {
+            this.lpPrice = lpPrice;
+        }
 
         public String getLpGoodid() {
             return lpGoodid;

@@ -1,12 +1,14 @@
 package com.ww.administrator.demotest.util;
 
+import com.ww.administrator.demotest.R;
+
 /**
  * Created by Administrator on 2016/8/20.
  */
 public class Constants {
 
     //api
-    public static final String BASE_TEST_URL = "http://192.168.1.25/test/jvawa/";
+    public static final String BASE_TEST_URL = "http://192.168.1.28/test/jvawa/";
     //public static final String BASE_URL = "http://192.168.1.25/test/jvawa/";
     public static final String BASE_URL = "http://www.jvawa.com/new/jvawaApi/";
     public static final String BASE_IMG_URL= "http://www.jvawa.com/";
@@ -28,8 +30,14 @@ public class Constants {
     public static final String CATE_REFRESH = "CATE_REFRESH";
 
     //params
-    public static final String[] FLOW_LAYOUT_TITLE = {"小康美厨","尚品魅厨","精英悦厨","铂金丽厨",
-            "名家雅厨","欧风御厨","至尊典厨"};
+    public static final String[] FLOW_LAYOUT_TITLE = {"小康美厨", "尚品魅厨", "精英悦厨", "铂金丽厨",
+            "名家雅厨", "欧风御厨", "至尊典厨"};
 
-    public static final String[] CITY_ARRAY = new String[]{"南京","上海","兰州","沈阳"};
+    public static final String[] CITY_ARRAY = new String[]{"南京", "上海", "兰州", "沈阳"};
+
+    public static final String[] CATE_TITLE = {"圣诞特惠", "新品推荐", "热卖商品", "精品橱柜", "全屋定制"};
+
+    public static final int[] CATE_ICON = {R.drawable.cm_th, R.drawable.cm_new, R.drawable.cm_hot,
+                                            R.drawable.cm_jy, R.drawable.cm_qw};
+
 }

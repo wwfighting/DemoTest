@@ -189,6 +189,8 @@ public class MyFragment extends BaseFragment implements View.OnClickListener{
                 if (((MyApp)getActivity().getApplicationContext()).getUser() == null){
                     mTipDialog.show();
                 }else {
+
+                    //Intent activity = new Intent(getActivity(), RotateEventActivity.class);
                     Intent activity = new Intent(getActivity(), HotActivity.class);
                     startActivity(activity);
                 }

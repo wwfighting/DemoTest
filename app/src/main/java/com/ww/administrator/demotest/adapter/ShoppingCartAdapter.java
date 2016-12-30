@@ -16,6 +16,9 @@ import com.ww.administrator.demotest.model.ShoppingcartInfo;
 import com.ww.administrator.demotest.util.ButtonUtil;
 import com.ww.administrator.demotest.util.Constants;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by Administrator on 2016/9/21.
  */
@@ -26,6 +29,8 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private Context mContext;
     private ShoppingcartInfo mInfo;
 
+    Map<Integer, Integer> mCheckBoxState = new HashMap<>();
+
 
     public ShoppingCartAdapter(Context context, ShoppingcartInfo info) {
         this.mContext = context;
@@ -33,13 +38,15 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     }
 
-    public void onRefresh(ShoppingcartInfo info){
+    public void onRefresh(ShoppingcartInfo info, int pos) {
         mInfo = info;
+        //this.notifyItemChanged(pos);
+        //notifyItemRangeChanged(pos, getItemCount());
         this.notifyDataSetChanged();
     }
 
 
-    public void delItem(int pos){
+    public void delItem(int pos) {
         mInfo.getData().remove(pos);
         notifyItemRemoved(pos);
     }
@@ -66,9 +73,14 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
+        holder.setIsRecyclable(false);
         if (holder instanceof ShoppingcartViewHolder){
             ((ShoppingcartViewHolder) holder).mtvTitle.setText(mInfo.getData().get(position).getGoodsname());
-            ((ShoppingcartViewHolder) holder).mtvMoney.setText(Float.parseFloat(mInfo.getData().get(position).getPrice()) * Integer.parseInt(mInfo.getData().get(position).getBuycount()) + "");
+            if (mInfo.getData().get(position).getSubtitle().equals("") || mInfo.getData().get(position).getSubtitle().equals("全屋定制") || mInfo.getData().get(position).getSubtitle().equals("圣诞全屋购") || mInfo.getData().get(position).getSubtitle().equals("2017元旦活动")){
+                ((ShoppingcartViewHolder) holder).mtvMoney.setText(Float.parseFloat(mInfo.getData().get(position).getPrice()) + "");
+            }else {
+                ((ShoppingcartViewHolder) holder).mtvMoney.setText(Float.parseFloat(mInfo.getData().get(position).getPrice()) * Integer.parseInt(mInfo.getData().get(position).getBuycount()) + "");
+            }
 
             if (mInfo.getData().get(position).getSubtitle().equals("配件")){
                 ((ShoppingcartViewHolder) holder).mtvOrderLabel.setVisibility(View.GONE);
@@ -81,7 +93,7 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 ((ShoppingcartViewHolder) holder).mtvNumPlus.setVisibility(View.VISIBLE);
                 ((ShoppingcartViewHolder) holder).mtvNum.setText(mInfo.getData().get(position).getBuycount());
 
-            }else if (mInfo.getData().get(position).getSubtitle().equals("全屋定制")){  //全屋定制
+            }else if (mInfo.getData().get(position).getSubtitle().equals("全屋定制") || mInfo.getData().get(position).getSubtitle().equals("圣诞全屋购")){  //全屋定制
                 ((ShoppingcartViewHolder) holder).mtvOrderLabel.setVisibility(View.VISIBLE);
                 ((ShoppingcartViewHolder) holder).mtvOrdMoney.setVisibility(View.VISIBLE);
                 ((ShoppingcartViewHolder) holder).mtvOrderMinus.setVisibility(View.VISIBLE);
@@ -91,7 +103,7 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 ((ShoppingcartViewHolder) holder).mtvNum.setVisibility(View.GONE);
                 ((ShoppingcartViewHolder) holder).mtvNumPlus.setVisibility(View.GONE);
                 ((ShoppingcartViewHolder) holder).mtvOrdMoney.setText(mInfo.getData().get(position).getOrderMoney() + "");
-            }else if (mInfo.getData().get(position).getSubtitle().equals("") || mInfo.getData().get(position).getSubtitle().equals("双十一活动")){  //橱柜
+            }else if (mInfo.getData().get(position).getSubtitle().equals("") || mInfo.getData().get(position).getSubtitle().equals("2017元旦活动") || mInfo.getData().get(position).getSubtitle().equals("双十二活动")){  //橱柜
                 ((ShoppingcartViewHolder) holder).mtvOrderLabel.setVisibility(View.VISIBLE);
                 ((ShoppingcartViewHolder) holder).mtvOrdMoney.setVisibility(View.VISIBLE);
                 ((ShoppingcartViewHolder) holder).mtvOrderMinus.setVisibility(View.VISIBLE);
@@ -108,24 +120,11 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     .crossFade()
                     .into(((ShoppingcartViewHolder) holder).mivShow);
 
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                   /* Intent intent = new Intent();
-                    intent.setClass(mContext, DetailActivity.class);
-                    intent.putExtra("gid", mInfo.getData().get(position).getId());
-                    // mContext.startActivity(intent);
-                    if (ToolsUtil.GetVersionSDK() < Build.VERSION_CODES.LOLLIPOP) {
-                        mContext.startActivity(intent);
-                    } else {
-                        View sharedView = holder.itemView.findViewById(R.id.iv_cart_pro_show);
-                        String transitionName = "detail";
-                        ActivityOptions transitionActivityOptions = ActivityOptions.makeSceneTransitionAnimation((Activity) mContext, sharedView, transitionName);
-                        mContext.startActivity(intent, transitionActivityOptions.toBundle());
-                    }*/
-
-                }
-            });
+            if (mInfo.getData().get(position).getisSelected()){
+                ((ShoppingcartViewHolder) holder).mcbSelected.setChecked(true);
+            }else {
+                ((ShoppingcartViewHolder) holder).mcbSelected.setChecked(false);
+            }
 
             //选中该商品
             ((ShoppingcartViewHolder) holder).mcbSelected.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -186,12 +185,19 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     }
                 }
             });
+
+            /*if (mInfo.getData().get(position).getisSelected()){
+                ((ShoppingcartViewHolder) holder).mcbSelected.setChecked(true);
+            }else {
+                ((ShoppingcartViewHolder) holder).mcbSelected.setChecked(false);
+            }*/
         }
     }
 
 
 
     private class ShoppingcartViewHolder extends RecyclerView.ViewHolder{
+
 
         AppCompatCheckBox mcbSelected;
         ImageView mivShow;
@@ -202,7 +208,6 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         TextView mtvOrderLabel, mtvOrderMinus, mtvOrdMoney, mtvOrderPlus;
         //配件数量
         TextView mtvNumLabel, mtvNumMinus, mtvNum, mtvNumPlus;
-
         public ShoppingcartViewHolder(View itemView) {
             super(itemView);
             mcbSelected = (AppCompatCheckBox) itemView.findViewById(R.id.cb_cart_pro_selected);

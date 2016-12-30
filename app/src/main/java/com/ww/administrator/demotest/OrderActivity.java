@@ -18,7 +18,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -160,12 +159,16 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
     LinearLayout mllNumContainer;
     int orderNum = 1;
 
+    String action = "";
+
     float partMoney = 0;
 
     int orderMode = -1; //代表订单类型
 
     RelativeLayout mrlStoreChoose;
     CardView mcvTipContainer;
+
+    String mQid = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -185,9 +188,12 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         mimgUrl = getIntent().getExtras().getString("imgurl");
         mGid = getIntent().getExtras().getString("gid");
         orderMode = getIntent().getExtras().getInt("orderMode", -1);
+        action = getIntent().getExtras().getString("action", "");
         mDetailInfo = mGson.fromJson(getIntent().getExtras().getString("response"), GoodsDetailInfo.class);
         partMoney = Float.parseFloat(mDetailInfo.getData().getDetail().getPrice());
-
+        if (mDetailInfo.getData().getDetail().getQid() != null){
+            mQid = mDetailInfo.getData().getDetail().getQid();
+        }
         if (getIntent().getExtras().getString("storeName") != null){
             mcity = getIntent().getExtras().getString("city");
             mstoreId = getIntent().getExtras().getString("storeId");
@@ -195,7 +201,11 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
             msalerNo = getIntent().getExtras().getString("salerNo");
             mstaffName = getIntent().getExtras().getString("staffName");
         }
-        if (mDetailInfo.getData().getDetail().getSubtitle().equals("全屋定制")){
+        if (mDetailInfo.getData().getDetail().getSubtitle().equals("全屋定制") && !action.equals("")){
+            morderMoney = 3000;
+        }
+
+        if (mDetailInfo.getData().getDetail().getSubtitle().equals("圣诞全屋购") && !action.equals("")){
             morderMoney = 3000;
         }
 
@@ -271,7 +281,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
             mtvChooseStore.setText(mstoreName + "  " + mstaffName + "(" + msalerNo + ")");
         }
 
-        if (mDetailInfo.getData().getDetail().getSubtitle().equals("配件")){
+        if (mDetailInfo.getData().getDetail().getSubtitle().equals("配件") || action.equals("qd")){
             mtvOrderMinus.setVisibility(View.GONE);
             mtvOrderPlus.setVisibility(View.GONE);
 
@@ -282,6 +292,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                 mrlStoreChoose.setVisibility(View.GONE);
             }
         }
+
 
     }
 
@@ -296,7 +307,8 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
             mtvOrderMoney.setText("￥" + partMoney);
         }
 
-        if (mDetailInfo.getData().getDetail().getSubtitle().equals("配件") || mDetailInfo.getData().getDetail().getSubtitle().equals("全屋定制")){
+        if (mDetailInfo.getData().getDetail().getSubtitle().equals("配件") || mDetailInfo.getData().getDetail().getSubtitle().equals("全屋定制")
+                || mDetailInfo.getData().getDetail().getSubtitle().equals("圣诞全屋购")){
             mrlFloorContainer.setVisibility(View.GONE);
             mrlHangingContainer.setVisibility(View.GONE);
             mrlOrderContainer.setVisibility(View.GONE);
@@ -310,23 +322,45 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
             lineHanging.setVisibility(View.GONE);
         }
 
-        if (mDetailInfo.getData().getDetail().getSubtitle().equals("") || mDetailInfo.getData().getDetail().getSubtitle().equals("双十一活动")){
-            mrlFloorContainer.setVisibility(View.VISIBLE);
-            mrlHangingContainer.setVisibility(View.VISIBLE);
-            mcvDoorContainer.setVisibility(View.VISIBLE);
-            mcvColorContainer.setVisibility(View.VISIBLE);
-            mrlOrderContainer.setVisibility(View.VISIBLE);
-            mcvTaimianContainer.setVisibility(View.VISIBLE);
-            mtvBottomAllMoney.setVisibility(View.VISIBLE);
-            mtvLeftBracket.setVisibility(View.VISIBLE);
-            mtvRightBracket.setVisibility(View.VISIBLE);
-            lineFloor.setVisibility(View.VISIBLE);
-            lineHanging.setVisibility(View.VISIBLE);
-            mllNumContainer.setVisibility(View.GONE);
-            initDoor();
-            initColor();
-            initTaimian();
+        if (action.equals("qd")){
+            mrlFloorContainer.setVisibility(View.GONE);
+            mrlHangingContainer.setVisibility(View.GONE);
+            mrlOrderContainer.setVisibility(View.GONE);
+            mcvDoorContainer.setVisibility(View.GONE);
+            mcvColorContainer.setVisibility(View.GONE);
+            mcvTaimianContainer.setVisibility(View.GONE);
+            mtvLeftBracket.setVisibility(View.GONE);
+            mtvRightBracket.setVisibility(View.GONE);
+            mtvBottomAllMoney.setVisibility(View.GONE);
+            lineFloor.setVisibility(View.GONE);
+            lineHanging.setVisibility(View.GONE);
+            mtvOrderMoneyLabel.setText("支付金额：");
+            mtvOrderMoneyBottom.setText("支付金额：");
+            mtvOrderMoneyShow.setText(partMoney + "");
+            mtvOrderMoney.setText("￥" + partMoney);
+            mllNumContainer.setVisibility(View.VISIBLE);
         }
+
+        if (!action.equals("qd")){
+            if (mDetailInfo.getData().getDetail().getSubtitle().equals("") || mDetailInfo.getData().getDetail().getSubtitle().equals("2017元旦活动") || mDetailInfo.getData().getDetail().getSubtitle().equals("双十二活动")){
+                mrlFloorContainer.setVisibility(View.VISIBLE);
+                mrlHangingContainer.setVisibility(View.VISIBLE);
+                mcvDoorContainer.setVisibility(View.VISIBLE);
+                mcvColorContainer.setVisibility(View.VISIBLE);
+                mrlOrderContainer.setVisibility(View.VISIBLE);
+                mcvTaimianContainer.setVisibility(View.VISIBLE);
+                mtvBottomAllMoney.setVisibility(View.VISIBLE);
+                mtvLeftBracket.setVisibility(View.VISIBLE);
+                mtvRightBracket.setVisibility(View.VISIBLE);
+                lineFloor.setVisibility(View.VISIBLE);
+                lineHanging.setVisibility(View.VISIBLE);
+                mllNumContainer.setVisibility(View.GONE);
+                initDoor();
+                initColor();
+                initTaimian();
+            }
+        }
+
 
     }
 
@@ -405,8 +439,8 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
 
         botStoreDialog.setContentView(bottomStoreView);
         botStoreDialog.show();
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(OrderActivity.this, R.layout.spinner_tv_layout, Constants.CITY_ARRAY);
-        mcitySpinner.setAdapter(adapter);
+        /*ArrayAdapter<String> adapter = new ArrayAdapter<String>(OrderActivity.this, R.layout.spinner_tv_layout, Constants.CITY_ARRAY);
+        mcitySpinner.setAdapter(adapter);*/
         mcitySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -698,7 +732,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                             mstaffName = mStaffAdapter.getItem(position).getTruename() + " (" +
                                     mStaffAdapter.getItem(position).getSalerno() + ")";
                             mstoreId = mStaffAdapter.getItem(position).getStoreId();
-                            msalerNo = mStaffAdapter.getItem(position).getSalerno();
+                            msalerNo = "ww" + mStaffAdapter.getItem(position).getStoreId();
                             mtvChooseStore.setText(mstoreName + "   " + mstaffName);
                             botStoreDialog.dismiss();
                         }
@@ -734,11 +768,11 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                     submitMainOrder();
                 }
 
-                if (mDetailInfo.getData().getDetail().getSubtitle().equals("双十一活动") && orderMode != 500){
+                if ((mDetailInfo.getData().getDetail().getSubtitle().equals("2017元旦活动") || mDetailInfo.getData().getDetail().getSubtitle().equals("圣诞橱柜购")) && (orderMode != 500)){
                     submitMainOrder();
                 }
 
-                if (mDetailInfo.getData().getDetail().getSubtitle().equals("全屋定制")){
+                if ((mDetailInfo.getData().getDetail().getSubtitle().equals("全屋定制") || mDetailInfo.getData().getDetail().getSubtitle().equals("圣诞全屋购")) && orderMode != 500){
                     submitHomeOrder();
                 }
 
@@ -748,7 +782,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
 
                 break;
             case R.id.tv_order_money_minus:
-                if (mDetailInfo.getData().getDetail().getSubtitle().equals("全屋定制")){
+                if (mDetailInfo.getData().getDetail().getSubtitle().equals("全屋定制") || mDetailInfo.getData().getDetail().getSubtitle().equals("圣诞全屋购")){
                     if (morderMoney > 3000){
                         morderMoney = morderMoney - 1000;
                     }
@@ -921,6 +955,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         intent.putExtra("storeid", mstoreId);
         intent.putExtra("salerNo", msalerNo);
         intent.putExtra("city", mcity);
+        intent.putExtra("qid", mQid);
 
         if (ToolsUtil.GetVersionSDK() < Build.VERSION_CODES.LOLLIPOP) {
             startActivity(intent);
@@ -970,6 +1005,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         intent.putExtra("salerNo", msalerNo);
         intent.putExtra("city", mcity);
         intent.putExtra("num", orderNum);
+        intent.putExtra("qid", mQid);
 
         if (ToolsUtil.GetVersionSDK() < Build.VERSION_CODES.LOLLIPOP) {
             startActivity(intent);
@@ -1041,6 +1077,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         intent.putExtra("mishu1", mtvHangCount.getText().toString());
         intent.putExtra("mishu2", mtvFloorCount.getText().toString());
         intent.putExtra("city", mcity);
+        intent.putExtra("qid", mQid);
         if (ToolsUtil.GetVersionSDK() < Build.VERSION_CODES.LOLLIPOP) {
             startActivity(intent);
         }else {
@@ -1090,8 +1127,10 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         intent.putExtra("tip", strTip);
         intent.putExtra("storeid", "0");
         intent.putExtra("salerNo", "001");
+        intent.putExtra("action", "qd");
         intent.putExtra("city", (String)SharedPreUtil.getData(OrderActivity.this, "localCity", "南京"));
         intent.putExtra("num", 1);
+        intent.putExtra("qid", mQid);
 
         if (ToolsUtil.GetVersionSDK() < Build.VERSION_CODES.LOLLIPOP) {
             startActivity(intent);

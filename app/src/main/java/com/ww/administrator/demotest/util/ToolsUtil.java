@@ -34,8 +34,7 @@ public class ToolsUtil {
     }
 
     public static String GetFolder(String strFolder) {
-        if(new File(strFolder).exists())
-        {
+        if(new File(strFolder).exists()) {
             return strFolder;
         }
 
@@ -58,13 +57,13 @@ public class ToolsUtil {
     }
 
     /**
-     * 判断双11活动有没有过期
+     * 判断圣诞活动有没有过期
      * @return
      */
     public static boolean isEventExpire(){
         //格式化时间
         SimpleDateFormat CurrentTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String endDate = "2016-11-26 23:59:59";
+        String endDate = "2016-12-26 23:59:59";
         Date d = new Date(System.currentTimeMillis());//获取当前时间
         String beginDate = CurrentTime.format(d);
         try {
@@ -72,7 +71,7 @@ public class ToolsUtil {
             Date curDate = CurrentTime.parse(beginDate);
             Date endTime = CurrentTime.parse(endDate);
 
-            if(((endTime.getTime() - curDate.getTime())/(24*60*60*1000))<=0) {
+            if(((endTime.getTime() - curDate.getTime())/(24*60*60*1000)) <= 0) {
                 return true;
             }else{
                 return false;
@@ -82,6 +81,25 @@ public class ToolsUtil {
             // TODO Auto-generated catch block
             e.printStackTrace();
             return true;
+        }
+
+    }
+
+
+    /**
+     * 判断是不是当天
+     * @return
+     */
+    public static boolean isCMEventExpire(){
+        //格式化时间
+        SimpleDateFormat CurrentTime = new SimpleDateFormat("yyyy-MM-dd");
+        String endDate = "2016-12-24";
+        Date d = new Date(System.currentTimeMillis());//获取当前时间
+        String beginDate = CurrentTime.format(d);
+        if (endDate.equals(beginDate)){
+            return true;
+        }else {
+            return false;
         }
 
     }
@@ -103,5 +121,6 @@ public class ToolsUtil {
             Log.e("VersionInfo", "Exception", e);
         }
         return versionName;
+
     }
 }
