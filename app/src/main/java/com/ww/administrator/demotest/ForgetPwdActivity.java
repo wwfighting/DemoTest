@@ -202,6 +202,7 @@ public class ForgetPwdActivity extends AppCompatActivity implements View.OnClick
         });
 
     }
+
     private void startTimer() {
         if(null != mTask) {
             mTask.cancel();
@@ -223,7 +224,7 @@ public class ForgetPwdActivity extends AppCompatActivity implements View.OnClick
         mTimer.schedule(mTask, 0, 1000);
     }
 
-    public void OnSmsTask() {
+    private void OnSmsTask() {
         if (mCurSecond == 60) {
             mbtnGetCode.setText("重获验证码");
             StopTimer();
