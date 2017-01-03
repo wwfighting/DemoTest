@@ -239,7 +239,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mpgShow.setVisibility(View.VISIBLE);
         mivShow.setVisibility(View.GONE);
         mtvDialogName.setText("登录中...");
-
         mLoginDialog.setContentView(view);
 
     }
